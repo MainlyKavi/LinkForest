@@ -3,30 +3,92 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>MainlyKavi</title>
-<meta name="description" content="MainlyKavi · influencer. All my links, all in one place.">
+<title>MainlyKavi - Influencer | All Socials, Projects & Links</title>
+<meta name="description" content="MainlyKavi, influencer. Find all of MainlyKavi's social media, projects, websites, and latest work in one convenient place, all in one link-in-bio page.">
+<link rel="canonical" href="https://mainlykavi.com/">
+
+<!-- Open Graph — controls the preview card shown on WhatsApp, Twitter/X,
+     iMessage, Facebook, Discord, etc. when this link is shared.
+     NOTE: og:image must be a real, publicly fetchable URL — social
+     platforms and crawlers cannot read base64 data: URIs. Replace
+     the placeholder below with a hosted image (ideally 1200x630px). -->
+<meta property="og:type" content="profile">
+<meta property="og:url" content="https://mainlykavi.com/">
+<meta property="og:title" content="MainlyKavi - Influencer | All Socials, Projects & Links">
+<meta property="og:description" content="Find all of MainlyKavi's social media, projects, websites, and latest work in one convenient place.">
+<meta property="og:image" content="https://mainlykavi.com/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="profile:username" content="mainlykavi">
+
+<!-- Twitter Card — same idea as Open Graph, but read by X/Twitter specifically. -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="MainlyKavi - Influencer | All Socials, Projects & Links">
+<meta name="twitter:description" content="Find all of MainlyKavi's social media, projects, websites, and latest work in one convenient place.">
+<meta name="twitter:image" content="https://mainlykavi.com/og-image.jpg">
+
+<!-- Person schema (JSON-LD) — lets Google understand this page is a
+     creator profile, and is what populates knowledge-panel-style rich
+     results. sameAs should list every official profile so Google can
+     tie them together as the same entity. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "MainlyKavi",
+  "alternateName": "MainlyKavi",
+  "description": "MainlyKavi is an influencer sharing social media content, projects, and creative work.",
+  "url": "https://mainlykavi.com/",
+  "image": "https://mainlykavi.com/og-image.jpg",
+  "sameAs": [
+    "https://www.youtube.com/@MainlyKavi",
+    "https://www.instagram.com/mainlykavi",
+    "https://x.com/Mainlykavi",
+    "https://www.facebook.com/MainlyKavi",
+    "https://www.snapchat.com/@mainlykavi",
+    "https://ko-fi.com/mainlykavi"
+  ]
+}
+</script>
+
+<!-- Theme set here, before any HTML paints, so returning visitors never see
+     a flash of the wrong theme (e.g. a saved "dark" preference briefly
+     showing as light while the deferred script further down ran). -->
+<script>
+(function(){
+  try{
+    var saved = window.localStorage && localStorage.getItem('mainlykavi-theme');
+    document.documentElement.setAttribute('data-theme', (saved === 'light' || saved === 'dark') ? saved : 'light');
+  } catch(e){
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+})();
+</script>
+
+<!-- Google Fonts — Montserrat. This page previously referenced a font
+     called "Argentum Sans" via @font-face pointing at local .woff2 files,
+     but those files don't travel with a single shared HTML file, so the
+     font silently failed everywhere except the original author's machine.
+     Montserrat was already the visual fallback, so it's now loaded for
+     real instead of just hoped for. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Plausible Analytics — privacy-friendly, cookie-free page-view analytics.
+     No personal data collected; swap data-domain for the real domain if different. -->
+<script defer data-domain="mainlykavi.com" src="https://plausible.io/js/script.js"></script>
 
 <style>
   /* ============================================================
-     FONT — Argentum Sans, full weight range
-     Not distributed on any CDN this build can reach (it's a
-     Montserrat fork hosted only on third-party font sites, not
-     Google Fonts). Wired via @font-face below — drop the .woff2
-     files in the same folder, named exactly as below, and they
-     load automatically with zero other changes. Until then the
-     fallback (Montserrat-family geometric grotesk) sits on the
-     same proportions at every weight, so the type feel barely shifts.
+     FONT — Montserrat, loaded from Google Fonts.
+     This page used to reference "Argentum Sans" via @font-face with
+     local .woff2 files, but those files don't travel with a single
+     HTML file shared on its own — so on any other machine the font
+     silently failed to load. Montserrat was already the visual
+     fallback (same geometric-grotesk proportions), so it's now the
+     actual font, loaded for real instead of hoped for.
      ============================================================ */
-  @font-face{ font-family:"Argentum Sans"; font-weight:300; font-style:normal; font-display:swap;
-    src:url("ArgentumSans-Light.woff2") format("woff2"), url("ArgentumSans-Light.woff") format("woff"); }
-  @font-face{ font-family:"Argentum Sans"; font-weight:400; font-style:normal; font-display:swap;
-    src:url("ArgentumSans-Regular.woff2") format("woff2"), url("ArgentumSans-Regular.woff") format("woff"); }
-  @font-face{ font-family:"Argentum Sans"; font-weight:500; font-style:normal; font-display:swap;
-    src:url("ArgentumSans-Medium.woff2") format("woff2"), url("ArgentumSans-Medium.woff") format("woff"); }
-  @font-face{ font-family:"Argentum Sans"; font-weight:600; font-style:normal; font-display:swap;
-    src:url("ArgentumSans-SemiBold.woff2") format("woff2"), url("ArgentumSans-SemiBold.woff") format("woff"); }
-  @font-face{ font-family:"Argentum Sans"; font-weight:700; font-style:normal; font-display:swap;
-    src:url("ArgentumSans-Bold.woff2") format("woff2"), url("ArgentumSans-Bold.woff") format("woff"); }
 
   :root{
     /* ---------- brand tokens ---------- */
@@ -59,12 +121,12 @@
     --glass-shadow:
       0 20px 60px rgba(0,0,0,0.32),
       0 1px 3px rgba(0,0,0,0.25);
-    --glass-blur:      13px;
-    --glass-sat:       170%;
+    --glass-blur:      16px;
+    --glass-sat:       180%;
     --glass-contrast:  108%;
 
-    --font-display:"Argentum Sans","Montserrat","Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;
-    --font-body:"Argentum Sans","Montserrat","Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;
+    --font-display:"Montserrat","Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;
+    --font-body:"Montserrat","Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;
 
     --max-w: 460px;
     --radius-xl: 30px;
@@ -106,8 +168,8 @@
     --glass-shadow:
       0 20px 50px rgba(28,29,31,0.14),
       0 1px 3px rgba(28,29,31,0.10);
-    --glass-blur:      13px;
-    --glass-sat:       170%;
+    --glass-blur:      16px;
+    --glass-sat:       180%;
     --glass-contrast:  104%;
   }
 
@@ -199,6 +261,17 @@
     0%, 100% { transform:translate(0,0) scale(1); }
     50%      { transform:translate(30px, -40px) scale(1.08); }
   }
+  /* On wide viewports the orbs' %-based positions are relative to the full
+     window, not the 460px content column, so they'd drift far from the
+     page and read as oversized/disconnected. Past the column's own max
+     width, re-anchor them to a centered band that tracks the column
+     instead, so they stay proportional to the content rather than the
+     screen. */
+  @media (min-width:560px){
+    .orb-1{ left:calc(50% - var(--max-w) / 2 - 60px); }
+    .orb-2{ right:calc(50% - var(--max-w) / 2 - 80px); }
+    .orb-3{ left:calc(50% - var(--max-w) / 2 + 60px); }
+  }
   @keyframes particleFloat{
     0%, 100% { transform:translate(0,0); }
     25%      { transform:translate(8px, -14px); }
@@ -224,10 +297,20 @@
     position:absolute; inset:-10%;
     width:120%; height:120%;
     filter:url(#grainNoise);
-    opacity:.045;
+    opacity:.11;
+    mix-blend-mode:overlay;
     pointer-events:none;
   }
-  [data-theme="dark"] .grain{ opacity:.06; }
+  [data-theme="dark"] .grain{ opacity:.14; }
+  .grain-coarse{
+    position:absolute; inset:-10%;
+    width:120%; height:120%;
+    filter:url(#grainCoarse);
+    opacity:.16;
+    mix-blend-mode:soft-light;
+    pointer-events:none;
+  }
+  [data-theme="dark"] .grain-coarse{ opacity:.24; }
 
   a{ color:inherit; text-decoration:none; }
   button{ font-family:inherit; }
@@ -432,11 +515,10 @@
     margin-bottom:18px;
     border-radius:50%;
     padding:4px;
-    animation: float 6s ease-in-out infinite;
   }
   .avatar-wrap.glass{ border-radius:50%; }
   .avatar-wrap::after{
-    /* soft ambient glow behind the photo */
+    /* soft ambient glow behind the photo — brightens into a ring-glow pulse on hover/focus */
     content:"";
     position:absolute;
     inset:-14px;
@@ -446,8 +528,24 @@
     filter:blur(10px);
     z-index:-1;
     pointer-events:none;
+    transition:opacity .3s var(--ease), box-shadow .3s var(--ease);
   }
   [data-theme="light"] .avatar-wrap::after{ opacity:.45; }
+  .avatar-wrap:hover::after, .avatar-wrap:focus-visible::after{
+    opacity:.7;
+    box-shadow:0 0 0 4px var(--accent);
+    animation:ringPulse 1.8s var(--ease) infinite;
+  }
+  @keyframes ringPulse{
+    0%, 100% { opacity:.7; }
+    50%      { opacity:.42; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .avatar-wrap:hover::after, .avatar-wrap:focus-visible::after{
+      animation:none !important;
+      opacity:.7;
+    }
+  }
   .avatar{
     position:relative;
     width:100%; height:100%;
@@ -459,15 +557,28 @@
     0%, 100% { transform:translateY(0); }
     50%      { transform:translateY(-9px); }
   }
-  @media (prefers-reduced-motion: reduce){
-    .avatar-wrap{ animation:none; }
-  }
 
   .name-row{
     display:flex;
     align-items:center;
     gap:8px;
     margin-bottom:2px;
+  }
+  .verified-badge{
+    width:30px; height:30px;
+    flex:0 0 auto;
+    align-self:center;
+    transform:translateY(1px);
+    filter:drop-shadow(0 1px 3px rgba(0,0,0,0.3));
+  }
+  .sr-only{
+    position:absolute;
+    width:1px; height:1px;
+    padding:0; margin:-1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    border:0;
   }
   .name{
     font-family:var(--font-display);
@@ -482,20 +593,20 @@
   .tagline-pill{
     display:inline-flex;
     align-items:center;
-    padding:4px 18px;
+    padding:4px 14px;
     border-radius:var(--radius-pill);
-    margin-bottom:26px;
+    margin-bottom:20px;
     cursor:pointer;
     color:var(--text-dim);
     background:
-      linear-gradient(165deg, var(--glass-fill-deep) 0%, var(--glass-fill) 45%, var(--glass-fill-soft) 100%),
+      linear-gradient(165deg, var(--glass-fill-hover-deep) 0%, var(--glass-fill-hover) 45%, var(--glass-fill) 100%),
       var(--glass-tint);
     border-top:1px solid var(--glass-edge);
     border-left:1px solid var(--glass-edge-mid);
     border-right:1px solid var(--glass-edge-faint);
     border-bottom:1px solid var(--glass-edge-faint);
     box-shadow:
-      0 1px 0 rgba(255,255,255,0.45) inset,
+      0 1px 0 rgba(255,255,255,0.5) inset,
       0 -1px 0 rgba(0,0,0,0.08) inset,
       inset 0 0 22px var(--glass-inner-glow),
       var(--glass-shadow);
@@ -512,9 +623,10 @@
   .tagline-pill:active{ transform:scale(.96); }
   .tagline{
     font-family:var(--font-display);
-    font-weight:500;
-    font-size:14.5px;
-    letter-spacing:.01em;
+    font-weight:600;
+    font-size:11px;
+    letter-spacing:.03em;
+    text-transform:uppercase;
     margin:0;
   }
 
@@ -625,6 +737,26 @@
       0 1px 0 rgba(255,255,255,0.55) inset,
       0 -1px 0 rgba(0,0,0,0.08) inset,
       inset 0 0 26px var(--glass-inner-glow-hover);
+  }
+
+  /* faint specular glint that follows the cursor — as if light is catching
+     the curved glass rim at the point nearest the pointer. --mx/--my are
+     set by JS on mousemove (0–100%); they default to center so the layer
+     is harmless and motionless before JS runs or on touch devices. */
+  .lens-specular{
+    --mx:50%; --my:35%;
+    position:absolute; inset:0;
+    border-radius:inherit;
+    background:radial-gradient(circle 90px at var(--mx) var(--my), rgba(255,255,255,0.30), transparent 70%);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s var(--ease);
+  }
+  .link-card:hover .lens-specular, .link-card:focus-visible .lens-specular{
+    opacity:1;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .lens-specular{ display:none; }
   }
 
   .lens-rim{
@@ -759,6 +891,20 @@
   @media (prefers-reduced-motion: reduce){
     .reveal{ animation:none; opacity:1; transform:none; }
   }
+  /* .avatar-wrap also has .reveal for its entrance fade, but plain CSS
+     `animation` shorthand doesn't merge across two same-specificity rules —
+     whichever is declared later in the sheet wins and replaces the whole
+     thing, silently killing the float loop. This rule explicitly runs BOTH
+     animations together (springIn once, float forever after) so neither
+     gets dropped. */
+  .avatar-wrap.reveal{
+    animation:
+      springIn .45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+      float 6s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .avatar-wrap.reveal{ animation:none !important; opacity:1; transform:none; }
+  }
 
   /* ---------------- responsive ---------------- */
   @media (max-width:380px){
@@ -791,7 +937,7 @@
   .toast.show{ opacity:1; transform:translate(-50%, 0); }
 </style>
 </head>
-<body data-theme="light">
+<body>
 
 <!-- Liquid-glass displacement filter: real edge-lensing refraction, the same
      feImage + feDisplacementMap technique used in actual Apple liquid-glass
@@ -815,10 +961,17 @@
     <feDisplacementMap in="SourceGraphic" in2="pillMap" scale="42" xChannelSelector="R" yChannelSelector="G"/>
   </filter>
   <!-- Grain/noise texture for the frosted-glass feel — feTurbulence stays crisp
-       at any resolution and adds no file weight, unlike a PNG grain asset. -->
+       at any resolution and adds no file weight, unlike a PNG grain asset.
+       Two scales layered together read as real texture instead of a flat haze:
+       fine grain for film-like crispness, coarse mottling for organic variation
+       underneath (like light unevenly hitting paper or canvas). -->
   <filter id="grainNoise">
-    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" result="noise"/>
-    <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0"/>
+    <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch" result="noise"/>
+    <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"/>
+  </filter>
+  <filter id="grainCoarse">
+    <feTurbulence type="fractalNoise" baseFrequency="0.012 0.018" numOctaves="2" stitchTiles="stitch" result="coarse"/>
+    <feColorMatrix in="coarse" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1.4 -0.2"/>
   </filter>
 </svg>
 
@@ -828,6 +981,7 @@
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
+  <div class="grain-coarse"></div>
   <div class="grain"></div>
 </div>
 
@@ -854,10 +1008,19 @@
 
   <div class="name-row reveal" style="animation-delay:.07s">
     <h1 class="name">MainlyKavi</h1>
+    <svg class="verified-badge" viewBox="0 0 24 24" fill="#3897F0" aria-hidden="true" focusable="false">
+      <path d="M12 1.3l2.27 1.31 2.62-.3 1.3 2.27 2.47 1.1.05 2.63L22.4 10.5l-1.69 2.2-.05 2.63-2.47 1.1-1.3 2.27-2.62-.3L12 19.7l-2.27-1.31-2.62.3-1.3-2.27-2.47-1.1-.05-2.63L1.6 10.5l1.69-2.2.05-2.63 2.47-1.1 1.3-2.27 2.62.3L12 1.3Z"/>
+      <path d="M7.8 12.4l2.6 2.6 5.6-6.6" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span class="sr-only">Verified account</span>
   </div>
   <a class="tagline-pill glass reveal" style="animation-delay:.1s" href="/socials">
     <p class="tagline">influencer</p>
   </a>
+
+  <p class="bio sr-only">
+    MainlyKavi shares everyday moments, creative projects, and behind-the-scenes content across YouTube, Instagram, X, Facebook, and Snapchat. This page links to all of MainlyKavi's social profiles, ongoing projects, and ways to support the work, everything in one place.
+  </p>
 
   <!-- ============ ICON RAIL — bare icons, no container ============ -->
   <nav class="icon-rail reveal" style="animation-delay:.16s" aria-label="Social profiles">
@@ -885,6 +1048,7 @@
       <span class="lens-refraction day" aria-hidden="true"></span>
       <span class="lens-refraction night" aria-hidden="true"></span>
       <span class="lens-fill" aria-hidden="true"></span>
+      <span class="lens-specular" aria-hidden="true"></span>
       <span class="lens-rim" aria-hidden="true"></span>
       <span class="lens-content">
         <span class="glyph">
@@ -899,6 +1063,7 @@
       <span class="lens-refraction day" aria-hidden="true"></span>
       <span class="lens-refraction night" aria-hidden="true"></span>
       <span class="lens-fill" aria-hidden="true"></span>
+      <span class="lens-specular" aria-hidden="true"></span>
       <span class="lens-rim" aria-hidden="true"></span>
       <span class="lens-content">
         <span class="glyph">
@@ -909,10 +1074,11 @@
       </span>
     </a>
 
-    <a class="link-card lens-card" href="https://ko-fi.com/mainlykavi" target="_blank" rel="noopener">
+    <a class="link-card lens-card" href="https://ko-fi.com/mainlykavi" target="_blank" rel="noopener" aria-label="Buy me a latte on Ko-fi (opens in new tab)">
       <span class="lens-refraction day" aria-hidden="true"></span>
       <span class="lens-refraction night" aria-hidden="true"></span>
       <span class="lens-fill" aria-hidden="true"></span>
+      <span class="lens-specular" aria-hidden="true"></span>
       <span class="lens-rim" aria-hidden="true"></span>
       <span class="lens-content">
         <span class="glyph">
@@ -925,25 +1091,29 @@
 
   </div>
 
-  <button class="brand-pill glass" type="button" data-toast="Copied your page link">
+  <button class="brand-pill glass" id="shareBtn" type="button" data-toast="Copied your page link">
     Share MainlyKavi
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6M16 6l-4-4-4 4M12 2v14"/></svg>
   </button>
 
   <p class="footer reveal" style="animation-delay:.3s">
-    <a href="#">Privacy</a><span class="dot">·</span><a href="#">About this account</a><span class="dot">·</span>© 2026 MainlyKavi
+    <a href="#">Privacy</a><span class="dot">·</span><a href="#">About this account</a><span class="dot">·</span>© <span id="copyrightYear">2026</span> MainlyKavi
   </p>
 
 </main>
 
-<div class="toast glass" id="toast">Link copied</div>
+<div class="toast glass" id="toast"></div>
 
 <script>
 (function(){
   "use strict";
 
-  /* ---------- theme toggle ---------- */
-  var root = document.body;
+  /* ---------- theme toggle ----------
+     The initial data-theme attribute is already set on <html> by the
+     inline script in <head> (runs before paint, so there's no flash of
+     the wrong theme). This block just keeps the toggle UI in sync and
+     persists future changes. */
+  var root = document.documentElement;
   var toggle = document.getElementById('themeToggle');
   var STORAGE_KEY = 'mainlykavi-theme';
 
@@ -955,15 +1125,8 @@
     try { window.localStorage && localStorage.setItem(STORAGE_KEY, theme); } catch(e){ /* storage may be unavailable */ }
   }
 
-  (function initTheme(){
-    var saved = null;
-    try { saved = window.localStorage && localStorage.getItem(STORAGE_KEY); } catch(e){ /* no-op */ }
-    if (saved === 'light' || saved === 'dark'){
-      applyTheme(saved);
-    } else {
-      applyTheme('light'); // explicit default: day mode on first load
-    }
-  })();
+  // Sync the toggle's aria state to whatever theme the head script already applied.
+  applyTheme(root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
 
   toggle.addEventListener('click', function(){
     var current = root.getAttribute('data-theme');
@@ -982,10 +1145,29 @@
   }
 
   document.querySelectorAll('[data-toast]').forEach(function(el){
+    if (el.id === 'shareBtn') return; // has its own handler below
     el.addEventListener('click', function(){
       showToast(el.getAttribute('data-toast'));
     });
   });
+
+  /* ---------- share button: real share/copy, not just a toast ---------- */
+  var shareBtn = document.getElementById('shareBtn');
+  if (shareBtn){
+    shareBtn.addEventListener('click', function(){
+      var url = window.location.href;
+      if (navigator.share){
+        navigator.share({ title: 'MainlyKavi', url: url })
+          .catch(function(){ /* user cancelled or unsupported — fail silently */ });
+        return; // native share sheet handles its own confirmation UI
+      }
+      try {
+        navigator.clipboard.writeText(url).then(function(){
+          showToast(shareBtn.getAttribute('data-toast'));
+        }).catch(function(){ /* clipboard blocked — fail silently */ });
+      } catch(e){ /* clipboard API unsupported — fail silently */ }
+    });
+  }
 
   /* ---------- tiny floating particles ---------- */
   var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1042,6 +1224,17 @@
       var content = card.querySelector('.lens-content');
       if (!content) return;
       attachTilt(card, content, 4);
+
+      // Cursor-tracked specular glint: reuses the same mousemove the tilt
+      // listener above is already handling, just to also move a faint
+      // highlight to wherever the pointer is over the card.
+      card.addEventListener('mousemove', function(e){
+        var rect = card.getBoundingClientRect();
+        var mx = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
+        var my = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
+        card.style.setProperty('--mx', mx + '%');
+        card.style.setProperty('--my', my + '%');
+      });
     });
   }
 
@@ -1049,16 +1242,22 @@
      so it shows exactly the slice of the photo that sits behind each card,
      without ever rasterizing/filtering a full-viewport element ---------- */
   var BG_IMG_W = 900, BG_IMG_H = 1069; // natural size of bg_day/bg_night assets
-  function positionLensRefractions(){
+  var imgRatio = BG_IMG_W / BG_IMG_H;
+
+  // Cover-geometry cache: coverW/coverH/offsetX/offsetY only depend on the
+  // viewport size, not on scroll position, so they're recomputed once on
+  // resize/load and simply read on every scroll frame — not recalculated
+  // from scratch 60x/sec while scrolling.
+  var coverW = 0, coverH = 0, offsetX = 0, offsetY = 0;
+
+  function recalcCoverGeometry(){
     var vw = window.innerWidth;
     var vh = window.innerHeight;
 
     // Replicate CSS `background-size:cover; background-position:center 18%`
     // math by hand, so the small refraction layer shows the same slice of
     // the photo as the real full-viewport backdrop behind it.
-    var imgRatio = BG_IMG_W / BG_IMG_H;
     var boxRatio = vw / vh;
-    var coverW, coverH;
     if (imgRatio > boxRatio){
       coverH = vh;
       coverW = vh * imgRatio;
@@ -1066,9 +1265,11 @@
       coverW = vw;
       coverH = vw / imgRatio;
     }
-    var offsetX = (vw - coverW) * 0.5;   // 'center' horizontally
-    var offsetY = (vh - coverH) * 0.18;  // '18%' vertically
+    offsetX = (vw - coverW) * 0.5;   // 'center' horizontally
+    offsetY = (vh - coverH) * 0.18;  // '18%' vertically
+  }
 
+  function positionLensRefractions(){
     document.querySelectorAll('.lens-card').forEach(function(card){
       var rect = card.getBoundingClientRect();
       var layers = card.querySelectorAll('.lens-refraction');
@@ -1089,8 +1290,14 @@
     });
   }
 
+  function handleResize(){
+    recalcCoverGeometry();
+    positionLensRefractions();
+  }
+
+  recalcCoverGeometry();
   positionLensRefractions();
-  window.addEventListener('resize', schedulePositionLensRefractions);
+  window.addEventListener('resize', handleResize);
   window.addEventListener('scroll', schedulePositionLensRefractions, { passive: true });
   // Reposition once more after entrance animations settle (layout can shift slightly)
   setTimeout(positionLensRefractions, 700);
