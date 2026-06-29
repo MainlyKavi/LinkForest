@@ -10,8 +10,12 @@
 <!-- Open Graph — controls the preview card shown on WhatsApp, Twitter/X,
      iMessage, Facebook, Discord, etc. when this link is shared.
      NOTE: og:image must be a real, publicly fetchable URL — social
-     platforms and crawlers cannot read base64 data: URIs. Replace
-     the placeholder below with a hosted image (ideally 1200x630px). -->
+     platforms and crawlers cannot read base64 data: URIs, so this can't
+     be inlined into the HTML the way the page's other images are.
+     A 1200x630 og-image.jpg has been prepared (delivered alongside this
+     HTML file) — upload it to https://mainlykavi.com/og-image.jpg (the
+     site's root) and this tag will start working immediately, with no
+     further changes needed here. -->
 <meta property="og:type" content="profile">
 <meta property="og:url" content="https://mainlykavi.com/">
 <meta property="og:title" content="MainlyKavi - Influencer | All Socials, Projects & Links">
@@ -64,6 +68,34 @@
   }
 })();
 </script>
+
+<!-- With JS disabled, the script above never runs, so <html> never gets a
+     data-theme attribute and the page would silently fall back to the
+     :root defaults (dark theme) instead of the intended light default —
+     not a visible flash, just an inconsistent default depending on whether
+     JS is on. This forces the same light-theme variables the script would
+     have set, so the no-JS page matches the JS-enabled default. The menu
+     and theme toggle buttons do nothing without JS, so they're hidden
+     rather than left sitting there as dead controls. Entrance animations
+     are unaffected — those run on pure CSS and don't need JS at all. -->
+<noscript>
+<style>
+  :root{
+    --bg-tint-a:   rgba(255,255,255,0.06) !important;
+    --bg-tint-b:   rgba(40,44,52,0.16) !important;
+    --text:        rgba(255,255,255,0.96) !important;
+    --text-dim:    rgba(255,255,255,0.78) !important;
+    --text-faint:  rgba(255,255,255,0.68) !important;
+    --accent:      #FFFFFF !important;
+    --accent-solid:#FFFFFF !important;
+    --bg-image:    var(--bg-day) !important;
+    --glass-fill:      rgba(255,255,255,0.20) !important;
+    --glass-fill-soft: rgba(255,255,255,0.13) !important;
+    --glass-fill-deep: rgba(255,255,255,0.32) !important;
+  }
+  .pill-btn, .theme-toggle{ display:none !important; }
+</style>
+</noscript>
 
 <!-- Google Fonts — Montserrat. This page previously referenced a font
      called "Argentum Sans" via @font-face pointing at local .woff2 files,
@@ -353,7 +385,14 @@
       var(--glass-shadow);
     transition:background .35s var(--ease), box-shadow .35s var(--ease);
   }
-  @supports (backdrop-filter:url(#a)) or (-webkit-backdrop-filter:url(#a)){
+  /* The SVG-displacement "liquid lens" variant below is meaningfully more
+     GPU-expensive than plain blur, and @supports alone isn't a strong enough
+     gate — Android Chrome supports backdrop-filter:url() just as well as
+     desktop Chrome, so without a width check, phones get the heaviest
+     rendering path too. Restricting it to min-width:601px keeps the effect
+     on desktop/tablet (where it's also more visible at this UI scale) and
+     gives every phone the cheap fallback automatically, no UA-sniffing. */
+  @supports ((backdrop-filter:url(#a)) or (-webkit-backdrop-filter:url(#a))) and (min-width:601px){
     .glass{
       backdrop-filter: url(#liquidLens) blur(11px) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
       -webkit-backdrop-filter: url(#liquidLens) blur(11px) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
@@ -369,7 +408,7 @@
       inset 0 0 26px var(--glass-inner-glow-hover),
       var(--glass-shadow);
   }
-  @supports (backdrop-filter:url(#a)) or (-webkit-backdrop-filter:url(#a)){
+  @supports ((backdrop-filter:url(#a)) or (-webkit-backdrop-filter:url(#a))) and (min-width:601px){
     .glass:hover{
       backdrop-filter: url(#liquidLens) blur(14px) saturate(calc(var(--glass-sat) + 20%)) contrast(var(--glass-contrast));
       -webkit-backdrop-filter: url(#liquidLens) blur(14px) saturate(calc(var(--glass-sat) + 20%)) contrast(var(--glass-contrast));
@@ -633,41 +672,23 @@
   .tagline-pill{
     display:inline-flex;
     align-items:center;
-    padding:4px 14px;
-    border-radius:var(--radius-pill);
     margin-bottom:20px;
     cursor:pointer;
     color:var(--text-dim);
-    background:
-      linear-gradient(165deg, var(--glass-fill-hover-deep) 0%, var(--glass-fill-hover) 45%, var(--glass-fill) 100%),
-      var(--glass-tint);
-    border-top:1px solid var(--glass-edge);
-    border-left:1px solid var(--glass-edge-mid);
-    border-right:1px solid var(--glass-edge-faint);
-    border-bottom:1px solid var(--glass-edge-faint);
-    box-shadow:
-      0 1px 0 rgba(255,255,255,0.5) inset,
-      0 -1px 0 rgba(0,0,0,0.08) inset,
-      inset 0 0 22px var(--glass-inner-glow),
-      var(--glass-shadow);
-    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
-    transition:transform .22s var(--ease), background .25s var(--ease), border-color .25s var(--ease), color .25s var(--ease);
+    transition:color .25s var(--ease);
   }
   .tagline-pill:hover, .tagline-pill:focus-visible{
-    background:
-      linear-gradient(165deg, var(--glass-fill-hover-deep) 0%, var(--glass-fill-hover) 45%, var(--glass-fill) 100%);
-    border-color:var(--glass-edge);
     color:var(--text);
   }
-  .tagline-pill:active{ transform:scale(.96); }
+  .tagline-pill:active{ opacity:.8; }
   .tagline{
     font-family:var(--font-display);
-    font-weight:600;
-    font-size:11px;
-    letter-spacing:.03em;
-    text-transform:uppercase;
+    font-weight:500;
+    font-size:13px;
+    letter-spacing:.01em;
+    text-transform:lowercase;
     margin:0;
+    text-shadow:0 1px 3px rgba(0,0,0,0.4), 0 2px 10px rgba(0,0,0,0.25);
   }
 
   /* ---------------- icon rail — pill-backed icons for tap targets ---------------- */
@@ -705,13 +726,13 @@
     -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
     transition:transform .22s var(--ease), background .25s var(--ease), border-color .25s var(--ease);
   }
-  @supports (backdrop-filter:url(#a)) or (-webkit-backdrop-filter:url(#a)){
+  @supports ((backdrop-filter:url(#a)) or (-webkit-backdrop-filter:url(#a))) and (min-width:601px){
     .icon-btn{
       backdrop-filter: url(#liquidLens) blur(2px) saturate(var(--glass-sat));
       -webkit-backdrop-filter: url(#liquidLens) blur(2px) saturate(var(--glass-sat));
     }
   }
-  .icon-btn svg{ width:58%; height:58%; position:relative; z-index:1; }
+  .icon-btn svg{ width:58%; height:58%; position:relative; z-index:1; filter:drop-shadow(0 1px 4px rgba(0,0,0,0.35)); }
   .icon-btn.yt svg{ width:56%; height:56%; }
   .icon-btn.ig svg{ width:60%; height:60%; }
   .icon-btn.x svg{ width:60%; height:60%; }
@@ -898,6 +919,7 @@
     backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
     -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
     transition:transform .22s var(--ease), background .25s var(--ease), border-color .25s var(--ease);
+    text-shadow:0 1px 3px rgba(0,0,0,0.4), 0 2px 10px rgba(0,0,0,0.25);
   }
   .brand-pill:hover{
     background:
@@ -906,7 +928,7 @@
     border-color:var(--glass-edge);
   }
   .brand-pill:active{ transform:scale(.97); }
-  .brand-pill svg{ width:14px; height:14px; }
+  .brand-pill svg{ width:14px; height:14px; filter:drop-shadow(0 1px 3px rgba(0,0,0,0.3)); }
 
   .footer{
     text-align:center;
@@ -960,8 +982,79 @@
   @media (min-width:560px){
     .page{ padding-top:104px; }
   }
+  /* ---------------- performance: lighter GPU load on phones ----------------
+     filter:blur() is one of the most expensive things a GPU can be asked to
+     repaint every frame, and phones are both the most common narrow-viewport
+     case and the most likely to have a weaker GPU. Cutting blur radius here
+     costs nothing visually (orbs are already a faint background detail at
+     this size) but meaningfully reduces the per-frame compositing work.
+     (mix-blend-mode is kept — removing it made the orbs read as a faint dark
+     smudge instead of soft light, which looked worse than the performance
+     gain was worth.) */
+  @media (max-width:600px){
+    .orb{ filter:blur(26px); }
+  }
 
   /* toast */
+  /* ---------------- slide-out menu ---------------- */
+  .menu-scrim{
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.45);
+    z-index:60;
+    opacity:0;
+    transition:opacity .3s var(--ease);
+  }
+  .menu-scrim.show{ opacity:1; }
+  .menu-panel{
+    position:fixed;
+    top:0; left:0; bottom:0;
+    width:min(78vw, 300px);
+    z-index:61;
+    padding:20px 18px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    background:
+      linear-gradient(165deg, var(--glass-fill-deep) 0%, var(--glass-fill) 45%, var(--glass-fill-soft) 100%),
+      var(--glass-tint);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
+    border-right:1px solid var(--glass-edge-mid);
+    box-shadow:var(--glass-shadow);
+    transform:translateX(-100%);
+    transition:transform .32s var(--ease);
+  }
+  .menu-panel.open{ transform:translateX(0); }
+  @media (prefers-reduced-motion: reduce){
+    .menu-panel{ transition:none; }
+    .menu-scrim{ transition:none; }
+  }
+  .menu-panel-head{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .menu-panel-title{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:16px;
+    color:var(--text);
+    text-shadow:0 1px 3px rgba(0,0,0,0.4), 0 2px 10px rgba(0,0,0,0.25);
+  }
+  .menu-link{
+    display:block;
+    padding:13px 12px;
+    border-radius:12px;
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:14.5px;
+    color:var(--text);
+    text-shadow:0 1px 3px rgba(0,0,0,0.4), 0 2px 10px rgba(0,0,0,0.25);
+    transition:background .2s var(--ease);
+  }
+  .menu-link:hover, .menu-link:focus-visible{
+    background:rgba(255,255,255,0.12);
+  }
+
   .toast{
     position:fixed;
     bottom:22px; left:50%;
@@ -1009,7 +1102,7 @@
        fine grain for film-like crispness, coarse mottling for organic variation
        underneath (like light unevenly hitting paper or canvas). -->
   <filter id="grainNoise">
-    <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch" result="noise"/>
+    <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" result="noise"/>
     <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"/>
   </filter>
   <filter id="grainCoarse">
@@ -1029,7 +1122,7 @@
 </div>
 
 <div class="topbar">
-  <button class="pill-btn glass" type="button" aria-label="Menu">
+  <button class="pill-btn glass" id="menuBtn" type="button" aria-label="Open menu" aria-haspopup="true" aria-expanded="false" aria-controls="menuPanel">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v6m0 0 3-3m-3 3-3-3M12 21v-6m0 0-3 3m3-3 3 3M3 12h6m0 0-3-3m3 3-3 3M21 12h-6m0 0 3-3m-3 3 3 3"/></svg>
   </button>
   <div class="topbar-right">
@@ -1041,6 +1134,21 @@
     </button>
   </div>
 </div>
+
+<!-- ============ SLIDE-OUT MENU ============ -->
+<div class="menu-scrim" id="menuScrim" hidden></div>
+<nav class="menu-panel" id="menuPanel" aria-label="Site menu" aria-hidden="true">
+  <div class="menu-panel-head">
+    <span class="menu-panel-title">MainlyKavi</span>
+    <button class="pill-btn glass" id="menuCloseBtn" type="button" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <a class="menu-link" href="/socials">All my socials</a>
+  <a class="menu-link" href="/projects">View all my projects</a>
+  <a class="menu-link" href="https://ko-fi.com/mainlykavi" target="_blank" rel="noopener">Buy me a latte</a>
+  <a class="menu-link" href="mailto:mainlykavii@gmail.com?subject=Are%20you%20open%20to%20sponsorships%3F&body=Hi%20Kavi%2C%0A%0AI%27d%20like%20to%20discuss%20a%20sponsorship%20opportunity%20with%20you...">Open for collabs</a>
+</nav>
 
 <main class="page">
 
@@ -1057,7 +1165,7 @@
     </svg>
     <span class="sr-only">Verified account</span>
   </div>
-  <a class="tagline-pill glass reveal" style="animation-delay:.1s" href="/socials">
+  <a class="tagline-pill reveal" style="animation-delay:.1s" href="/socials">
     <p class="tagline">influencer</p>
   </a>
 
@@ -1134,13 +1242,13 @@
 
   </div>
 
-  <button class="brand-pill glass" id="shareBtn" type="button" data-toast="Copied your page link">
-    Share MainlyKavi
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6M16 6l-4-4-4 4M12 2v14"/></svg>
-  </button>
+  <a class="brand-pill glass" href="mailto:mainlykavii@gmail.com?subject=Are%20you%20open%20to%20sponsorships%3F&body=Hi%20Kavi%2C%0A%0AI%27d%20like%20to%20discuss%20a%20sponsorship%20opportunity%20with%20you..." aria-label="Email MainlyKavi about collaborations">
+    Open for collabs
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+  </a>
 
   <p class="footer reveal" style="animation-delay:.3s">
-    <a href="#">Privacy</a><span class="dot">·</span><a href="#">About this account</a><span class="dot">·</span>© <span id="copyrightYear">2026</span> MainlyKavi
+    © <span id="copyrightYear">2026</span> MainlyKavi
   </p>
 
 </main>
@@ -1150,6 +1258,10 @@
 <script>
 (function(){
   "use strict";
+
+  /* ---------- footer copyright year ---------- */
+  var copyrightEl = document.getElementById('copyrightYear');
+  if (copyrightEl) copyrightEl.textContent = new Date().getFullYear();
 
   /* ---------- theme toggle ----------
      The initial data-theme attribute is already set on <html> by the
@@ -1176,6 +1288,37 @@
     applyTheme(current === 'dark' ? 'light' : 'dark');
   });
 
+  /* ---------- slide-out menu ---------- */
+  var menuBtn = document.getElementById('menuBtn');
+  var menuPanel = document.getElementById('menuPanel');
+  var menuScrim = document.getElementById('menuScrim');
+  var menuCloseBtn = document.getElementById('menuCloseBtn');
+
+  function openMenu(){
+    menuPanel.classList.add('open');
+    menuScrim.hidden = false;
+    requestAnimationFrame(function(){ menuScrim.classList.add('show'); });
+    menuPanel.setAttribute('aria-hidden', 'false');
+    menuBtn.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu(){
+    menuPanel.classList.remove('open');
+    menuScrim.classList.remove('show');
+    menuPanel.setAttribute('aria-hidden', 'true');
+    menuBtn.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+    setTimeout(function(){ menuScrim.hidden = true; }, 300);
+  }
+  if (menuBtn && menuPanel && menuScrim){
+    menuBtn.addEventListener('click', openMenu);
+    menuCloseBtn.addEventListener('click', closeMenu);
+    menuScrim.addEventListener('click', closeMenu);
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && menuPanel.classList.contains('open')) closeMenu();
+    });
+  }
+
   /* ---------- toast feedback for non-navigating buttons ---------- */
   var toast = document.getElementById('toast');
   var toastTimer = null;
@@ -1187,36 +1330,14 @@
     toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 1800);
   }
 
-  document.querySelectorAll('[data-toast]').forEach(function(el){
-    if (el.id === 'shareBtn') return; // has its own handler below
-    el.addEventListener('click', function(){
-      showToast(el.getAttribute('data-toast'));
-    });
-  });
-
-  /* ---------- share button: real share/copy, not just a toast ---------- */
-  var shareBtn = document.getElementById('shareBtn');
-  if (shareBtn){
-    shareBtn.addEventListener('click', function(){
-      var url = window.location.href;
-      if (navigator.share){
-        navigator.share({ title: 'MainlyKavi', url: url })
-          .catch(function(){ /* user cancelled or unsupported — fail silently */ });
-        return; // native share sheet handles its own confirmation UI
-      }
-      try {
-        navigator.clipboard.writeText(url).then(function(){
-          showToast(shareBtn.getAttribute('data-toast'));
-        }).catch(function(){ /* clipboard blocked — fail silently */ });
-      } catch(e){ /* clipboard API unsupported — fail silently */ }
-    });
-  }
-
   /* ---------- tiny floating particles ---------- */
   var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var backdropEl = document.querySelector('.backdrop');
   if (backdropEl && !prefersReducedMotion){
-    var particleCount = 14;
+    // Fewer particles on small/narrow viewports — phones are both the most
+    // common small-viewport case and the most likely to have a weaker GPU,
+    // so this cuts persistent animated layers exactly where it matters most.
+    var particleCount = window.innerWidth < 560 ? 8 : 14;
     for (var i = 0; i < particleCount; i++){
       var p = document.createElement('div');
       p.className = 'particle';
@@ -1256,7 +1377,7 @@
       });
     }
 
-    document.querySelectorAll('.brand-pill, .tagline-pill').forEach(function(card){
+    document.querySelectorAll('.brand-pill').forEach(function(card){
       attachTilt(card, card, 6);
     });
     // .lens-card tilts just its content layer (icon/text), not the card
