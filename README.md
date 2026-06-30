@@ -1,13 +1,13 @@
 <div align="center">
 
-# Hi, I'm Kavi
+#  This is LinkForest
 
-### Influencer | Front-End Developer
+### LinkForest is my own take on a "link in bio" page, inspired by Linktree.
 
-I built LinkForest because Linktree couldn't fit everything I wanted in one place.
+I used Linktree for a while, but I couldn't fit everything I wanted in one place, so I decided to just build my own.
 
-It's in an Apple liquid glass style, my favorite part of the whole thing. It switches between light mode and dark mode too.
+Linktree worked fine for the basics, but it didn't give me enough room to bring everything together the way I wanted, all my socials, my coding projects, my wishlist, and a way for people to support me, all on one page.
 
-Here you can find all my socials, check out my coding projects, grab something off my wishlist, or just buy me a coffee.
+It's built in an Apple liquid glass style, which is honestly my favorite part of it. It also supports both light mode and dark mode, so you can switch depending on what you prefer.
 
 </div>
