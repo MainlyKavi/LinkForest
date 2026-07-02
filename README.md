@@ -2,7 +2,7 @@
 
 #  This is LinkForest
 
-### LinkForest is my own take on a "link in bio" page, inspired by Linktree.
+### LinkForest is my own take on a "link in bio" page, inspired by Linktree
 
 I used Linktree for a while, but I couldn't fit everything I wanted in one place, so I decided to just build my own.
 
