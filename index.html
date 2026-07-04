@@ -50,7 +50,7 @@
     "https://x.com/Mainlykavi",
     "https://www.facebook.com/MainlyKavi",
     "https://www.tiktok.com/@mainlykaviii",
-    "https://ko-fi.com/mainlykavi"
+    "https://throne.com/mainlykavi"
   ]
 }
 </script>
@@ -996,7 +996,7 @@
   }
 
   /* toast */
-  /* ---------------- slide-out menu ---------------- */
+  /* ---------------- popup menu ---------------- */
   .menu-scrim{
     position:fixed; inset:0;
     background:rgba(0,0,0,0.45);
@@ -1007,8 +1007,8 @@
   .menu-scrim.show{ opacity:1; }
   .menu-panel{
     position:fixed;
-    top:0; left:0; bottom:0;
-    width:min(78vw, 300px);
+    top:76px; left:50%;
+    width:min(calc(100vw - 40px), 320px);
     z-index:61;
     padding:20px 18px;
     display:flex;
@@ -1019,12 +1019,23 @@
       var(--glass-tint);
     backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
     -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
-    border-right:1px solid var(--glass-edge-mid);
+    border-top:1px solid var(--glass-edge);
+    border-left:1px solid var(--glass-edge-mid);
+    border-right:1px solid var(--glass-edge-faint);
+    border-bottom:1px solid var(--glass-edge-faint);
+    border-radius:24px;
     box-shadow:var(--glass-shadow);
-    transform:translateX(-100%);
-    transition:transform .32s var(--ease);
+    opacity:0;
+    transform:translate(-50%, -10px) scale(.96);
+    transform-origin:top center;
+    pointer-events:none;
+    transition:opacity .22s var(--ease), transform .22s var(--ease);
   }
-  .menu-panel.open{ transform:translateX(0); }
+  .menu-panel.open{
+    opacity:1;
+    transform:translate(-50%, 0) scale(1);
+    pointer-events:auto;
+  }
   @media (prefers-reduced-motion: reduce){
     .menu-panel{ transition:none; }
     .menu-scrim{ transition:none; }
@@ -1039,6 +1050,9 @@
     font-size:16px;
     color:var(--text);
     text-shadow:0 1px 3px rgba(0,0,0,0.4), 0 2px 10px rgba(0,0,0,0.25);
+  }
+  .menu-panel-title:hover, .menu-panel-title:focus-visible{
+    opacity:.82;
   }
   .menu-link{
     display:block;
@@ -1135,18 +1149,18 @@
   </div>
 </div>
 
-<!-- ============ SLIDE-OUT MENU ============ -->
+<!-- ============ POPUP MENU ============ -->
 <div class="menu-scrim" id="menuScrim" hidden></div>
 <nav class="menu-panel" id="menuPanel" aria-label="Site menu" aria-hidden="true">
   <div class="menu-panel-head">
-    <span class="menu-panel-title">MainlyKavi</span>
+    <a class="menu-panel-title" href="index.html">MainlyKavi</a>
     <button class="pill-btn glass" id="menuCloseBtn" type="button" aria-label="Close menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
     </button>
   </div>
   <a class="menu-link" href="Socials.html">All my socials</a>
   <a class="menu-link" href="/projects">View all my projects</a>
-  <a class="menu-link" href="https://ko-fi.com/mainlykavi" target="_blank" rel="noopener">Buy me a latte</a>
+  <a class="menu-link" href="https://throne.com/mainlykavi" target="_blank" rel="noopener">Buy me a latte</a>
   <a class="menu-link" href="mailto:mainlykavii@gmail.com?subject=Are%20you%20open%20to%20sponsorships%3F&body=Hi%20Kavi%2C%0A%0AI%27d%20like%20to%20discuss%20a%20sponsorship%20opportunity%20with%20you...">Open for collabs</a>
 </nav>
 
@@ -1225,7 +1239,7 @@
       </span>
     </a>
 
-    <a class="link-card lens-card" href="https://ko-fi.com/mainlykavi" target="_blank" rel="noopener" aria-label="Buy me a latte on Ko-fi (opens in new tab)">
+    <a class="link-card lens-card" href="https://throne.com/mainlykavi" target="_blank" rel="noopener" aria-label="Buy me a latte on Throne (opens in new tab)">
       <span class="lens-refraction day" aria-hidden="true"></span>
       <span class="lens-refraction night" aria-hidden="true"></span>
       <span class="lens-fill" aria-hidden="true"></span>
@@ -1248,7 +1262,7 @@
   </a>
 
   <p class="footer reveal" style="animation-delay:.3s">
-    Â© <span id="copyrightYear">2026</span> MainlyKavi
+    © <span id="copyrightYear">2026</span> MainlyKav
   </p>
 
 </main>
@@ -1288,7 +1302,7 @@
     applyTheme(current === 'dark' ? 'light' : 'dark');
   });
 
-  /* ---------- slide-out menu ---------- */
+  /* ---------- popup menu ---------- */
   var menuBtn = document.getElementById('menuBtn');
   var menuPanel = document.getElementById('menuPanel');
   var menuScrim = document.getElementById('menuScrim');
@@ -1471,5 +1485,3 @@
 
 </body>
 </html>
-
-
