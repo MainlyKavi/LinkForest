@@ -404,6 +404,11 @@
     align-items:center;
     justify-content:space-between;
   }
+  .topbar-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
   .pill-btn{
     width:42px; height:42px;
     border-radius:50%;
@@ -1088,22 +1093,6 @@
     margin-bottom:8px;
   }
 
-  .back-link{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    margin-bottom:22px;
-    color:var(--text-dim);
-    font-family:var(--font-display);
-    font-weight:600;
-    font-size:13.5px;
-    cursor:pointer;
-    transition:color .2s var(--ease);
-    text-shadow:0 1px 3px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.22);
-  }
-  .back-link:hover, .back-link:focus-visible{ color:var(--text); }
-  .back-link svg{ width:16px; height:16px; filter:drop-shadow(0 1px 3px rgba(0,0,0,0.3)); }
-
   /* toast */
   /* ---------------- popup menu ---------------- */
   .menu-scrim{
@@ -1247,6 +1236,11 @@
   <button class="pill-btn glass" id="menuBtn" type="button" aria-label="Open menu" aria-haspopup="true" aria-expanded="false" aria-controls="menuPanel">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v6m0 0 3-3m-3 3-3-3M12 21v-6m0 0-3 3m3-3 3 3M3 12h6m0 0-3-3m3 3-3 3M21 12h-6m0 0 3-3m-3 3 3 3"/></svg>
   </button>
+  <div class="topbar-right">
+    <a class="pill-btn glass" href="index.html" aria-label="Back to home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.8 12 3l9 7.8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>
+    </a>
+  </div>
 </div>
 
 <!-- ============ POPUP MENU ============ -->
@@ -1259,7 +1253,7 @@
     </button>
   </div>
   <a class="menu-link" href="Socials.html">All my socials</a>
-  <a class="menu-link" href="/projects">View all my projects</a>
+  <a class="menu-link" href="projects.html">View all my projects</a>
   <a class="menu-link" href="https://ko-fi.com/mainlykavi" target="_blank" rel="noopener">Buy me a latte</a>
   <a class="menu-link" href="mailto:mainlykavii@gmail.com?subject=Are%20you%20open%20to%20sponsorships%3F&body=Hi%20Kavi%2C%0A%0AI%27d%20like%20to%20discuss%20a%20sponsorship%20opportunity%20with%20you...">Open for collabs</a>
 </nav>
@@ -1279,18 +1273,13 @@
     </svg>
     <span class="sr-only">Verified account</span>
   </div>
-  <a class="tagline-pill reveal" style="animation-delay:.1s" href="/">
+  <a class="tagline-pill reveal" style="animation-delay:.1s" href="index.html">
     <p class="tagline">influencer</p>
   </a>
 
   <p class="bio sr-only">
     Every place to find MainlyKavi online: TikTok, YouTube, Instagram, Twitter, Bluesky, Facebook, Spotify, Chess, Twitch, Discord, Throne, GitHub, Snapchat, Reddit, Ko-fi, Modrinth, Pinterest, and Kick, all the official profiles in one place.
   </p>
-
-  <a class="back-link reveal" style="animation-delay:.13s" href="/">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-    Back to MainlyKavi
-  </a>
 
   <!-- ============ SOCIAL GRID â€” iOS-style app-icon tiles ============ -->
   <p class="socials-intro reveal" style="animation-delay:.18s">Every place to find me online, all in one place.</p>
