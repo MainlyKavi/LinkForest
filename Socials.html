@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>All of MainlyKavi's Socials - Instagram, YouTube, TikTok & More</title>
-<meta name="description" content="Every place to find MainlyKavi online: Instagram, YouTube, TikTok, X, Discord, Twitch, GitHub, and more, all the official profiles in one place.">
+<meta name="description" content="Every place to find MainlyKavi online: TikTok, YouTube, Instagram, Twitter, Bluesky, Facebook, Spotify, Chess, Twitch, Discord, Throne, GitHub, Snapchat, Reddit, Ko-fi, Modrinth, Pinterest, and Kick, all the official profiles in one place.">
 <link rel="canonical" href="https://mainlykavi.com/socials">
 
 <!-- Open Graph â€” controls the preview card shown on WhatsApp, Twitter/X,
@@ -45,14 +45,25 @@
   "url": "https://mainlykavi.com/",
   "image": "https://mainlykavi.com/og-image.jpg",
   "sameAs": [
+    "https://www.tiktok.com/@mainlykaviii",
     "https://www.youtube.com/@MainlyKavi",
     "https://www.instagram.com/mainlykavi",
     "https://x.com/Mainlykavi",
+    "https://bsky.app/profile/mainlykavi.bsky.social",
     "https://www.facebook.com/MainlyKavi",
-    "https://www.tiktok.com/@mainlykaviii",
-    "https://ko-fi.com/mainlykavi"
-  ]
-}
+    "https://open.spotify.com/user/BuraAdmi",
+    "https://www.chess.com/member/mainlykavi",
+    "https://www.twitch.tv/MainlyKavi",
+    "https://discord.com/users/690044658579275791",
+    "https://throne.com/mainlykavi",
+    "https://github.com/MainlyKavi",
+    "https://www.snapchat.com/@mainlykavi",
+    "https://www.reddit.com/user/MainlyKavi",
+    "https://ko-fi.com/mainlykavi",
+    "https://modrinth.com/user/BuraAdmi",
+    "https://www.pinterest.com/MainlyKavi",
+    "https://kick.com/mainlykavi"
+  ]}
 </script>
 
 <!-- Google Fonts â€” Montserrat. This page previously referenced a font
@@ -982,6 +993,19 @@
     width:100%; height:100%;
     filter:none;
   }
+  .social-tile .app-icon.icon-asset img{
+    position:relative;
+    z-index:1;
+  }
+  .social-tile .app-icon.snapchat-icon{
+    background:#FFFC00;
+  }
+  .social-tile .app-icon.snapchat-icon img{
+    filter:drop-shadow(0 1px 2px rgba(0,0,0,0.25));
+  }
+  .social-tile .app-icon.chess-icon{
+    background:#2d2a28;
+  }
   .social-tile .app-label{
     font-family:var(--font-display);
     font-weight:600;
@@ -1081,7 +1105,7 @@
   .back-link svg{ width:16px; height:16px; filter:drop-shadow(0 1px 3px rgba(0,0,0,0.3)); }
 
   /* toast */
-  /* ---------------- slide-out menu ---------------- */
+  /* ---------------- popup menu ---------------- */
   .menu-scrim{
     position:fixed; inset:0;
     background:rgba(0,0,0,0.45);
@@ -1092,8 +1116,8 @@
   .menu-scrim.show{ opacity:1; }
   .menu-panel{
     position:fixed;
-    top:0; left:0; bottom:0;
-    width:min(78vw, 300px);
+    top:76px; left:50%;
+    width:min(calc(100vw - 40px), 320px);
     z-index:61;
     padding:20px 18px;
     display:flex;
@@ -1104,12 +1128,23 @@
       var(--glass-tint);
     backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
     -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
-    border-right:1px solid var(--glass-edge-mid);
+    border-top:1px solid var(--glass-edge);
+    border-left:1px solid var(--glass-edge-mid);
+    border-right:1px solid var(--glass-edge-faint);
+    border-bottom:1px solid var(--glass-edge-faint);
+    border-radius:24px;
     box-shadow:var(--glass-shadow);
-    transform:translateX(-100%);
-    transition:transform .32s var(--ease);
+    opacity:0;
+    transform:translate(-50%, -10px) scale(.96);
+    transform-origin:top center;
+    pointer-events:none;
+    transition:opacity .22s var(--ease), transform .22s var(--ease);
   }
-  .menu-panel.open{ transform:translateX(0); }
+  .menu-panel.open{
+    opacity:1;
+    transform:translate(-50%, 0) scale(1);
+    pointer-events:auto;
+  }
   @media (prefers-reduced-motion: reduce){
     .menu-panel{ transition:none; }
     .menu-scrim{ transition:none; }
@@ -1124,6 +1159,9 @@
     font-size:16px;
     color:var(--text);
     text-shadow:0 1px 3px rgba(0,0,0,0.4), 0 2px 10px rgba(0,0,0,0.25);
+  }
+  .menu-panel-title:hover, .menu-panel-title:focus-visible{
+    opacity:.82;
   }
   .menu-link{
     display:block;
@@ -1211,16 +1249,16 @@
   </button>
 </div>
 
-<!-- ============ SLIDE-OUT MENU ============ -->
+<!-- ============ POPUP MENU ============ -->
 <div class="menu-scrim" id="menuScrim" hidden></div>
 <nav class="menu-panel" id="menuPanel" aria-label="Site menu" aria-hidden="true">
   <div class="menu-panel-head">
-    <span class="menu-panel-title">MainlyKavi</span>
+    <a class="menu-panel-title" href="index.html">MainlyKavi</a>
     <button class="pill-btn glass" id="menuCloseBtn" type="button" aria-label="Close menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
     </button>
   </div>
-  <a class="menu-link" href="/socials">All my socials</a>
+  <a class="menu-link" href="Socials.html">All my socials</a>
   <a class="menu-link" href="/projects">View all my projects</a>
   <a class="menu-link" href="https://ko-fi.com/mainlykavi" target="_blank" rel="noopener">Buy me a latte</a>
   <a class="menu-link" href="mailto:mainlykavii@gmail.com?subject=Are%20you%20open%20to%20sponsorships%3F&body=Hi%20Kavi%2C%0A%0AI%27d%20like%20to%20discuss%20a%20sponsorship%20opportunity%20with%20you...">Open for collabs</a>
@@ -1246,7 +1284,7 @@
   </a>
 
   <p class="bio sr-only">
-    Every place to find MainlyKavi online: Instagram, YouTube, TikTok, Facebook, Snapchat, X, Discord, Bluesky, GitHub, Reddit, Ko-fi, Twitch, Chess.com, Modrinth, Pinterest, NameMC, and Spotify, all the official profiles in one place.
+    Every place to find MainlyKavi online: TikTok, YouTube, Instagram, Twitter, Bluesky, Facebook, Spotify, Chess, Twitch, Discord, Throne, GitHub, Snapchat, Reddit, Ko-fi, Modrinth, Pinterest, and Kick, all the official profiles in one place.
   </p>
 
   <a class="back-link reveal" style="animation-delay:.13s" href="/">
@@ -1256,36 +1294,40 @@
 
   <!-- ============ SOCIAL GRID â€” iOS-style app-icon tiles ============ -->
   <p class="socials-intro reveal" style="animation-delay:.18s">Every place to find me online, all in one place.</p>
-  <div class="socials-carousel reveal" style="animation-delay:.1s">
+    <div class="socials-carousel reveal" style="animation-delay:.1s">
   <div class="carousel-row" id="carouselRow1" data-speed="26">
     <div class="carousel-track">
       <a class="social-tile" href="https://www.tiktok.com/@mainlykaviii" target="_blank" rel="noopener" aria-label="TikTok (opens in new tab)">
         <span class="app-icon icon-asset"><svg viewBox="0 0 512 512" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd"><rect width="512" height="512" rx="116.056" ry="116.056"/><path fill="#2DCCD3" fill-rule="nonzero" d="M348.868 152.076c12.815 13.213 28.795 21.265 44.9 24.93v-9.922c-15.132-1.073-30.964-5.834-44.9-15.008zm-92.569-65.444v221.885c0 29.069-20.892 47.767-46.296 47.767-8.427 0-16.43-1.969-23.386-5.609 8.826 11.269 22.762 17.751 38.045 17.751 25.405 0 46.297-18.698 46.297-47.793V98.748h40.263a110.44 110.44 0 01-2.693-12.116h-52.23zm-33.033 128.992V204.63c-5.086-.848-10.172-1.122-14.385-1.122-57.316 0-105.309 45.998-105.309 103.04 0 37.446 18.225 69.457 45.923 88.405-19.296-19.147-31.263-45.948-31.263-76.289 0-56.943 47.843-102.915 105.034-103.04z"/><path fill="#F1204A" fill-rule="nonzero" d="M314.438 304.852c0 70.854-54.199 108.4-105.283 108.4-22.114 0-42.657-6.681-59.66-18.299 19.097 18.947 45.375 30.415 74.319 30.415 51.084 0 105.284-37.546 105.284-108.399V201.514c-5.086-3.441-9.973-7.455-14.66-12.142v115.48zm-127.82 45.824c-6.233-7.879-9.948-18.076-9.948-30.043 0-33.582 26.252-51.332 61.255-47.643v-56.244c-5.085-.847-10.171-1.122-14.41-1.122h-.249v45.225c-35.003-3.664-61.256 14.061-61.256 47.668 0 19.645 10.048 34.554 24.608 42.159zm207.151-173.67v42.009c-23.261 0-45.275-4.438-64.671-17.501 22.587 22.587 49.986 29.642 79.33 29.642V179.2a90.834 90.834 0 01-14.659-2.194zm-44.901-24.93c-12.391-12.74-21.84-30.292-25.679-53.328h-11.967c6.831 24.906 20.892 42.283 37.646 53.328z"/><path fill="#fff" fill-rule="nonzero" d="M209.155 413.252c51.083 0 105.283-37.547 105.283-108.4v-115.48c4.688 4.687 9.574 8.701 14.66 12.141 19.396 13.065 41.41 17.502 64.671 17.502v-42.009c-16.106-3.664-32.087-11.717-44.901-24.93-16.754-11.045-30.815-28.422-37.646-53.328h-40.263v221.886c0 29.094-20.893 47.792-46.297 47.792-15.283 0-29.219-6.482-38.045-17.751-14.559-7.603-24.606-22.513-24.606-42.158 0-33.607 26.252-51.333 61.255-47.668v-45.225c-57.192.125-105.035 46.098-105.035 103.04 0 30.341 11.967 57.141 31.265 76.288 17.002 11.618 37.545 18.3 59.659 18.3z"/></svg></span>
         <p class="app-label">TikTok</p>
       </a>
-      <a class="social-tile" href="https://www.instagram.com/mainlykavi" target="_blank" rel="noopener" aria-label="Instagram (opens in new tab)">
-        <span class="app-icon" style="background:radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:74%;height:74%"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></span>
-        <p class="app-label">Instagram</p>
-      </a>
       <a class="social-tile" href="https://www.youtube.com/@MainlyKavi" target="_blank" rel="noopener" aria-label="YouTube (opens in new tab)">
         <span class="app-icon icon-asset"><svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 124.08 123.51"><defs><style>.cls-1{fill:#fff;}.cls-1,.cls-3{fill-rule:evenodd;}.cls-2{fill:#999;}.cls-3{fill:red;}</style></defs><title>youtube-app</title><path class="cls-1" d="M28.35.6H95.73a27.83,27.83,0,0,1,27.75,27.75V95.17a27.83,27.83,0,0,1-27.75,27.74H28.35A27.83,27.83,0,0,1,.6,95.17V28.35A27.83,27.83,0,0,1,28.35.6Z"/><path class="cls-2" d="M28.35,0H95.73a28.44,28.44,0,0,1,28.35,28.35V95.17a28.42,28.42,0,0,1-28.35,28.34H28.35A28.42,28.42,0,0,1,0,95.17V28.35A28.44,28.44,0,0,1,28.35,0ZM95.73,1.2H28.35A27.21,27.21,0,0,0,1.2,28.35V95.17a27.21,27.21,0,0,0,27.15,27.14H95.73a27.21,27.21,0,0,0,27.15-27.14V28.35A27.21,27.21,0,0,0,95.73,1.2Z"/><path class="cls-3" d="M104.91,44.26s-.85-6-3.48-8.69c-3.33-3.48-7.07-3.5-8.77-3.71C80.42,31,62,31,62,31h0s-18.37,0-30.62.89c-1.71.21-5.44.23-8.77,3.71-2.63,2.65-3.47,8.69-3.47,8.69a133.12,133.12,0,0,0-.87,14.17v6.64a133.37,133.37,0,0,0,.87,14.17s.86,6,3.47,8.69c3.33,3.48,7.71,3.37,9.67,3.74,7,.67,29.76.87,29.76.87s18.4,0,30.64-.91c1.71-.2,5.44-.22,8.77-3.7,2.63-2.65,3.49-8.69,3.49-8.69a133.18,133.18,0,0,0,.87-14.18V58.43a136.86,136.86,0,0,0-.89-14.18Z"/><polygon class="cls-1" points="52.97 73.11 52.97 48.51 76.61 60.86 52.97 73.11 52.97 73.11"/></svg></span>
         <p class="app-label">YouTube</p>
+      </a>
+      <a class="social-tile" href="https://www.instagram.com/mainlykavi" target="_blank" rel="noopener" aria-label="Instagram (opens in new tab)">
+        <span class="app-icon" style="background:radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:74%;height:74%"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></span>
+        <p class="app-label">Instagram</p>
       </a>
       <a class="social-tile" href="https://x.com/Mainlykavi" target="_blank" rel="noopener" aria-label="X (opens in new tab)">
         <span class="app-icon" style="background:#000000"><svg viewBox="0 0 24 24" fill="#fff"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L2.016 2.25h6.937l4.265 5.644 5.026-5.644Zm-1.161 17.52h1.833L7.084 4.126H5.117Z"/></svg></span>
         <p class="app-label">X</p>
       </a>
-      <a class="social-tile" href="https://www.facebook.com/MainlyKavi" target="_blank" rel="noopener" aria-label="Facebook (opens in new tab)">
-        <span class="app-icon icon-asset"><svg xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 509.64"><rect fill="#0866FF" width="512" height="509.64" rx="115.612" ry="115.612"/><path fill="#fff" d="M287.015 509.64h-92.858V332.805h-52.79v-78.229h52.79v-33.709c0-87.134 39.432-127.522 124.977-127.522 16.217 0 44.203 3.181 55.651 6.361v70.915c-6.043-.636-16.536-.953-29.576-.953-41.976 0-58.194 15.9-58.194 57.241v27.667h83.618l-14.365 78.229h-69.253V509.64z"/></svg></span>
-        <p class="app-label">Facebook</p>
-      </a>
       <a class="social-tile" href="https://bsky.app/profile/mainlykavi.bsky.social" target="_blank" rel="noopener" aria-label="Bluesky (opens in new tab)">
         <span class="app-icon icon-asset"><svg viewBox="0 0 512 512" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd"><path fill="#0085FF" d="M105 0h302c57.928.155 104.845 47.072 105 104.996V407c-.155 57.926-47.072 104.844-104.996 104.998L105 512C47.074 511.844.156 464.926.002 407.003L0 105C.156 47.072 47.074.155 104.997 0H105z"/><path fill="#fff" fill-rule="nonzero" d="M173.234 144.311c33.5 25.237 69.538 76.397 82.765 103.853 13.228-27.456 49.267-78.616 82.767-103.853 24.177-18.205 63.343-32.294 63.343 12.534 0 8.949-5.115 75.209-8.117 85.969-10.429 37.393-48.441 46.931-82.251 41.159 59.1 10.091 74.133 43.513 41.664 76.936-61.663 63.479-88.629-15.927-95.533-36.273-1.991-5.857-1.708-5.991-3.745 0-6.905 20.346-33.869 99.752-95.531 36.273-32.47-33.423-17.437-66.845 41.663-76.936-33.81 5.772-71.822-3.766-82.251-41.159-3.002-10.76-8.117-77.02-8.117-85.969 0-44.828 39.172-30.739 63.343-12.534z"/></svg></span>
         <p class="app-label">Bluesky</p>
       </a>
-      <a class="social-tile" href="https://www.pinterest.com/MainlyKavi" target="_blank" rel="noopener" aria-label="Pinterest (opens in new tab)">
-        <span class="app-icon icon-asset"><svg viewBox="0 0 1000 1000"><defs><filter id="pinShadow" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#000" flood-opacity="0.3"/></filter></defs><rect width="1000" height="1000" fill="#fff" rx="15%"/><circle cx="500" cy="500" r="400" fill="#E60023" filter="url(#pinShadow)"/><g transform="translate(109,162) scale(1.55)"><path fill="#fff" d="M265 56c-109 0-164 78-164 144 0 39 15 74 47 87 5 2 10 0 12-5l4-19c2-6 1-8-3-13-9-11-15-25-15-45 0-58 43-110 113-110 62 0 96 38 96 88 0 67-30 122-73 122-24 0-42-19-36-44 6-29 20-60 20-81 0-19-10-35-31-35-25 0-44 26-44 60 0 21 7 36 7 36l-30 125c-8 37-1 83 0 87 0 3 4 4 5 2 2-3 32-39 42-75l16-64c8 16 31 29 56 29 74 0 124-67 124-157 0-69-58-132-146-132z"/></g></svg></span>
-        <p class="app-label">Pinterest</p>
+      <a class="social-tile" href="https://www.facebook.com/MainlyKavi" target="_blank" rel="noopener" aria-label="Facebook (opens in new tab)">
+        <span class="app-icon icon-asset"><svg xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 509.64"><rect fill="#0866FF" width="512" height="509.64" rx="115.612" ry="115.612"/><path fill="#fff" d="M287.015 509.64h-92.858V332.805h-52.79v-78.229h52.79v-33.709c0-87.134 39.432-127.522 124.977-127.522 16.217 0 44.203 3.181 55.651 6.361v70.915c-6.043-.636-16.536-.953-29.576-.953-41.976 0-58.194 15.9-58.194 57.241v27.667h83.618l-14.365 78.229h-69.253V509.64z"/></svg></span>
+        <p class="app-label">Facebook</p>
+      </a>
+      <a class="social-tile" href="https://open.spotify.com/user/BuraAdmi" target="_blank" rel="noopener" aria-label="Spotify (opens in new tab)">
+        <span class="app-icon icon-asset"><svg viewBox="0 0 1000 1000"><defs><filter id="spShadow" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#000" flood-opacity="0.35"/></filter></defs><rect width="1000" height="1000" fill="#000" rx="15%"/><image href="assets/socials-inline-1-b84b4c7a07.webp" x="110" y="110" width="780" height="780" filter="url(#spShadow)"/></svg></span>
+        <p class="app-label">Spotify</p>
+      </a>
+      <a class="social-tile" href="https://www.chess.com/member/mainlykavi" target="_blank" rel="noopener" aria-label="Chess (opens in new tab)">
+        <span class="app-icon icon-asset chess-icon"><img src="assets/chess-app-icon-transparent.png" alt="" style="width:100%;height:100%;object-fit:cover"></span>
+        <p class="app-label">Chess</p>
       </a>
     </div>
   </div>
@@ -1295,38 +1337,45 @@
         <span class="app-icon" style="background:#9146FF"><svg viewBox="0 0 24 24" fill="#fff" style="width:68%;height:68%"><path d="M4.3 2 3 5.3v14.2h4.9V22l3-2.5h3.9L21 13.4V2Zm14.7 10.4-3 3h-3.4L10 18v-2.6H6.9V4h12.1Z"/><path d="M16.6 6.8h-1.8v5.4h1.8Zm-4.9 0h-1.8v5.4h1.8Z"/></svg></span>
         <p class="app-label">Twitch</p>
       </a>
+      <a class="social-tile" href="https://discord.com/users/690044658579275791" target="_blank" rel="noopener" aria-label="Discord (opens in new tab)">
+        <span class="app-icon" style="background:#5865F2"><svg viewBox="0 0 24 24" fill="#fff" style="width:72%;height:72%"><path d="M19.73 4.87a18.2 18.2 0 0 0-4.6-1.44c-.21.4-.4.8-.58 1.21a16.92 16.92 0 0 0-5.1 0 12.59 12.59 0 0 0-.58-1.21 18.15 18.15 0 0 0-4.6 1.44A19.26 19.26 0 0 0 2 17.31a18.23 18.23 0 0 0 5.63 2.87 13.65 13.65 0 0 0 1.18-1.95 11.92 11.92 0 0 1-1.86-.9 3.23 3.23 0 0 0 .46-.36 12.96 12.96 0 0 0 11.18 0c.15.13.3.25.46.36-.59.35-1.22.65-1.87.9.34.69.74 1.34 1.19 1.95a18.18 18.18 0 0 0 5.63-2.87A19.22 19.22 0 0 0 19.73 4.87ZM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.13 1.89-2.13c1.06 0 1.9.96 1.89 2.13 0 1.17-.84 2.12-1.89 2.12Zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.13 1.89-2.13c1.06 0 1.9.96 1.89 2.13 0 1.17-.83 2.12-1.89 2.12Z"/></svg></span>
+        <p class="app-label">Discord</p>
+      </a>
       <a class="social-tile" href="https://throne.com/mainlykavi" target="_blank" rel="noopener" aria-label="Throne (opens in new tab)">
         <span class="app-icon" style="background:linear-gradient(135deg,#6e63f5 0%,#b347e8 48%,#ffb648 100%)"><svg viewBox="0 0 24 24" fill="#fff"><path d="M2 19 4.3 9 7.6 12.3 11.2 4.2 14.6 12.3 17.7 8.2 22 19Z"/></svg></span>
         <p class="app-label">Throne</p>
       </a>
-      <button class="social-tile" type="button" data-copy="@MainlyKavi" aria-label="Copy Discord username">
-        <span class="app-icon" style="background:#5865F2"><svg viewBox="0 0 24 24" fill="#fff" style="width:72%;height:72%"><path d="M19.73 4.87a18.2 18.2 0 0 0-4.6-1.44c-.21.4-.4.8-.58 1.21a16.92 16.92 0 0 0-5.1 0 12.59 12.59 0 0 0-.58-1.21 18.15 18.15 0 0 0-4.6 1.44A19.26 19.26 0 0 0 2 17.31a18.23 18.23 0 0 0 5.63 2.87 13.65 13.65 0 0 0 1.18-1.95 11.92 11.92 0 0 1-1.86-.9 3.23 3.23 0 0 0 .46-.36 12.96 12.96 0 0 0 11.18 0c.15.13.3.25.46.36-.59.35-1.22.65-1.87.9.34.69.74 1.34 1.19 1.95a18.18 18.18 0 0 0 5.63-2.87A19.22 19.22 0 0 0 19.73 4.87ZM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.13 1.89-2.13c1.06 0 1.9.96 1.89 2.13 0 1.17-.84 2.12-1.89 2.12Zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.13 1.89-2.13c1.06 0 1.9.96 1.89 2.13 0 1.17-.83 2.12-1.89 2.12Z"/></svg></span>
-        <p class="app-label">Discord</p>
-      </button>
-      <a class="social-tile" href="https://ko-fi.com/mainlykavi" target="_blank" rel="noopener" aria-label="Ko-fi (opens in new tab)">
-        <span class="app-icon icon-asset"><svg id="kofiIcon" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 504.36 504.36"><defs><style>.kofi-1{fill:#00b9fe;}.kofi-2{fill:#fff;stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.14px;}.kofi-3{fill:#ff5e5b;}.kofi-4{fill:url(#kofi-linear-gradient);}</style><linearGradient id="kofi-linear-gradient" x1="163.6" y1="2319.39" x2="216.72" y2="2482.47" gradientTransform="translate(4.26 -2219.68)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ff4ea3"/><stop offset="1" stop-color="#ff5e5b"/></linearGradient></defs><title>ko-fi</title><rect class="kofi-1" width="504.36" height="504.36" rx="15%"/><g id="kofiLayer-2" data-name="Layer 1-2"><g id="kofiLayer-3" data-name="Layer 1-3"><path class="kofi-2" d="M380.19,276.5A196.26,196.26,0,0,1,352,277.78V185.62h19.2a38.37,38.37,0,0,1,32,15.36,45.65,45.65,0,0,1,10.24,29.44A42.87,42.87,0,0,1,380.19,276.5Zm79.37-64a83.86,83.86,0,0,0-37.13-57.61A98.23,98.23,0,0,0,366.11,137H84.49a16.37,16.37,0,0,0-14.08,15.36v3.84s-1.28,124.17,1.28,192a42.11,42.11,0,0,0,42.24,39.68s129.29,0,190.73-1.28h9c35.84-9,38.4-42.24,38.4-60.16C422.43,329,472.36,279.06,459.56,212.5Z"/><path class="kofi-3" d="M208.66,334.11c3.84,1.28,5.12,0,5.12,0s44.8-41,65.28-65.29c17.92-21.76,19.2-56.32-11.52-70.4s-56.32,15.36-56.32,15.36a50.44,50.44,0,0,0-70.41-7.68l-1.28,1.28c-15.36,16.64-10.24,44.8,1.28,60.16a771.87,771.87,0,0,0,65.29,64Z"/><path class="kofi-4" d="M211.22,335.39a4.75,4.75,0,0,0,3.84-1.28s44.8-41,65.28-65.29c17.92-21.76,19.2-56.32-11.52-70.4s-56.32,15.36-56.32,15.36a50.44,50.44,0,0,0-70.41-7.68l-1.28,1.28c-15.36,16.64-10.24,44.8,1.28,60.16a799.58,799.58,0,0,0,66.57,65.29C208.66,335.39,209.94,335.39,211.22,335.39Z"/></g></g></svg></span>
-        <p class="app-label">Ko-fi</p>
+      <a class="social-tile" href="https://github.com/MainlyKavi" target="_blank" rel="noopener" aria-label="GitHub (opens in new tab)">
+        <span class="app-icon" style="background:#181717"><svg viewBox="0 0 24 24" fill="#fff" style="width:72%;height:72%"><path d="M12 .8A11.2 11.2 0 0 0 8.46 22.63c.56.1.77-.24.77-.54v-2.13c-3.13.68-3.79-1.34-3.79-1.34-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.69.08-.69 1.13.08 1.72 1.16 1.72 1.16 1 .1 2.63.74 3.27-.56.1-.73.39-1.23.72-1.51-2.5-.28-5.13-1.25-5.13-5.56 0-1.23.44-2.24 1.16-3.03-.12-.28-.5-1.43.11-2.99 0 0 .94-.3 3.08 1.16A10.65 10.65 0 0 1 12 4.57c.95 0 1.9.13 2.8.38 2.13-1.46 3.07-1.16 3.07-1.16.61 1.56.23 2.71.11 2.99.72.79 1.16 1.8 1.16 3.03 0 4.32-2.63 5.27-5.14 5.55.4.35.76 1.04.76 2.1v4.63c0 .3.2.65.78.54A11.2 11.2 0 0 0 12 .8Z"/></svg></span>
+        <p class="app-label">GitHub</p>
+      </a>
+      <a class="social-tile" href="https://www.snapchat.com/@mainlykavi" target="_blank" rel="noopener" aria-label="Snapchat (opens in new tab)">
+        <span class="app-icon icon-asset snapchat-icon"><img src="assets/snapchat-square-color-icon.svg" alt="" style="width:100%;height:100%;object-fit:cover"></span>
+        <p class="app-label">Snapchat</p>
       </a>
       <a class="social-tile" href="https://www.reddit.com/user/MainlyKavi" target="_blank" rel="noopener" aria-label="Reddit (opens in new tab)">
         <span class="app-icon icon-asset"><svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2"><path d="M512 128v256c0 70.646-57.355 128-128 128H128C57.354 512 0 454.646 0 384V128C0 57.354 57.354 0 128 0h256c70.645 0 128 57.354 128 128z" fill="#ff4500"/><g transform="translate(1.249 1.608) scale(1.99024)"><circle cx="200.6" cy="123.7" r="29.9" fill="url(#prefix___Radial1)"/><circle cx="55.4" cy="123.7" r="29.9" fill="url(#prefix___Radial2)"/><ellipse cx="128.1" cy="149.3" rx="85.3" ry="64" fill="url(#prefix___Radial3)"/><path d="M102.8 143.1c-.5 10.8-7.7 14.8-16.1 14.8-8.4 0-14.8-5.6-14.3-16.4.5-10.8 7.7-18 16.1-18 8.4 0 14.8 8.8 14.3 19.6zM183.6 141.5c.5 10.8-5.9 16.4-14.3 16.4s-15.6-3.9-16.1-14.8c-.5-10.8 5.9-19.6 14.3-19.6s15.6 7.1 16.1 18z" fill="#842123" fill-rule="nonzero"/><path d="M153.3 144.1c.5 10.1 7.2 13.8 15 13.8s13.8-5.5 13.4-15.7c-.5-10.1-7.2-16.8-15-16.8s-13.9 8.5-13.4 18.7z" fill="url(#prefix___Radial4)" fill-rule="nonzero"/><path d="M102.8 144.1c-.5 10.1-7.2 13.8-15 13.8s-13.8-5.5-13.3-15.7c.5-10.1 7.2-16.8 15-16.8s13.8 8.5 13.3 18.7z" fill="url(#prefix___Radial5)" fill-rule="nonzero"/><path d="M128.1 165.1c-10.6 0-20.7.5-30.1 1.4-1.6.2-2.6 1.8-2 3.2 5.2 12.3 17.6 21 32.1 21s26.8-8.6 32.1-21c.6-1.5-.4-3.1-2-3.2-9.4-.9-19.5-1.4-30.1-1.4z" fill="#bbcfda" fill-rule="nonzero"/><path d="M128.1 167.5c-10.6 0-20.7.5-30 1.5-1.6.2-2.6 1.8-2 3.3 5.2 12.5 17.6 21.3 32 21.3 14.4 0 26.8-8.8 32-21.3.6-1.5-.4-3.1-2-3.3-9.4-1-19.5-1.5-30-1.5z" fill="#fff" fill-rule="nonzero"/><path d="M128.1 166.2c-10.4 0-20.3.5-29.5 1.4-1.6.2-2.6 1.8-2 3.2 5.2 12.3 17.3 21 31.5 21s26.3-8.6 31.5-21c.6-1.5-.4-3.1-2-3.2-9.2-.8-19.1-1.4-29.5-1.4z" fill="url(#prefix___Radial6)" fill-rule="nonzero"/><circle cx="174.8" cy="55.5" r="21.2" fill="url(#prefix___Radial7)"/><path d="M127.8 88c-2.5 0-4.6-1.1-4.6-2.7 0-19 15.4-34.4 34.4-34.4 2.5 0 4.6 2.1 4.6 4.6 0 2.5-2.1 4.6-4.6 4.6-13.9 0-25.2 11.3-25.2 25.2 0 1.7-2.1 2.7-4.6 2.7z" fill="url(#prefix___Radial8)" fill-rule="nonzero"/><path d="M97.3 149.1c0 3.9-4.2 5.7-9.3 5.7-5.1 0-9.3-1.8-9.3-5.7 0-3.9 4.2-7.1 9.3-7.1 5.1 0 9.3 3.1 9.3 7.1zM177.5 149.1c0 3.9-4.2 5.7-9.3 5.7-5.1 0-9.3-1.8-9.3-5.7 0-3.9 4.2-7.1 9.3-7.1 5.1 0 9.3 3.1 9.3 7.1z" fill="#ff6101" fill-rule="nonzero"/><ellipse cx="94.4" cy="134.8" rx="3.3" ry="3.6" fill="#ffc49c"/><ellipse cx="173.3" cy="134.8" rx="3.3" ry="3.6" fill="#ffc49c"/></g><defs><radialGradient id="prefix___Radial1" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(59.9015 0 0 -52.2545 201.012 107.557)"><stop offset="0" stop-color="#feffff"/><stop offset=".4" stop-color="#feffff"/><stop offset=".51" stop-color="#f9fcfc"/><stop offset=".62" stop-color="#edf3f5"/><stop offset=".7" stop-color="#dee9ec"/><stop offset=".72" stop-color="#d8e4e8"/><stop offset=".76" stop-color="#ccd8df"/><stop offset=".8" stop-color="#c8d5dd"/><stop offset=".83" stop-color="#ccd6de"/><stop offset=".85" stop-color="#d8dbe2"/><stop offset=".88" stop-color="#ede3e9"/><stop offset=".9" stop-color="#ffebef"/><stop offset="1" stop-color="#ffebef"/></radialGradient><radialGradient id="prefix___Radial2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(59.9015 0 0 -52.2545 55.892 107.557)"><stop offset="0" stop-color="#feffff"/><stop offset=".4" stop-color="#feffff"/><stop offset=".51" stop-color="#f9fcfc"/><stop offset=".62" stop-color="#edf3f5"/><stop offset=".7" stop-color="#dee9ec"/><stop offset=".72" stop-color="#d8e4e8"/><stop offset=".76" stop-color="#ccd8df"/><stop offset=".8" stop-color="#c8d5dd"/><stop offset=".83" stop-color="#ccd6de"/><stop offset=".85" stop-color="#d8dbe2"/><stop offset=".88" stop-color="#ede3e9"/><stop offset=".9" stop-color="#ffebef"/><stop offset="1" stop-color="#ffebef"/></radialGradient><radialGradient id="prefix___Radial3" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(180.687 0 0 -126.865 130.347 99.176)"><stop offset="0" stop-color="#feffff"/><stop offset=".4" stop-color="#feffff"/><stop offset=".51" stop-color="#f9fcfc"/><stop offset=".62" stop-color="#edf3f5"/><stop offset=".7" stop-color="#dee9ec"/><stop offset=".72" stop-color="#d8e4e8"/><stop offset=".76" stop-color="#ccd8df"/><stop offset=".8" stop-color="#c8d5dd"/><stop offset=".83" stop-color="#ccd6de"/><stop offset=".85" stop-color="#d8dbe2"/><stop offset=".88" stop-color="#ede3e9"/><stop offset=".9" stop-color="#ffebef"/><stop offset="1" stop-color="#ffebef"/></radialGradient><radialGradient id="prefix___Radial4" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-15.0964 0 0 22.1628 165.28 150.971)"><stop offset="0" stop-color="#f60"/><stop offset=".5" stop-color="#ff4500"/><stop offset=".7" stop-color="#fc4301"/><stop offset=".82" stop-color="#f43f07"/><stop offset=".92" stop-color="#e53812"/><stop offset="1" stop-color="#d4301f"/></radialGradient><radialGradient id="prefix___Radial5" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(15.0964 0 0 22.1628 90.19 150.971)"><stop offset="0" stop-color="#f60"/><stop offset=".5" stop-color="#ff4500"/><stop offset=".7" stop-color="#fc4301"/><stop offset=".82" stop-color="#f43f07"/><stop offset=".92" stop-color="#e53812"/><stop offset="1" stop-color="#d4301f"/></radialGradient><radialGradient id="prefix___Radial6" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(53.2322 0 0 -35.1106 128.369 194.908)"><stop offset="0" stop-color="#172e35"/><stop offset=".29" stop-color="#0e1c21"/><stop offset=".73" stop-color="#030708"/><stop offset="1"/></radialGradient><radialGradient id="prefix___Radial7" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(46.7274 0 0 -46.7274 175.312 34.106)"><stop offset="0" stop-color="#feffff"/><stop offset=".4" stop-color="#feffff"/><stop offset=".51" stop-color="#f9fcfc"/><stop offset=".62" stop-color="#edf3f5"/><stop offset=".7" stop-color="#dee9ec"/><stop offset=".72" stop-color="#d8e4e8"/><stop offset=".76" stop-color="#ccd8df"/><stop offset=".8" stop-color="#c8d5dd"/><stop offset=".83" stop-color="#ccd6de"/><stop offset=".85" stop-color="#d8dbe2"/><stop offset=".88" stop-color="#ede3e9"/><stop offset=".9" stop-color="#ffebef"/><stop offset="1" stop-color="#ffebef"/></radialGradient><radialGradient id="prefix___Radial8" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(38.3003 0 0 -38.3003 155.84 85.046)"><stop offset="0" stop-color="#7a9299"/><stop offset=".48" stop-color="#7a9299"/><stop offset=".67" stop-color="#172e35"/><stop offset=".75"/><stop offset=".82" stop-color="#172e35"/><stop offset="1" stop-color="#172e35"/></radialGradient></defs></svg></span>
         <p class="app-label">Reddit</p>
       </a>
-      <a class="social-tile" href="https://open.spotify.com/user/BuraAdmi" target="_blank" rel="noopener" aria-label="Spotify (opens in new tab)">
-        <span class="app-icon icon-asset"><svg viewBox="0 0 1000 1000"><defs><filter id="spShadow" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#000" flood-opacity="0.35"/></filter></defs><rect width="1000" height="1000" fill="#000" rx="15%"/><image href="assets/socials-inline-1-b84b4c7a07.webp" x="110" y="110" width="780" height="780" filter="url(#spShadow)"/></svg></span>
-        <p class="app-label">Spotify</p>
-      </a>
-      <a class="social-tile" href="https://kick.com/mainlykavi" target="_blank" rel="noopener" aria-label="Kick (opens in new tab)">
-        <span class="app-icon icon-asset"><img src="assets/socials-inline-2-b29e539180.jpg" alt="" style="width:100%;height:100%;object-fit:cover"></span>
-        <p class="app-label">Kick</p>
+      <a class="social-tile" href="https://ko-fi.com/mainlykavi" target="_blank" rel="noopener" aria-label="Ko-fi (opens in new tab)">
+        <span class="app-icon icon-asset"><svg id="kofiIcon" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 504.36 504.36"><defs><style>.kofi-1{fill:#00b9fe;}.kofi-2{fill:#fff;stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.14px;}.kofi-3{fill:#ff5e5b;}.kofi-4{fill:url(#kofi-linear-gradient);}</style><linearGradient id="kofi-linear-gradient" x1="163.6" y1="2319.39" x2="216.72" y2="2482.47" gradientTransform="translate(4.26 -2219.68)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ff4ea3"/><stop offset="1" stop-color="#ff5e5b"/></linearGradient></defs><title>ko-fi</title><rect class="kofi-1" width="504.36" height="504.36" rx="15%"/><g id="kofiLayer-2" data-name="Layer 1-2"><g id="kofiLayer-3" data-name="Layer 1-3"><path class="kofi-2" d="M380.19,276.5A196.26,196.26,0,0,1,352,277.78V185.62h19.2a38.37,38.37,0,0,1,32,15.36,45.65,45.65,0,0,1,10.24,29.44A42.87,42.87,0,0,1,380.19,276.5Zm79.37-64a83.86,83.86,0,0,0-37.13-57.61A98.23,98.23,0,0,0,366.11,137H84.49a16.37,16.37,0,0,0-14.08,15.36v3.84s-1.28,124.17,1.28,192a42.11,42.11,0,0,0,42.24,39.68s129.29,0,190.73-1.28h9c35.84-9,38.4-42.24,38.4-60.16C422.43,329,472.36,279.06,459.56,212.5Z"/><path class="kofi-3" d="M208.66,334.11c3.84,1.28,5.12,0,5.12,0s44.8-41,65.28-65.29c17.92-21.76,19.2-56.32-11.52-70.4s-56.32,15.36-56.32,15.36a50.44,50.44,0,0,0-70.41-7.68l-1.28,1.28c-15.36,16.64-10.24,44.8,1.28,60.16a771.87,771.87,0,0,0,65.29,64Z"/><path class="kofi-4" d="M211.22,335.39a4.75,4.75,0,0,0,3.84-1.28s44.8-41,65.28-65.29c17.92-21.76,19.2-56.32-11.52-70.4s-56.32,15.36-56.32,15.36a50.44,50.44,0,0,0-70.41-7.68l-1.28,1.28c-15.36,16.64-10.24,44.8,1.28,60.16a799.58,799.58,0,0,0,66.57,65.29C208.66,335.39,209.94,335.39,211.22,335.39Z"/></g></g></svg></span>
+        <p class="app-label">Ko-fi</p>
       </a>
       <a class="social-tile" href="https://modrinth.com/user/BuraAdmi" target="_blank" rel="noopener" aria-label="Modrinth (opens in new tab)">
         <span class="app-icon" style="background:#0c1f15"><svg viewBox="0 0 512 512" xml:space="preserve"><path d="m446.1 348.5 42.1 14.6C447.7 451 358.8 512 255.7 512c-85.4 0-161.1-41.9-207.6-106.3-7.7-9.9-16.7-24-22.5-37.5C11.5 339.4 2.7 307.6.3 274h44.5c2.1 25.2 8.7 49.1 18.9 71l37.5-22.5c-8.8-20.3-13.7-42.8-13.7-66.3 0-92.5 75.1-167.6 167.6-167.6 2.3 0 4.6 0 6.8.1l-7 44.1c-68 .1-123.3 55.3-123.3 123.4 0 15.2 2.8 29.8 7.8 43.3l49.1-29.5-14.9-39.4 46.6-47.9 58.9-12.7 17.1 21-27.2 27.5-23.7 7.5-16.9 17.4 8.3 23.1 16.8 17.9 23.7-6.3 16.9-18.5 36.9-11.7 11 24.7-38 46.6-63.7 20.2-28.6-31.8-49.7 29.8c22.6 25.9 55.9 42.4 93 42.4 3.5 0 6.9-.1 10.3-.4l12.3 43.1c-7.5 1-15 1.5-22.6 1.5-53.2 0-100.7-24.9-131.4-63.6l-37.5 22.5c38.6 51.5 100.2 84.9 169.5 84.9 83.8-.1 156.2-48.8 190.5-119.3M505.7 201c-2.1-10.5-5.2-21.1-9.3-32.1C460.8 70.4 366.4 0 255.7 0 123.2 0 14.1 100.9 1 230h44.6C58.5 125.4 147.7 44.3 255.7 44.3c90 0 167 56.3 197.6 135.6l-43.4 11.7c-18.9-45.3-57.2-80.5-104.4-95.4l-7 44.3c30.1 11.3 54.6 34.1 68.3 62.9 7 18.7 9.4 29.8 11.3 42 .3 3.5.5 7.1.5 10.6 0 49.2-28.9 91.7-70.5 111.5l12.3 43c60.2-25.4 102.5-85.1 102.5-154.5 0-7.5-.5-14.9-1.5-22.1l43.4-11.7c1.7 10.9 2.7 22.2 2.7 33.6 0 17.2-2.1 34.3-6.2 51l42 14.5c5.5-20.9 8.5-42.9 8.5-65.6-.1-18.6-2.2-37-6.1-54.7" style="fill:#46d66d"/></svg></span>
         <p class="app-label">Modrinth</p>
       </a>
+      <a class="social-tile" href="https://www.pinterest.com/MainlyKavi" target="_blank" rel="noopener" aria-label="Pinterest (opens in new tab)">
+        <span class="app-icon icon-asset"><svg viewBox="0 0 1000 1000"><defs><filter id="pinShadow" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#000" flood-opacity="0.3"/></filter></defs><rect width="1000" height="1000" fill="#fff" rx="15%"/><circle cx="500" cy="500" r="400" fill="#E60023" filter="url(#pinShadow)"/><g transform="translate(109,162) scale(1.55)"><path fill="#fff" d="M265 56c-109 0-164 78-164 144 0 39 15 74 47 87 5 2 10 0 12-5l4-19c2-6 1-8-3-13-9-11-15-25-15-45 0-58 43-110 113-110 62 0 96 38 96 88 0 67-30 122-73 122-24 0-42-19-36-44 6-29 20-60 20-81 0-19-10-35-31-35-25 0-44 26-44 60 0 21 7 36 7 36l-30 125c-8 37-1 83 0 87 0 3 4 4 5 2 2-3 32-39 42-75l16-64c8 16 31 29 56 29 74 0 124-67 124-157 0-69-58-132-146-132z"/></g></svg></span>
+        <p class="app-label">Pinterest</p>
+      </a>
+      <a class="social-tile" href="https://kick.com/mainlykavi" target="_blank" rel="noopener" aria-label="Kick (opens in new tab)">
+        <span class="app-icon icon-asset"><img src="assets/socials-inline-2-b29e539180.jpg" alt="" style="width:100%;height:100%;object-fit:cover"></span>
+        <p class="app-label">Kick</p>
+      </a>
     </div>
   </div>
   </div>
-
 
   <a class="brand-pill glass" href="mailto:mainlykavii@gmail.com?subject=Are%20you%20open%20to%20sponsorships%3F&body=Hi%20Kavi%2C%0A%0AI%27d%20like%20to%20discuss%20a%20sponsorship%20opportunity%20with%20you..." aria-label="Email MainlyKavi about collaborations">
     Open for collabs
@@ -1334,7 +1383,7 @@
   </a>
 
   <p class="footer reveal" style="animation-delay:.3s">
-    Â© <span id="copyrightYear">2026</span> MainlyKavi
+    © <span id="copyrightYear">2026</span> MainlyKav
   </p>
 
 </main>
@@ -1349,7 +1398,7 @@
   var copyrightEl = document.getElementById('copyrightYear');
   if (copyrightEl) copyrightEl.textContent = new Date().getFullYear();
 
-  /* ---------- slide-out menu ---------- */
+  /* ---------- popup menu ---------- */
   var menuBtn = document.getElementById('menuBtn');
   var menuPanel = document.getElementById('menuPanel');
   var menuScrim = document.getElementById('menuScrim');
@@ -1391,9 +1440,7 @@
     toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 1800);
   }
 
-  /* ---------- copy-to-clipboard tiles (Discord has no public profile
-     URL by username, so its tile copies the handle instead of linking
-     out â€” same toast feedback the rest of the page already uses) ---------- */
+  /* ---------- optional copy-to-clipboard tiles ---------- */
   document.querySelectorAll('[data-copy]').forEach(function(btn){
     btn.addEventListener('click', function(){
       var value = btn.getAttribute('data-copy');
@@ -1705,4 +1752,3 @@
 
 </body>
 </html>
-
