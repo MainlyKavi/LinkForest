@@ -63,7 +63,9 @@
     --text-faint:rgba(244,248,247,0.54);
     --accent:#BFE0FF;
     --accent-solid:#FFFFFF;
-    --bg-image:url("assets/project-bg.webp");
+    --bg-image-mobile:url("assets/project-bg.webp");
+    --bg-image-desktop:url("assets/project-bg-desktop.webp");
+    --bg-image:var(--bg-image-mobile);
 
     --glass-fill:rgba(255,255,255,0.13);
     --glass-fill-soft:rgba(255,255,255,0.07);
@@ -134,6 +136,17 @@
     opacity:1;
     transform:scale(1.06);
     filter:blur(2.5px);
+  }
+
+  @media (min-width:700px){
+    :root{
+      --bg-image:var(--bg-image-desktop);
+    }
+    .backdrop-layer{
+      background-position:center center;
+      transform:scale(1.02);
+      filter:blur(1.2px);
+    }
   }
 
   .backdrop::after{

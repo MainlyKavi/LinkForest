@@ -170,8 +170,12 @@
     /* Profile photo â€” embedded so the file stays single-file/portable. */
     --avatar-img: url("assets/avatar.webp");
     /* Day / night backdrop photography â€” also embedded, swapped by data-theme. */
-    --bg-day: url("assets/bg-day.webp");
-    --bg-night: url("assets/bg-night.webp");
+    --bg-day-mobile: url("assets/bg-day.webp");
+    --bg-night-mobile: url("assets/bg-night.webp");
+    --bg-day-desktop: url("assets/bg-day-desktop.webp");
+    --bg-night-desktop: url("assets/bg-night-desktop.webp");
+    --bg-day: var(--bg-day-mobile);
+    --bg-night: var(--bg-night-mobile);
   }
 
   /* ---------------- light theme â€” Apple-style neutral gray, not minty ---------------- */
@@ -235,6 +239,17 @@
     transition:opacity 1.1s var(--ease);
     transform:scale(1.06);
     filter:blur(2.5px);
+  }
+  @media (min-width:700px){
+    :root{
+      --bg-day: var(--bg-day-desktop);
+      --bg-night: var(--bg-night-desktop);
+    }
+    .backdrop-layer{
+      background-position:center center;
+      transform:scale(1.02);
+      filter:blur(1.2px);
+    }
   }
   .backdrop-layer.night{
     background-image:var(--bg-night);
@@ -1419,8 +1434,14 @@
   /* ---------- real-optics refraction: window a small backdrop-copy layer
      so it shows exactly the slice of the photo that sits behind each card,
      without ever rasterizing/filtering a full-viewport element ---------- */
-  var BG_IMG_W = 900, BG_IMG_H = 1069; // natural size of bg_day/bg_night assets
-  var imgRatio = BG_IMG_W / BG_IMG_H;
+  var DESKTOP_BG_QUERY = window.matchMedia('(min-width:700px)');
+  var mobileBg = { w: 900, h: 1069 };
+  var desktopBg = { w: 3840, h: 2160 };
+
+  function currentBgRatio(){
+    var bg = DESKTOP_BG_QUERY.matches ? desktopBg : mobileBg;
+    return bg.w / bg.h;
+  }
 
   // Cover-geometry cache: coverW/coverH/offsetX/offsetY only depend on the
   // viewport size, not on scroll position, so they're recomputed once on
@@ -1435,6 +1456,7 @@
     // Replicate CSS `background-size:cover; background-position:center 18%`
     // math by hand, so the small refraction layer shows the same slice of
     // the photo as the real full-viewport backdrop behind it.
+    var imgRatio = currentBgRatio();
     var boxRatio = vw / vh;
     if (imgRatio > boxRatio){
       coverH = vh;
