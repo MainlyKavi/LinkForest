@@ -10,4 +10,10 @@ Linktree worked fine for the basics, but it didn't give me enough room to bring 
 
 It's built in an Apple liquid glass style, which is honestly my favorite part of it. It also supports both light mode and dark mode, so you can switch depending on what you prefer.
 
+## License
+
+This project is source-available, not open source.
+
+The code may be viewed publicly, but copying, modifying, redistributing, or using it in other projects is not permitted without written permission.
+
 </div>
