@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>All of MainlyKavi's Socials - Instagram, YouTube, TikTok & More</title>
-<meta name="description" content="Every place to find MainlyKavi online: TikTok, YouTube, Instagram, Twitter, Bluesky, Facebook, Spotify, Chess, Twitch, Discord, Throne, GitHub, Snapchat, Reddit, Ko-fi, Modrinth, Pinterest, and Kick, all the official profiles in one place.">
+<meta name="description" content="Every place to find MainlyKavi online: TikTok, YouTube, Instagram, Twitter, Bluesky, Facebook, Spotify, Chess, Twitch, Discord, Throne, GitHub, Snapchat, Reddit, Ko-fi, Modrinth, Pinterest, Kick, and Peerlist, all the official profiles in one place.">
 <link rel="canonical" href="https://mainlykavi.com/socials">
 
 <!-- Open Graph â€” controls the preview card shown on WhatsApp, Twitter/X,
@@ -62,7 +62,8 @@
     "https://ko-fi.com/mainlykavi",
     "https://modrinth.com/user/BuraAdmi",
     "https://www.pinterest.com/MainlyKavi",
-    "https://kick.com/mainlykavi"
+    "https://kick.com/mainlykavi",
+    "https://peerlist.io/mainlykavi"
   ]}
 </script>
 
@@ -1014,6 +1015,27 @@
     position:relative;
     z-index:1;
   }
+  .social-tile .app-icon.peerlist-icon{
+    background:#00aa45;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.38) inset,
+      0 -2px 4px rgba(0,0,0,0.18) inset,
+      0 0 18px rgba(0,184,74,0.58),
+      0 6px 14px rgba(0,0,0,0.25);
+  }
+  .social-tile .app-icon.peerlist-icon img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+  .social-tile:hover .app-icon.peerlist-icon,
+  .social-tile:focus-visible .app-icon.peerlist-icon{
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.42) inset,
+      0 -2px 4px rgba(0,0,0,0.18) inset,
+      0 0 26px rgba(0,214,86,0.7),
+      0 9px 20px rgba(0,0,0,0.3);
+  }
   .social-tile .app-icon.snapchat-icon{
     background:#FFFC00;
   }
@@ -1290,7 +1312,7 @@
   </a>
 
   <p class="bio sr-only">
-    Every place to find MainlyKavi online: TikTok, YouTube, Instagram, Twitter, Bluesky, Facebook, Spotify, Chess, Twitch, Discord, Throne, GitHub, Snapchat, Reddit, Ko-fi, Modrinth, Pinterest, and Kick, all the official profiles in one place.
+    Every place to find MainlyKavi online: TikTok, YouTube, Instagram, Twitter, Bluesky, Facebook, Spotify, Chess, Twitch, Discord, Throne, GitHub, Snapchat, Reddit, Ko-fi, Modrinth, Pinterest, Kick, and Peerlist, all the official profiles in one place.
   </p>
 
   <!-- ============ SOCIAL GRID â€” iOS-style app-icon tiles ============ -->
@@ -1373,6 +1395,10 @@
       <a class="social-tile" href="https://kick.com/mainlykavi" target="_blank" rel="noopener" aria-label="Kick (opens in new tab)">
         <span class="app-icon icon-asset"><img src="assets/socials-inline-2-b29e539180.jpg" alt="" style="width:100%;height:100%;object-fit:cover"></span>
         <p class="app-label">Kick</p>
+      </a>
+      <a class="social-tile" href="https://peerlist.io/mainlykavi" target="_blank" rel="noopener" aria-label="Peerlist (opens in new tab)">
+        <span class="app-icon icon-asset peerlist-icon"><img src="assets/peerlist-logo.webp" alt=""></span>
+        <p class="app-label">Peerlist</p>
       </a>
     </div>
   </div>
