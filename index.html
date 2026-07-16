@@ -264,7 +264,9 @@
     /* readability scrim so glass + text stay legible over busy photo areas */
     content:"";
     position:absolute; inset:0;
-    background:linear-gradient(180deg, var(--bg-tint-a) 0%, var(--bg-tint-b) 62%, var(--bg-tint-b) 100%);
+    background:
+      linear-gradient(rgba(0,0,0,0.04), rgba(0,0,0,0.04)),
+      linear-gradient(180deg, var(--bg-tint-a) 0%, var(--bg-tint-b) 62%, var(--bg-tint-b) 100%);
     transition:background .6s var(--ease);
   }
 
