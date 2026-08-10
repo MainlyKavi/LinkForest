@@ -1,0 +1,66 @@
+name: Fix clean routes once
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-clean-routes-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix-routes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Normalize filenames and internal routes
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          old = Path('Socials.html')
+          new = Path('socials.html')
+          if old.exists() and not new.exists():
+              old.rename(new)
+
+          files = [Path('index.html'), Path('socials.html'), Path('projects.html')]
+          replacements = {
+              'href="index.html"': 'href="/"',
+              'href="Socials.html"': 'href="/socials"',
+              'href="socials.html"': 'href="/socials"',
+              'href="projects.html"': 'href="/projects"',
+              '"url": "index.html"': '"url": "https://mainlykavi.com/"',
+          }
+
+          for path in files:
+              if not path.exists():
+                  continue
+              raw = path.read_bytes()
+              had_bom = raw.startswith(b'\xef\xbb\xbf')
+              text = raw.decode('utf-8-sig')
+              for before, after in replacements.items():
+                  text = text.replace(before, after)
+              out = text.encode('utf-8')
+              if had_bom:
+                  out = b'\xef\xbb\xbf' + out
+              path.write_bytes(out)
+          PY
+
+      - name: Commit route cleanup and remove workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/fix-clean-routes-once.yml
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"
+            exit 0
+          fi
+          git commit -m "Normalize clean lowercase routes"
+          git push origin HEAD:main
