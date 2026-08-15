@@ -2,8 +2,21 @@
 .liquid-glass-control{
   --lg-highlight-x:50%;
   --lg-highlight-y:35%;
+  --ios-press-scale:.966;
   transform-origin:center;
   -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+  -webkit-user-select:none;
+  user-select:none;
+  transition:filter .16s cubic-bezier(.2,.8,.2,1);
+}
+
+.liquid-glass-control:is(.pill-btn,.theme-toggle,.icon-btn,.social-tile){
+  --ios-press-scale:.955;
+}
+
+.liquid-glass-control.project-card{
+  --ios-press-scale:.974;
 }
 
 .liquid-glass-control.is-lg-animating{
@@ -32,7 +45,7 @@
   background-position:center;
   background-size:auto;
   animation:none !important;
-  transition:opacity .18s var(--ease);
+  transition:opacity .18s var(--ease), background .08s ease-out;
 }
 
 .liquid-glass-control.glass.is-lg-hovered::after,
@@ -76,7 +89,7 @@
     rgba(255,255,255,.30), rgba(255,255,255,.08) 38%, transparent 70%);
   opacity:0;
   pointer-events:none;
-  transition:opacity .18s var(--ease);
+  transition:opacity .18s var(--ease), background .08s ease-out;
 }
 
 .liquid-glass-control.icon-btn.is-lg-hovered::before,
@@ -92,7 +105,7 @@
 .liquid-glass-control .lens-specular{
   background:radial-gradient(circle 105px at var(--lg-highlight-x) var(--lg-highlight-y),
     rgba(255,255,255,.30), rgba(255,255,255,.08) 40%, transparent 72%);
-  transition:opacity .18s var(--ease);
+  transition:opacity .18s var(--ease), background .08s ease-out;
 }
 
 .liquid-glass-control.is-lg-hovered .lens-rim,
@@ -131,27 +144,61 @@
 .liquid-glass-control.glass.is-lg-pressed,
 .liquid-glass-control.icon-btn.is-lg-pressed{
   box-shadow:
-    0 .5px 0 rgba(255,255,255,.34) inset,
-    0 -1px 0 rgba(0,0,0,.14) inset,
-    inset 0 0 12px var(--glass-inner-glow),
-    0 3px 8px rgba(0,0,0,.26),
-    0 1px 2px rgba(0,0,0,.20);
+    0 .5px 0 rgba(255,255,255,.28) inset,
+    0 -1.5px 1px rgba(0,0,0,.20) inset,
+    inset 0 0 10px var(--glass-inner-glow),
+    0 1px 2px rgba(0,0,0,.24),
+    0 2px 5px rgba(0,0,0,.16);
 }
 
 .liquid-glass-control.link-card.is-lg-pressed,
 .liquid-glass-control.project-card.is-lg-pressed,
 .liquid-glass-control.social-tile.is-lg-pressed{
   box-shadow:
-    0 3px 9px rgba(0,0,0,.25),
-    0 1px 2px rgba(0,0,0,.20),
-    0 .5px 0 rgba(255,255,255,.28) inset;
+    0 1px 2px rgba(0,0,0,.24),
+    0 2px 5px rgba(0,0,0,.15),
+    0 .5px 0 rgba(255,255,255,.22) inset,
+    0 -1px 1px rgba(0,0,0,.12) inset;
 }
 
 .liquid-glass-control.is-lg-pressed .lens-fill{
   box-shadow:
-    0 .5px 0 rgba(255,255,255,.32) inset,
-    0 -1px 0 rgba(0,0,0,.14) inset,
-    inset 0 0 12px var(--glass-inner-glow);
+    0 .5px 0 rgba(255,255,255,.28) inset,
+    0 -1.5px 1px rgba(0,0,0,.18) inset,
+    inset 0 0 9px var(--glass-inner-glow);
+}
+
+/* iOS-style tactile press: down is immediate; the existing spring handles release. */
+.liquid-glass-control.is-lg-pressed{
+  scale:var(--ios-press-scale) !important;
+  filter:brightness(.94) saturate(.97);
+  transition-duration:.045s;
+}
+
+.liquid-glass-control.glass.is-lg-pressed::after,
+.liquid-glass-control.icon-btn.is-lg-pressed::after{
+  opacity:.90;
+  background:radial-gradient(circle 48px at var(--lg-highlight-x) var(--lg-highlight-y),
+    rgba(255,255,255,.42), rgba(255,255,255,.12) 38%, transparent 70%);
+}
+
+.liquid-glass-control.is-lg-pressed .lens-specular{
+  opacity:.86;
+  background:radial-gradient(circle 76px at var(--lg-highlight-x) var(--lg-highlight-y),
+    rgba(255,255,255,.38), rgba(255,255,255,.10) 42%, transparent 72%);
+}
+
+.liquid-glass-control.is-lg-pressed .lens-rim{
+  background:radial-gradient(ellipse 88% 72% at var(--lg-highlight-x) var(--lg-highlight-y),
+    rgba(255,255,255,.98), rgba(255,255,255,.22) 42%, transparent 73%);
+}
+
+.liquid-glass-control.is-lg-pressed .lens-content,
+.liquid-glass-control.is-lg-pressed > svg,
+.liquid-glass-control.is-lg-pressed > .app-icon,
+.liquid-glass-control.is-lg-pressed > .app-label{
+  opacity:.90;
+  transition:opacity .045s ease-out;
 }
 
 /* Prevent the former :active shrink from multiplying the spring compression. */
@@ -178,8 +225,8 @@
   }
 
   .liquid-glass-control.is-lg-pressed{
-    backdrop-filter:blur(7px) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
-    -webkit-backdrop-filter:blur(7px) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
+    backdrop-filter:blur(5px) saturate(calc(var(--glass-sat) - 8%)) contrast(var(--glass-contrast));
+    -webkit-backdrop-filter:blur(5px) saturate(calc(var(--glass-sat) - 8%)) contrast(var(--glass-contrast));
   }
 }
 
@@ -192,19 +239,19 @@
     }
 
     .liquid-glass-control.is-lg-pressed{
-      backdrop-filter:url(#liquidButtonLens) blur(7px) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
-      -webkit-backdrop-filter:url(#liquidButtonLens) blur(7px) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
+      backdrop-filter:url(#liquidButtonLens) blur(5px) saturate(calc(var(--glass-sat) - 8%)) contrast(var(--glass-contrast));
+      -webkit-backdrop-filter:url(#liquidButtonLens) blur(5px) saturate(calc(var(--glass-sat) - 8%)) contrast(var(--glass-contrast));
     }
   }
 }
 
 @media (prefers-reduced-motion:reduce){
   .liquid-glass-control{
-    transition:scale .1s ease-out, background .15s ease-out, box-shadow .15s ease-out;
+    transition:scale .1s ease-out, background .15s ease-out, box-shadow .15s ease-out, filter .1s ease-out;
   }
 
   .liquid-glass-control.is-lg-pressed{
-    scale:.99;
+    scale:.99 !important;
   }
 
   .liquid-glass-control .lens-specular,
