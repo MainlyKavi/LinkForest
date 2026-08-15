@@ -24,7 +24,7 @@
     link.textContent = faqLabel;
   });
 
-  /* Update the FAQ page copy and page/social metadata. */
+  /* Update the FAQ page copy, metadata, and closing navigation. */
   if (faqPath){
     var faqTitleNode = document.querySelector('.faq-title');
     var faqSubtitleNode = document.querySelector('.faq-subtitle');
@@ -37,6 +37,30 @@
     Array.prototype.forEach.call(document.querySelectorAll('meta[name="description"], meta[property="og:description"], meta[name="twitter:description"]'), function(meta){
       meta.setAttribute('content', faqSubtitle);
     });
+
+    var closing = document.querySelector('.closing');
+    var closingLine = closing && closing.querySelector('.closing-line');
+    if (closingLine) closingLine.textContent = 'you now know too much.';
+    if (closing && !closing.querySelector('.closing-actions')){
+      var closingActions = document.createElement('div');
+      closingActions.className = 'closing-actions';
+      closingActions.innerHTML =
+        '<a class="closing-action link-card glass" href="/">← back home</a>' +
+        '<a class="closing-action link-card glass" href="/socials">stalk my socials →</a>';
+      var footer = closing.querySelector('.footer');
+      closing.insertBefore(closingActions, footer || null);
+
+      if (!document.getElementById('faq-closing-actions-style')){
+        var closingStyle = document.createElement('style');
+        closingStyle.id = 'faq-closing-actions-style';
+        closingStyle.textContent =
+          '.closing-actions{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px}' +
+          '.closing-action{min-height:44px;padding:11px 16px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;font-size:12px;font-weight:600;letter-spacing:-.01em;color:var(--text)}' +
+          '.closing-action.glass{background:linear-gradient(165deg,var(--glass-fill-deep),var(--glass-fill) 45%,var(--glass-fill-soft)),var(--glass-tint);border-top:1px solid var(--glass-edge);border-left:1px solid var(--glass-edge-mid);border-right:1px solid var(--glass-edge-faint);border-bottom:1px solid var(--glass-edge-faint);box-shadow:0 1px 0 rgba(255,255,255,.42) inset,0 -1px 0 rgba(0,0,0,.08) inset,inset 0 0 18px var(--glass-inner-glow),0 12px 34px rgba(0,0,0,.18);backdrop-filter:blur(var(--glass-blur)) saturate(var(--glass-sat));-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(var(--glass-sat))}' +
+          '@media(max-width:420px){.closing-actions{width:100%;gap:8px}.closing-action{flex:1 1 calc(50% - 4px);padding-left:10px;padding-right:10px;font-size:11px}}';
+        document.head.appendChild(closingStyle);
+      }
+    }
   }
 
   /* Replace the site's old projects navigation action with the FAQ while
