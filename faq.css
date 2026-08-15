@@ -71,3 +71,16 @@ a{color:inherit;text-decoration:none}button{font:inherit}:focus-visible{outline:
 
 .faq-toggle.glass{background:transparent;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
 .faq-toggle.glass::before{opacity:.28}
+
+/* Match the Projects page backdrop: same responsive artwork, no blur/orbs, same vignette. */
+:root{
+  --bg-day-mobile:url("assets/project-bg.webp");
+  --bg-night-mobile:url("assets/project-bg.webp");
+  --bg-day-desktop:url("assets/project-bg-desktop.webp");
+  --bg-night-desktop:url("assets/project-bg-desktop.webp");
+}
+body{background:#080b09}
+.backdrop-layer{background-position:center top;transform:scale(1.01);filter:none;transition:none}
+.backdrop::after{background:radial-gradient(circle at 50% 38%,transparent 0%,rgba(0,0,0,.06) 48%,rgba(0,0,0,.22) 100%),linear-gradient(180deg,rgba(2,5,3,.12) 0%,rgba(2,5,3,.20) 50%,rgba(1,3,2,.42) 100%)}
+.orb{display:none}
+@media (min-width:700px){.backdrop-layer{background-position:center center;transform:scale(1.01);filter:none}}
