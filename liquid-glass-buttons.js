@@ -3,26 +3,49 @@
 
   var faqLabel = 'Frequently Irrelevant Questions';
   var faqSubtitle = 'everything you didn’t need to know about me.';
-  var faqPath = window.location.pathname === '/faq' || window.location.pathname === '/faq.html';
+  var rawPath = window.location.pathname.replace(/\/+$/, '') || '/';
+  var currentPath = rawPath === '/index' || rawPath === '/index.html' ? '/' : rawPath.replace(/\.html$/, '');
+  var faqPath = currentPath === '/faq';
 
-  /* Give every shared site menu an explicit Home destination above the other links. */
+  /* Normalize the site menu everywhere without changing its panel animation,
+     scrim, close behavior, focus management, or Liquid Glass container. */
   var siteMenu = document.getElementById('menuPanel');
-  var socialsLink = siteMenu && siteMenu.querySelector('.menu-link[href="/socials"]');
-  if (siteMenu && socialsLink && !siteMenu.querySelector('.menu-link[href="/"]')){
-    var homeLink = document.createElement('a');
-    homeLink.className = 'menu-link';
-    homeLink.href = '/';
-    homeLink.textContent = 'Home';
-    if (window.location.pathname === '/' || window.location.pathname === '/index' || window.location.pathname === '/index.html'){
-      homeLink.setAttribute('aria-current', 'page');
+  if (siteMenu){
+    Array.prototype.forEach.call(siteMenu.querySelectorAll('.menu-link'), function(link){
+      link.remove();
+    });
+
+    var navItems = [
+      { label:'Home', href:'/', route:'/' },
+      { label:'Socials', href:'/socials', route:'/socials' },
+      { label:'Projects', href:'/projects', route:'/projects' },
+      { label:'FAQ', href:'/faq', route:'/faq' },
+      { label:'Work/Collab', href:'mailto:mainlykavii@gmail.com?subject=Work%20%2F%20Collab', route:null }
+    ];
+
+    navItems.forEach(function(item){
+      var link = document.createElement('a');
+      link.className = 'menu-link';
+      link.href = item.href;
+      link.textContent = item.label;
+      if (item.route && currentPath === item.route) link.setAttribute('aria-current', 'page');
+      siteMenu.appendChild(link);
+    });
+
+    if (!document.getElementById('global-menu-current-style')){
+      var menuStyle = document.createElement('style');
+      menuStyle.id = 'global-menu-current-style';
+      menuStyle.textContent = '.menu-link[aria-current="page"]{background:rgba(255,255,255,.12)!important}';
+      document.head.appendChild(menuStyle);
     }
-    siteMenu.insertBefore(homeLink, socialsLink);
   }
 
-  /* Keep the FAQ label consistent everywhere the shared menu appears. */
-  Array.prototype.forEach.call(document.querySelectorAll('.menu-link[href="/faq"]'), function(link){
-    link.textContent = faqLabel;
-  });
+  /* Use an unmistakable hamburger instead of the old expand/fullscreen glyph. */
+  var menuBtn = document.getElementById('menuBtn');
+  if (menuBtn){
+    menuBtn.setAttribute('aria-label', 'Open menu');
+    menuBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"></path></svg>';
+  }
 
   /* Update the FAQ page copy, metadata, and closing navigation. */
   if (faqPath){
@@ -63,19 +86,9 @@
     }
   }
 
-  /* Replace the site's old projects navigation action with the FAQ while
-     preserving the projects page itself and every unrelated link. */
-  Array.prototype.forEach.call(document.querySelectorAll('.menu-link[href="/projects"]'), function(link){
-    if (link.textContent.trim() !== 'View all my projects') return;
-    link.setAttribute('href', '/faq');
-    link.textContent = faqLabel;
-  });
-
   /* The large projects card only exists on the homepage. Keep its existing
      Liquid Glass card structure and swap only its destination, label, and glyph. */
-  var homePath = window.location.pathname === '/' ||
-    window.location.pathname === '/index' ||
-    window.location.pathname === '/index.html';
+  var homePath = currentPath === '/';
   if (homePath){
     Array.prototype.forEach.call(document.querySelectorAll('a.link-card[href="/projects"]'), function(link){
       var title = link.querySelector('.title');
