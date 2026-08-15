@@ -1,11 +1,14 @@
 /* Star 01 background override. Keeps the secret page on the shared MainlyKavi system while using its own photo. */
-:root{--star-bg:url("/assets/star-bg.jpg")}
+:root{
+  --star-bg-mobile:url("/assets/star-bg.jpg");
+  --star-bg-desktop:url("/assets/star-bg-desktop.webp");
+  --star-bg:var(--star-bg-mobile);
+}
 
 .backdrop{
   background:#070707;
 }
 
-/* A soft, enlarged copy fills the outer edges on wide screens without stretching the portrait photo. */
 .backdrop::before{
   content:"";
   position:absolute;
@@ -28,13 +31,14 @@
   background-image:var(--star-bg);
   background-position:center center;
   background-repeat:no-repeat;
+  background-size:cover;
   opacity:1;
   transform:scale(1.012);
   filter:none;
   transition:none;
 }
 
-/* Only one photographic layer is needed because the page theme now changes the glass, not the sky. */
+/* Only one photographic layer is needed because the page theme changes the glass, not the sky. */
 .backdrop-layer.night{display:none}
 
 .backdrop::after{
@@ -47,13 +51,17 @@
 .grain{opacity:.075}
 
 @media (min-width:700px){
+  :root{--star-bg:var(--star-bg-desktop)}
+  .backdrop::before{display:none}
   .backdrop-layer.day{
-    background-size:auto 100%;
-    background-color:rgba(5,5,7,.42);
+    background-size:cover;
+    background-position:center center;
+    background-color:#070707;
   }
 }
 
 @media (max-width:699px){
+  :root{--star-bg:var(--star-bg-mobile)}
   .backdrop-layer.day{background-size:cover}
   .backdrop::before{display:none}
 }
