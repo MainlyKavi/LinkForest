@@ -1,6 +1,112 @@
 (function(){
   'use strict';
 
+  var faqLabel = 'Frequently Irrelevant Questions';
+  var faqSubtitle = 'everything you didn’t need to know about me.';
+  var rawPath = window.location.pathname.replace(/\/+$/, '') || '/';
+  var currentPath = rawPath === '/index' || rawPath === '/index.html' ? '/' : rawPath.replace(/\.html$/, '');
+  var faqPath = currentPath === '/faq';
+
+  /* Normalize the site menu everywhere without changing its panel animation,
+     scrim, close behavior, focus management, or Liquid Glass container. */
+  var siteMenu = document.getElementById('menuPanel');
+  if (siteMenu){
+    Array.prototype.forEach.call(siteMenu.querySelectorAll('.menu-link'), function(link){
+      link.remove();
+    });
+
+    var navItems = [
+      { label:'Home', href:'/', route:'/' },
+      { label:'Socials', href:'/socials', route:'/socials' },
+      { label:'FAQ', href:'/faq', route:'/faq' },
+      { label:'Work/Collab', href:'mailto:mainlykavii@gmail.com?subject=Work%20%2F%20Collab', route:null }
+    ];
+
+    navItems.forEach(function(item){
+      var link = document.createElement('a');
+      link.className = 'menu-link';
+      link.href = item.href;
+      link.textContent = item.label;
+      if (item.route && currentPath === item.route) link.setAttribute('aria-current', 'page');
+      siteMenu.appendChild(link);
+    });
+
+    if (!document.getElementById('global-menu-current-style')){
+      var menuStyle = document.createElement('style');
+      menuStyle.id = 'global-menu-current-style';
+      menuStyle.textContent = '.menu-link[aria-current="page"]{background:rgba(255,255,255,.12)!important}';
+      document.head.appendChild(menuStyle);
+    }
+  }
+
+  /* Use an unmistakable hamburger instead of the old expand/fullscreen glyph. */
+  var menuBtn = document.getElementById('menuBtn');
+  if (menuBtn){
+    menuBtn.setAttribute('aria-label', 'Open menu');
+    menuBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"></path></svg>';
+  }
+
+  /* Update the FAQ page copy, metadata, and closing navigation. */
+  if (faqPath){
+    var faqTitleNode = document.querySelector('.faq-title');
+    var faqSubtitleNode = document.querySelector('.faq-subtitle');
+    if (faqTitleNode) faqTitleNode.textContent = faqLabel;
+    if (faqSubtitleNode) faqSubtitleNode.textContent = faqSubtitle;
+    document.title = faqLabel + ' | MainlyKavi';
+    Array.prototype.forEach.call(document.querySelectorAll('meta[property="og:title"], meta[name="twitter:title"]'), function(meta){
+      meta.setAttribute('content', faqLabel + ' | MainlyKavi');
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('meta[name="description"], meta[property="og:description"], meta[name="twitter:description"]'), function(meta){
+      meta.setAttribute('content', faqSubtitle);
+    });
+
+    var closing = document.querySelector('.closing');
+    var closingLine = closing && closing.querySelector('.closing-line');
+    if (closingLine) closingLine.textContent = 'you now know too much.';
+    if (closing && !closing.querySelector('.closing-actions')){
+      var closingActions = document.createElement('div');
+      closingActions.className = 'closing-actions';
+      closingActions.innerHTML =
+        '<a class="closing-action link-card glass" href="/">← back home</a>' +
+        '<a class="closing-action link-card glass" href="/socials">stalk my socials →</a>';
+      var footer = closing.querySelector('.footer');
+      closing.insertBefore(closingActions, footer || null);
+
+      if (!document.getElementById('faq-closing-actions-style')){
+        var closingStyle = document.createElement('style');
+        closingStyle.id = 'faq-closing-actions-style';
+        closingStyle.textContent =
+          '.closing-actions{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px}' +
+          '.closing-action{min-height:44px;padding:11px 16px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;font-size:12px;font-weight:600;letter-spacing:-.01em;color:var(--text)}' +
+          '.closing-action.glass{background:linear-gradient(165deg,var(--glass-fill-deep),var(--glass-fill) 45%,var(--glass-fill-soft)),var(--glass-tint);border-top:1px solid var(--glass-edge);border-left:1px solid var(--glass-edge-mid);border-right:1px solid var(--glass-edge-faint);border-bottom:1px solid var(--glass-edge-faint);box-shadow:0 1px 0 rgba(255,255,255,.42) inset,0 -1px 0 rgba(0,0,0,.08) inset,inset 0 0 18px var(--glass-inner-glow),0 12px 34px rgba(0,0,0,.18);backdrop-filter:blur(var(--glass-blur)) saturate(var(--glass-sat));-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(var(--glass-sat))}' +
+          '@media(max-width:420px){.closing-actions{width:100%;gap:8px}.closing-action{flex:1 1 calc(50% - 4px);padding-left:10px;padding-right:10px;font-size:11px}}';
+        document.head.appendChild(closingStyle);
+      }
+    }
+  }
+
+  /* The large projects card only exists on the homepage. Keep its existing
+     Liquid Glass card structure and swap only its destination, label, and glyph. */
+  var homePath = currentPath === '/';
+  if (homePath){
+    Array.prototype.forEach.call(document.querySelectorAll('a.link-card[href="/projects"]'), function(link){
+      var title = link.querySelector('.title');
+      if (!title || title.textContent.trim() !== 'View all my projects') return;
+
+      link.setAttribute('href', '/faq');
+      title.textContent = faqLabel;
+      var glyph = link.querySelector('.glyph');
+      if (glyph){
+        glyph.innerHTML =
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
+          'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+          '<circle cx="12" cy="12" r="9"></circle>' +
+          '<path d="M9.8 9a2.35 2.35 0 0 1 4.55.8c0 1.8-2.35 2.1-2.35 3.7"></path>' +
+          '<path d="M12 17h.01"></path></svg>';
+      }
+    });
+  }
+
   var selector = '.pill-btn, .theme-toggle, .icon-btn, .link-card, .brand-pill, .social-tile, .project-card';
   var controls = Array.prototype.slice.call(document.querySelectorAll(selector));
   if (!controls.length) return;
