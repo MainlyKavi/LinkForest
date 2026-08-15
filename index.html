@@ -1109,6 +1109,8 @@
   }
   .toast.show{ opacity:1; transform:translate(-50%, 0); }
 </style>
+<link rel="stylesheet" href="/liquid-glass-buttons.css">
+<script defer src="/liquid-glass-buttons.js"></script>
 </head>
 <body>
 
@@ -1120,6 +1122,10 @@
   <filter id="liquidLens" primitiveUnits="objectBoundingBox" x="-0.1" y="-0.1" width="1.2" height="1.2">
     <feImage result="lensMap" href="assets/index-inline-1-7d8f7daf61.svg)%22/%3E%3C/svg%3E" preserveAspectRatio="none" x="0" y="0" width="1" height="1"/>
     <feDisplacementMap in="SourceGraphic" in2="lensMap" scale="0.045" xChannelSelector="R" yChannelSelector="R"/>
+  </filter>
+  <filter id="liquidButtonLens" primitiveUnits="objectBoundingBox" x="-0.1" y="-0.1" width="1.2" height="1.2">
+    <feImage result="buttonLensMap" href="assets/liquid-button-lens.svg" preserveAspectRatio="none" x="0" y="0" width="1" height="1"/>
+    <feDisplacementMap in="SourceGraphic" in2="buttonLensMap" scale="0.045" xChannelSelector="R" yChannelSelector="R"/>
   </filter>
 
   <!-- Real optics-based liquid glass: a displacement map computed from
