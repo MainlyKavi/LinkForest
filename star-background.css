@@ -1,34 +1,16 @@
-/* Star 01 background. Moonlit portrait on phones, matching widescreen version on larger screens. */
+/* Star 01 background. Explicit responsive assets so desktop always gets the widescreen moonlit image. */
 :root{
-  --star-bg-mobile:url("/assets/star-bg-mobile.webp");
-  --star-bg-desktop:url("/assets/star-bg-desktop.webp");
-  --star-bg:var(--star-bg-mobile);
   --star-bg-shift:0px;
   --star-overlay-opacity:.68;
 }
 
 .backdrop{background:#070707}
-
-.backdrop::before{
-  content:"";
-  position:absolute;
-  inset:-6%;
-  background-image:var(--star-bg);
-  background-size:cover;
-  background-position:center center;
-  background-repeat:no-repeat;
-  transform:scale(1.06);
-  filter:blur(30px) brightness(.42) saturate(.82);
-  opacity:.48;
-}
+.backdrop::before{display:none}
 
 .backdrop-layer.day,
-.backdrop-layer.night,
 [data-theme="dark"] .backdrop-layer.day,
-[data-theme="dark"] .backdrop-layer.night,
-[data-theme="light"] .backdrop-layer.day,
-[data-theme="light"] .backdrop-layer.night{
-  background-image:var(--star-bg);
+[data-theme="light"] .backdrop-layer.day{
+  background-image:url("/assets/star-bg-mobile.webp?v=moon-2") !important;
   background-position:center center;
   background-repeat:no-repeat;
   background-size:cover;
@@ -38,7 +20,12 @@
   transition:none;
   will-change:transform;
 }
-.backdrop-layer.night{display:none}
+
+.backdrop-layer.night,
+[data-theme="dark"] .backdrop-layer.night,
+[data-theme="light"] .backdrop-layer.night{
+  display:none !important;
+}
 
 .backdrop::after{
   content:"";
@@ -50,19 +37,30 @@
   opacity:var(--star-overlay-opacity);
   transition:opacity .18s linear;
 }
+
 .orb{opacity:.055}
 .grain{opacity:.06}
 
 @media(min-width:700px){
-  :root{--star-bg:var(--star-bg-desktop)}
-  .backdrop::before{display:none}
-  .backdrop-layer.day{background-position:center center}
+  .backdrop-layer.day,
+  [data-theme="dark"] .backdrop-layer.day,
+  [data-theme="light"] .backdrop-layer.day{
+    background-image:url("/assets/star-bg-desktop.webp?v=moon-2") !important;
+    background-position:center center !important;
+    background-size:cover !important;
+  }
 }
+
 @media(max-width:699px){
-  :root{--star-bg:var(--star-bg-mobile)}
-  .backdrop::before{display:none}
-  .backdrop-layer.day{background-position:center center}
+  .backdrop-layer.day,
+  [data-theme="dark"] .backdrop-layer.day,
+  [data-theme="light"] .backdrop-layer.day{
+    background-image:url("/assets/star-bg-mobile.webp?v=moon-2") !important;
+    background-position:center center !important;
+    background-size:cover !important;
+  }
 }
+
 @media(prefers-reduced-motion:reduce){
   :root{--star-bg-shift:0px!important}
   .backdrop-layer.day{transform:scale(1.035);will-change:auto}
