@@ -164,6 +164,11 @@
   transform:none;
 }
 
+/* Retire the old direct-element parallax tilt on the brand pill. */
+.liquid-glass-control.brand-pill{
+  transform:none !important;
+}
+
 /* Refraction strengthens on hover and flattens with the material on press. */
 @supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
   .liquid-glass-control.is-lg-hovered:not(.is-lg-pressed),
