@@ -15,10 +15,10 @@
 
   controls.forEach(function(control){
     var profile = control.matches('.social-tile, .pill-btn, .theme-toggle, .icon-btn') ?
-      { magnet:1.15, hoverScale:1.006, focusScale:1.004, pressScale:.982, wobble:.35 } :
+      { magnet:1.15, hoverScale:1.006, focusScale:1.004, pressScale:.992, pressStretchX:.020, pressStretchY:-.026, wobble:.35 } :
       (control.matches('.project-card') ?
-        { magnet:1.8, hoverScale:1.009, focusScale:1.005, pressScale:.978, wobble:.65 } :
-        { magnet:2.8, hoverScale:1.012, focusScale:1.006, pressScale:.972, wobble:1 });
+        { magnet:1.8, hoverScale:1.009, focusScale:1.005, pressScale:.995, pressStretchX:.009, pressStretchY:-.014, wobble:.65 } :
+        { magnet:2.8, hoverScale:1.012, focusScale:1.006, pressScale:.994, pressStretchX:.016, pressStretchY:-.022, wobble:1 });
     control.classList.add('liquid-glass-control');
     states.set(control, {
       x:0, y:0, scale:1, highlightX:.5, highlightY:.35,
@@ -30,6 +30,7 @@
       targetWobbleX:0, targetWobbleY:0,
       magnet:profile.magnet, hoverScale:profile.hoverScale,
       focusScale:profile.focusScale, pressScale:profile.pressScale,
+      pressStretchX:profile.pressStretchX, pressStretchY:profile.pressStretchY,
       wobble:profile.wobble,
       hovered:false, focused:false, pressed:false,
       lastPointerX:0, lastPointerY:0, lastPointerTime:0
@@ -63,8 +64,8 @@
       Math.abs(state.scale - state.targetScale) < .00015 && Math.abs(state.vScale) < .0015 &&
       Math.abs(state.highlightX - state.targetHighlightX) < .001 && Math.abs(state.vHighlightX) < .004 &&
       Math.abs(state.highlightY - state.targetHighlightY) < .001 && Math.abs(state.vHighlightY) < .004 &&
-      Math.abs(state.wobbleX) < .00015 && Math.abs(state.vWobbleX) < .0015 &&
-      Math.abs(state.wobbleY) < .00015 && Math.abs(state.vWobbleY) < .0015;
+      Math.abs(state.wobbleX - state.targetWobbleX) < .00015 && Math.abs(state.vWobbleX) < .0015 &&
+      Math.abs(state.wobbleY - state.targetWobbleY) < .00015 && Math.abs(state.vWobbleY) < .0015;
   }
 
   function paint(control, state){
@@ -101,10 +102,12 @@
         spring(state, 'scale', 'vScale', 'targetScale', 400, 24, stepDt);
         spring(state, 'highlightX', 'vHighlightX', 'targetHighlightX', 190, 24, stepDt);
         spring(state, 'highlightY', 'vHighlightY', 'targetHighlightY', 190, 24, stepDt);
-        spring(state, 'wobbleX', 'vWobbleX', 'targetWobbleX', 250, 19, stepDt);
-        spring(state, 'wobbleY', 'vWobbleY', 'targetWobbleY', 250, 19, stepDt);
-        state.targetWobbleX *= Math.exp(-18 * stepDt);
-        state.targetWobbleY *= Math.exp(-18 * stepDt);
+        spring(state, 'wobbleX', 'vWobbleX', 'targetWobbleX', 330, 25, stepDt);
+        spring(state, 'wobbleY', 'vWobbleY', 'targetWobbleY', 330, 25, stepDt);
+        if (!state.pressed){
+          state.targetWobbleX *= Math.exp(-18 * stepDt);
+          state.targetWobbleY *= Math.exp(-18 * stepDt);
+        }
       }
 
       paint(control, state);
@@ -143,12 +146,12 @@
     if (reducedQuery.matches) return;
 
     if (finePointerQuery.matches){
-      var magneticTravel = state.pressed ? state.magnet * .43 : state.magnet;
+      var magneticTravel = state.pressed ? state.magnet * .34 : state.magnet;
       state.targetX = nx * magneticTravel;
       state.targetY = ny * magneticTravel;
 
       var now = performance.now();
-      if (state.lastPointerTime){
+      if (!state.pressed && state.lastPointerTime){
         var elapsed = Math.max(8, Math.min(32, now - state.lastPointerTime));
         var velocityX = (event.clientX - state.lastPointerX) / elapsed;
         var velocityY = (event.clientY - state.lastPointerY) / elapsed;
@@ -173,6 +176,8 @@
     var state = states.get(control);
     state.pressed = true;
     state.targetScale = reducedQuery.matches ? .99 : state.pressScale;
+    state.targetWobbleX = reducedQuery.matches ? 0 : state.pressStretchX;
+    state.targetWobbleY = reducedQuery.matches ? 0 : state.pressStretchY;
     control.classList.add('is-lg-pressed');
     if (event) updatePointer(control, event);
     if (pointerId != null) pressedPointers.set(pointerId, control);
@@ -183,6 +188,8 @@
     if (!control || !states.has(control)) return;
     var state = states.get(control);
     state.pressed = false;
+    state.targetWobbleX = 0;
+    state.targetWobbleY = 0;
     control.classList.remove('is-lg-pressed');
     setRestTarget(state);
     if (pointerId != null) pressedPointers.delete(pointerId);
