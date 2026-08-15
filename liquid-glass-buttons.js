@@ -1,18 +1,18 @@
 (function(){
   'use strict';
 
-  /* Give the FAQ menu an explicit Home destination above the other links. */
-  var faqPath = window.location.pathname === '/faq' || window.location.pathname === '/faq.html';
-  if (faqPath){
-    var faqMenu = document.getElementById('menuPanel');
-    var socialsLink = faqMenu && faqMenu.querySelector('.menu-link[href="/socials"]');
-    if (faqMenu && socialsLink && !faqMenu.querySelector('.menu-link[href="/"]')){
-      var homeLink = document.createElement('a');
-      homeLink.className = 'menu-link';
-      homeLink.href = '/';
-      homeLink.textContent = 'Home';
-      faqMenu.insertBefore(homeLink, socialsLink);
+  /* Give every shared site menu an explicit Home destination above the other links. */
+  var siteMenu = document.getElementById('menuPanel');
+  var socialsLink = siteMenu && siteMenu.querySelector('.menu-link[href="/socials"]');
+  if (siteMenu && socialsLink && !siteMenu.querySelector('.menu-link[href="/"]')){
+    var homeLink = document.createElement('a');
+    homeLink.className = 'menu-link';
+    homeLink.href = '/';
+    homeLink.textContent = 'Home';
+    if (window.location.pathname === '/' || window.location.pathname === '/index' || window.location.pathname === '/index.html'){
+      homeLink.setAttribute('aria-current', 'page');
     }
+    siteMenu.insertBefore(homeLink, socialsLink);
   }
 
   /* Replace the site's old projects navigation action with the FAQ while
