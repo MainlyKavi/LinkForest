@@ -1,0 +1,212 @@
+/* Interaction-only Liquid Glass enhancement for the site's existing controls. */
+.liquid-glass-control{
+  --lg-highlight-x:50%;
+  --lg-highlight-y:35%;
+  transform-origin:center;
+  -webkit-tap-highlight-color:transparent;
+}
+
+.liquid-glass-control.is-lg-animating{
+  will-change:translate, scale;
+}
+
+/* Existing foreground content stays above every optical layer and remains crisp. */
+.liquid-glass-control .lens-content,
+.liquid-glass-control > svg,
+.liquid-glass-control > .app-icon,
+.liquid-glass-control > .app-label{
+  position:relative;
+  z-index:3;
+}
+
+/* Retire the old content tilt; the new response lives in the glass body. */
+.liquid-glass-control .lens-content{
+  transform:none !important;
+}
+
+/* Directional, pointer-smoothed specular light for controls using .glass. */
+.liquid-glass-control.glass::after{
+  background:
+    radial-gradient(circle 72px at var(--lg-highlight-x) var(--lg-highlight-y),
+      rgba(255,255,255,.34), rgba(255,255,255,.10) 34%, transparent 68%);
+  background-position:center;
+  background-size:auto;
+  animation:none !important;
+  transition:opacity .18s var(--ease);
+}
+
+.liquid-glass-control.glass.is-lg-hovered::after,
+.liquid-glass-control.glass.is-lg-pressed::after,
+.liquid-glass-control.glass:focus-visible::after{
+  opacity:.72;
+}
+
+.liquid-glass-control.glass.is-lg-hovered::before,
+.liquid-glass-control.glass.is-lg-pressed::before,
+.liquid-glass-control.glass:focus-visible::before{
+  background:radial-gradient(ellipse 86% 74% at var(--lg-highlight-x) var(--lg-highlight-y),
+    rgba(255,255,255,.95), rgba(255,255,255,.18) 42%, transparent 72%);
+}
+
+/* Icon buttons do not use .glass, so give them the same restrained light layers. */
+.liquid-glass-control.icon-btn::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:2;
+  border-radius:inherit;
+  padding:1px;
+  background:radial-gradient(ellipse 90% 78% at var(--lg-highlight-x) var(--lg-highlight-y),
+    rgba(255,255,255,.92), rgba(255,255,255,.14) 42%, transparent 72%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+          mask-composite:exclude;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .18s var(--ease);
+}
+
+.liquid-glass-control.icon-btn::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:2;
+  border-radius:inherit;
+  background:radial-gradient(circle 58px at var(--lg-highlight-x) var(--lg-highlight-y),
+    rgba(255,255,255,.30), rgba(255,255,255,.08) 38%, transparent 70%);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .18s var(--ease);
+}
+
+.liquid-glass-control.icon-btn.is-lg-hovered::before,
+.liquid-glass-control.icon-btn.is-lg-hovered::after,
+.liquid-glass-control.icon-btn.is-lg-pressed::before,
+.liquid-glass-control.icon-btn.is-lg-pressed::after,
+.liquid-glass-control.icon-btn:focus-visible::before,
+.liquid-glass-control.icon-btn:focus-visible::after{
+  opacity:.64;
+}
+
+/* The cards already have separate fill/specular/rim layers; only their light source changes. */
+.liquid-glass-control .lens-specular{
+  background:radial-gradient(circle 105px at var(--lg-highlight-x) var(--lg-highlight-y),
+    rgba(255,255,255,.30), rgba(255,255,255,.08) 40%, transparent 72%);
+  transition:opacity .18s var(--ease);
+}
+
+.liquid-glass-control.is-lg-hovered .lens-rim,
+.liquid-glass-control.is-lg-pressed .lens-rim,
+.liquid-glass-control:focus-visible .lens-rim{
+  background:radial-gradient(ellipse 92% 80% at var(--lg-highlight-x) var(--lg-highlight-y),
+    rgba(255,255,255,.92), rgba(255,255,255,.16) 44%, transparent 74%);
+}
+
+.liquid-glass-control .lens-rim::after{
+  animation:none !important;
+  opacity:0 !important;
+}
+
+/* Social tiles reuse their existing pseudo layer as a moving specular reflection. */
+.liquid-glass-control.social-tile::after{
+  background:radial-gradient(circle 78px at var(--lg-highlight-x) var(--lg-highlight-y),
+    rgba(255,255,255,.30), rgba(255,255,255,.07) 42%, transparent 72%);
+  background-position:center;
+  background-size:auto;
+  animation:none !important;
+}
+
+.liquid-glass-control.social-tile.is-lg-hovered::after,
+.liquid-glass-control.social-tile.is-lg-pressed::after,
+.liquid-glass-control.social-tile:focus-visible::after{
+  opacity:.58;
+}
+
+.liquid-glass-control.social-tile:hover .app-icon,
+.liquid-glass-control.social-tile:focus-visible .app-icon{
+  transform:scale(1.018);
+}
+
+/* Pressing flattens the bevel and pulls the ambient shadow into a contact shadow. */
+.liquid-glass-control.glass.is-lg-pressed,
+.liquid-glass-control.icon-btn.is-lg-pressed{
+  box-shadow:
+    0 .5px 0 rgba(255,255,255,.34) inset,
+    0 -1px 0 rgba(0,0,0,.14) inset,
+    inset 0 0 12px var(--glass-inner-glow),
+    0 3px 8px rgba(0,0,0,.26),
+    0 1px 2px rgba(0,0,0,.20);
+}
+
+.liquid-glass-control.link-card.is-lg-pressed,
+.liquid-glass-control.project-card.is-lg-pressed,
+.liquid-glass-control.social-tile.is-lg-pressed{
+  box-shadow:
+    0 3px 9px rgba(0,0,0,.25),
+    0 1px 2px rgba(0,0,0,.20),
+    0 .5px 0 rgba(255,255,255,.28) inset;
+}
+
+.liquid-glass-control.is-lg-pressed .lens-fill{
+  box-shadow:
+    0 .5px 0 rgba(255,255,255,.32) inset,
+    0 -1px 0 rgba(0,0,0,.14) inset,
+    inset 0 0 12px var(--glass-inner-glow);
+}
+
+/* Prevent the former :active shrink from multiplying the spring compression. */
+.liquid-glass-control.pill-btn:active,
+.liquid-glass-control.icon-btn:active,
+.liquid-glass-control.link-card:active,
+.liquid-glass-control.project-card:active,
+.liquid-glass-control.social-tile:active,
+.liquid-glass-control.brand-pill:active{
+  transform:none;
+}
+
+/* Refraction strengthens on hover and flattens with the material on press. */
+@supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .liquid-glass-control.is-lg-hovered:not(.is-lg-pressed),
+  .liquid-glass-control:focus-visible:not(.is-lg-pressed){
+    backdrop-filter:blur(12px) saturate(calc(var(--glass-sat) + 12%)) contrast(var(--glass-contrast));
+    -webkit-backdrop-filter:blur(12px) saturate(calc(var(--glass-sat) + 12%)) contrast(var(--glass-contrast));
+  }
+
+  .liquid-glass-control.is-lg-pressed{
+    backdrop-filter:blur(7px) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
+    -webkit-backdrop-filter:blur(7px) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
+  }
+}
+
+@supports ((backdrop-filter:url(#a)) or (-webkit-backdrop-filter:url(#a))){
+  @media (min-width:601px){
+    .liquid-glass-control.is-lg-hovered:not(.is-lg-pressed),
+    .liquid-glass-control:focus-visible:not(.is-lg-pressed){
+      backdrop-filter:url(#liquidButtonLens) blur(12px) saturate(calc(var(--glass-sat) + 12%)) contrast(var(--glass-contrast));
+      -webkit-backdrop-filter:url(#liquidButtonLens) blur(12px) saturate(calc(var(--glass-sat) + 12%)) contrast(var(--glass-contrast));
+    }
+
+    .liquid-glass-control.is-lg-pressed{
+      backdrop-filter:url(#liquidButtonLens) blur(7px) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
+      -webkit-backdrop-filter:url(#liquidButtonLens) blur(7px) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
+    }
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  .liquid-glass-control{
+    transition:scale .1s ease-out, background .15s ease-out, box-shadow .15s ease-out;
+  }
+
+  .liquid-glass-control.is-lg-pressed{
+    scale:.99;
+  }
+
+  .liquid-glass-control .lens-specular,
+  .liquid-glass-control.glass::after,
+  .liquid-glass-control.icon-btn::after,
+  .liquid-glass-control.social-tile::after{
+    display:block;
+    background:linear-gradient(145deg, rgba(255,255,255,.18), transparent 55%);
+  }
+}
