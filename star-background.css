@@ -1,6 +1,6 @@
-/* Star 01 background. Portrait original on phones, generated widescreen version on larger screens. */
+/* Star 01 background. Moonlit portrait on phones, matching widescreen version on larger screens. */
 :root{
-  --star-bg-mobile:url("/assets/star-bg.jpg");
+  --star-bg-mobile:url("/assets/star-bg-mobile.webp");
   --star-bg-desktop:url("/assets/star-bg-desktop.webp");
   --star-bg:var(--star-bg-mobile);
   --star-bg-shift:0px;
