@@ -84,3 +84,27 @@ body{background:#080b09}
 .backdrop::after{background:radial-gradient(circle at 50% 38%,transparent 0%,rgba(0,0,0,.06) 48%,rgba(0,0,0,.22) 100%),linear-gradient(180deg,rgba(2,5,3,.12) 0%,rgba(2,5,3,.20) 50%,rgba(1,3,2,.42) 100%)}
 .orb{display:none}
 @media (min-width:700px){.backdrop-layer{background-position:center center;transform:scale(1.01);filter:none}}
+
+/* FAQ is intentionally dark-only. Keep the rest of the site theme preference untouched. */
+html[data-theme="light"]{
+  --bg-tint-a:rgba(8,16,30,.08);--bg-tint-b:rgba(4,8,16,.40);
+  --text:rgba(244,248,247,.96);--text-dim:rgba(244,248,247,.68);--text-faint:rgba(244,248,247,.46);
+  --accent:#BFE0FF;--accent-solid:#6FA8DC;
+  --glass-fill:rgba(255,255,255,.10);--glass-fill-soft:rgba(255,255,255,.06);--glass-fill-deep:rgba(255,255,255,.16);
+  --glass-fill-hover:rgba(255,255,255,.20);--glass-fill-hover-deep:rgba(255,255,255,.30);
+  --glass-edge:rgba(255,255,255,.55);--glass-edge-mid:rgba(255,255,255,.28);--glass-edge-faint:rgba(255,255,255,.06);--glass-edge-soft:rgba(255,255,255,.10);
+  --glass-tint:rgba(140,170,255,.04);--glass-inner-glow:rgba(255,255,255,.10);--glass-inner-glow-hover:rgba(255,255,255,.16);
+  --glass-shadow:0 20px 60px rgba(0,0,0,.32),0 1px 3px rgba(0,0,0,.25);--glass-contrast:108%;
+}
+html[data-theme="light"] .faq-toggle:hover,html[data-theme="light"] .faq-toggle:focus-visible,html[data-theme="light"] .faq-item.is-open .faq-toggle{background:rgba(255,255,255,.07)}
+.theme-toggle{display:none!important}
+.closing.reveal{animation:none;opacity:1;transform:none}
+.closing-line{margin-bottom:0}
+.brand-pill{
+  position:fixed;top:16px;right:max(16px,calc((100vw - var(--max-w))/2 + 16px));z-index:21;
+  width:42px;height:42px;min-width:42px;padding:0;gap:0;border-radius:50%;font-size:0;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23F4F8F7' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 10.8 12 3l9 7.8'/%3E%3Cpath d='M5.5 9.7V21h13V9.7'/%3E%3Cpath d='M9.5 21v-6h5v6'/%3E%3C/svg%3E") center/18px 18px no-repeat,
+    linear-gradient(165deg,var(--glass-fill-deep),var(--glass-fill) 45%,var(--glass-fill-soft)),var(--glass-tint);
+}
+.brand-pill svg{display:none}
