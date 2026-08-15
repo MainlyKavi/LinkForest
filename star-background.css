@@ -1,13 +1,13 @@
-/* Star 01 background override. Keeps the secret page on the shared MainlyKavi system while using its own photo. */
+/* Star 01 background. Portrait original on phones, generated widescreen version on larger screens. */
 :root{
   --star-bg-mobile:url("/assets/star-bg.jpg");
   --star-bg-desktop:url("/assets/star-bg-desktop.webp");
   --star-bg:var(--star-bg-mobile);
+  --star-bg-shift:0px;
+  --star-overlay-opacity:.68;
 }
 
-.backdrop{
-  background:#070707;
-}
+.backdrop{background:#070707}
 
 .backdrop::before{
   content:"";
@@ -19,7 +19,7 @@
   background-repeat:no-repeat;
   transform:scale(1.06);
   filter:blur(30px) brightness(.42) saturate(.82);
-  opacity:.62;
+  opacity:.48;
 }
 
 .backdrop-layer.day,
@@ -33,39 +33,38 @@
   background-repeat:no-repeat;
   background-size:cover;
   opacity:1;
-  transform:scale(1.012);
+  transform:translate3d(0,var(--star-bg-shift),0) scale(1.045);
   filter:none;
   transition:none;
+  will-change:transform;
 }
-
-/* Only one photographic layer is needed because the page theme changes the glass, not the sky. */
 .backdrop-layer.night{display:none}
 
 .backdrop::after{
+  content:"";
+  position:absolute;
+  inset:0;
   background:
-    radial-gradient(circle at 50% 35%, rgba(0,0,0,0) 0%, rgba(0,0,0,.05) 46%, rgba(0,0,0,.30) 100%),
-    linear-gradient(180deg, rgba(3,3,5,.10) 0%, rgba(3,3,5,.18) 34%, rgba(2,3,6,.52) 100%);
+    radial-gradient(circle at 50% 32%,rgba(0,0,0,0) 0%,rgba(0,0,0,.08) 52%,rgba(0,0,0,.34) 100%),
+    linear-gradient(180deg,rgba(3,3,5,.11) 0%,rgba(3,3,5,.20) 38%,rgba(2,3,6,.55) 100%);
+  opacity:var(--star-overlay-opacity);
+  transition:opacity .18s linear;
 }
+.orb{opacity:.055}
+.grain{opacity:.06}
 
-.orb{opacity:.09}
-.grain{opacity:.075}
-
-@media (min-width:700px){
+@media(min-width:700px){
   :root{--star-bg:var(--star-bg-desktop)}
   .backdrop::before{display:none}
-  .backdrop-layer.day{
-    background-size:cover;
-    background-position:center center;
-    background-color:#070707;
-  }
+  .backdrop-layer.day{background-position:center center}
 }
-
-@media (max-width:699px){
+@media(max-width:699px){
   :root{--star-bg:var(--star-bg-mobile)}
-  .backdrop-layer.day{background-size:cover}
   .backdrop::before{display:none}
+  .backdrop-layer.day{background-position:center center}
 }
-
-@media (prefers-reduced-motion:reduce){
-  .backdrop-layer.day{transform:none}
+@media(prefers-reduced-motion:reduce){
+  :root{--star-bg-shift:0px!important}
+  .backdrop-layer.day{transform:scale(1.035);will-change:auto}
+  .backdrop::after{transition:none}
 }
