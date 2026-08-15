@@ -1,0 +1,63 @@
+/* Star 01 background override. Keeps the secret page on the shared MainlyKavi system while using its own photo. */
+:root{--star-bg:url("/assets/star-bg.jpg")}
+
+.backdrop{
+  background:#070707;
+}
+
+/* A soft, enlarged copy fills the outer edges on wide screens without stretching the portrait photo. */
+.backdrop::before{
+  content:"";
+  position:absolute;
+  inset:-6%;
+  background-image:var(--star-bg);
+  background-size:cover;
+  background-position:center center;
+  background-repeat:no-repeat;
+  transform:scale(1.06);
+  filter:blur(30px) brightness(.42) saturate(.82);
+  opacity:.62;
+}
+
+.backdrop-layer.day,
+.backdrop-layer.night,
+[data-theme="dark"] .backdrop-layer.day,
+[data-theme="dark"] .backdrop-layer.night,
+[data-theme="light"] .backdrop-layer.day,
+[data-theme="light"] .backdrop-layer.night{
+  background-image:var(--star-bg);
+  background-position:center center;
+  background-repeat:no-repeat;
+  opacity:1;
+  transform:scale(1.012);
+  filter:none;
+  transition:none;
+}
+
+/* Only one photographic layer is needed because the page theme now changes the glass, not the sky. */
+.backdrop-layer.night{display:none}
+
+.backdrop::after{
+  background:
+    radial-gradient(circle at 50% 35%, rgba(0,0,0,0) 0%, rgba(0,0,0,.05) 46%, rgba(0,0,0,.30) 100%),
+    linear-gradient(180deg, rgba(3,3,5,.10) 0%, rgba(3,3,5,.18) 34%, rgba(2,3,6,.52) 100%);
+}
+
+.orb{opacity:.09}
+.grain{opacity:.075}
+
+@media (min-width:700px){
+  .backdrop-layer.day{
+    background-size:auto 100%;
+    background-color:rgba(5,5,7,.42);
+  }
+}
+
+@media (max-width:699px){
+  .backdrop-layer.day{background-size:cover}
+  .backdrop::before{display:none}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .backdrop-layer.day{transform:none}
+}
