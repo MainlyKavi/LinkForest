@@ -3,20 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>404 — MainlyKavi</title>
+<title>bro where are you</title>
 <meta name="robots" content="noindex">
-<meta name="description" content="This MainlyKavi page wandered off somewhere.">
+<meta name="description" content="there's literally nothing here.">
 <script>
 (function(){
   try{
-    var saved = window.localStorage && localStorage.getItem('mainlykavi-theme');
-    document.documentElement.setAttribute('data-theme', (saved === 'light' || saved === 'dark') ? saved : 'light');
-  } catch(e){
-    document.documentElement.setAttribute('data-theme', 'light');
+    var saved=window.localStorage&&localStorage.getItem('mainlykavi-theme');
+    document.documentElement.setAttribute('data-theme',(saved==='light'||saved==='dark')?saved:'light');
+  }catch(e){
+    document.documentElement.setAttribute('data-theme','light');
   }
 })();
 </script>
-<noscript><style>#menuBtn{display:none!important}.enter-code,.enter-title,.enter-copy,.enter-actions{opacity:1!important;transform:none!important}</style></noscript>
+<noscript>
+<style>
+  #menuBtn{display:none!important}
+  .enter-code,.enter-copy,.enter-actions{opacity:1!important;transform:none!important;filter:none!important}
+</style>
+</noscript>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -28,9 +33,9 @@
 <script defer src="/liquid-glass-buttons.js"></script>
 </head>
 <body>
-<svg style="position:absolute;width:0;height:0" aria-hidden="true">
+<svg class="filter-defs" aria-hidden="true" focusable="false">
   <filter id="liquidButtonLens" primitiveUnits="objectBoundingBox" x="-.1" y="-.1" width="1.2" height="1.2">
-    <feImage result="buttonLensMap" href="assets/liquid-button-lens.svg" preserveAspectRatio="none" x="0" y="0" width="1" height="1"/>
+    <feImage result="buttonLensMap" href="/assets/liquid-button-lens.svg" preserveAspectRatio="none" x="0" y="0" width="1" height="1"/>
     <feDisplacementMap in="SourceGraphic" in2="buttonLensMap" scale=".045" xChannelSelector="R" yChannelSelector="R"/>
   </filter>
   <filter id="grainNoise"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" stitchTiles="stitch" result="noise"/><feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"/></filter>
@@ -40,6 +45,7 @@
 <div class="backdrop" aria-hidden="true">
   <div class="backdrop-layer day"></div>
   <div class="backdrop-layer night"></div>
+  <div class="atmosphere"></div>
   <div class="grain-coarse"></div>
   <div class="grain"></div>
 </div>
@@ -51,7 +57,7 @@
     </button>
     <div class="topbar-right">
       <a class="pill-btn glass" href="/" aria-label="Back to home">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.8 12 3l9 7.8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.8 12 3l9 7.8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>
       </a>
     </div>
   </header>
@@ -70,35 +76,51 @@
     <a class="menu-link" href="mailto:mainlykavii@gmail.com?subject=Work%20%2F%20Collab">Work/Collab</a>
   </nav>
 
-  <main class="error-main">
-    <section class="error-card" aria-labelledby="errorTitle">
-      <div class="error-stage" id="errorStage">
-        <button class="error-code enter-code" id="errorCode" data-code="404" type="button" aria-label="404 page not found">404</button>
-      </div>
-      <h1 class="error-title enter-title" id="errorTitle">you found nothing. impressive.</h1>
-      <p class="error-copy enter-copy" id="supportLine" aria-live="polite">Either this page disappeared, never existed, or you typed something questionable.</p>
+  <main class="error-main" id="errorMain">
+    <section class="hero" aria-labelledby="errorTitle">
+      <div class="hero-content">
+        <div class="error-stage enter-code" id="errorStage">
+          <button class="optical-404" id="errorCode" type="button" aria-label="404 page not found">
+            <span class="digit digit-four" data-char="4"><span class="digit-face">4</span></span>
+            <span class="digit digit-zero" id="zeroDigit" data-char="0"><span class="digit-face">0</span></span>
+            <span class="digit digit-four" data-char="4"><span class="digit-face">4</span></span>
+          </button>
+          <p class="code-feedback" id="codeFeedback" aria-live="polite"></p>
+        </div>
 
-      <div class="error-actions enter-actions">
-        <div class="home-button-wrap">
-          <a class="error-home" id="homeButton" href="/">Go back home</a>
+        <div class="copy-block enter-copy">
+          <h1 class="error-title" id="errorTitle">bro where are you going</h1>
+          <p class="error-subtitle">there's literally nothing here.</p>
+          <p class="error-explanation">either i deleted this page, you typed something wrong, or you're just clicking random stuff again.</p>
         </div>
-        <button class="explore-toggle" id="exploreToggle" type="button" aria-expanded="false" aria-controls="exploreOptions">or keep exploring →</button>
-        <div class="explore-options" id="exploreOptions" aria-hidden="true" inert>
-          <div class="explore-options-inner">
-            <a class="explore-option" href="/socials">All my socials</a>
-            <a class="explore-option" href="/faq">Frequently Irrelevant Questions</a>
+
+        <div class="error-actions enter-actions">
+          <div class="home-button-wrap">
+            <a class="error-home glass" id="homeButton" href="/">take me home</a>
           </div>
+          <button class="wander-toggle" id="wanderToggle" type="button" aria-describedby="wanderMessage">nah let me look around</button>
+          <p class="wander-message" id="wanderMessage" aria-live="polite"></p>
+          <p class="scroll-hint" id="scrollHint" aria-hidden="true">okay then ↓</p>
         </div>
+      </div>
+    </section>
+
+    <section class="wander" id="wanderSection" aria-hidden="true" inert>
+      <div class="wander-spacer" aria-hidden="true">
+        <span class="drift-note drift-note-one">still looking?</span>
+        <span class="drift-note drift-note-two">respectfully, why</span>
+      </div>
+      <div class="wander-end">
+        <p class="wander-end-title">you actually scrolled all the way down here</p>
+        <p class="wander-end-copy">i respect the commitment.</p>
+        <a class="error-home glass wander-home" href="/">go home now</a>
+        <p class="secret-teaser">★ not everything hidden is an error.</p>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <a class="brand-pill glass" href="mailto:mainlykavii@gmail.com?subject=Are%20you%20open%20to%20sponsorships%3F&body=Hi%20Kavi%2C%0A%0AI%27d%20like%20to%20discuss%20a%20sponsorship%20opportunity%20with%20you..." aria-label="Email MainlyKavi about collaborations">
-      Open for collabs
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-    </a>
-    <p class="footer">© <span id="copyrightYear">2026</span> MainlyKavi</p>
+    <p class="footer">© <span id="copyrightYear">2026</span> MainlyKavi ★</p>
   </footer>
 </div>
 
@@ -111,6 +133,7 @@
   var scrim=document.getElementById('menuScrim');
   var closeBtn=document.getElementById('menuCloseBtn');
   var scrimTimer;
+
   function openMenu(){
     if(!menuBtn||!panel||!scrim||!closeBtn)return;
     clearTimeout(scrimTimer);
@@ -136,97 +159,167 @@
     menuBtn.addEventListener('click',openMenu);
     closeBtn.addEventListener('click',function(){closeMenu(true)});
     scrim.addEventListener('click',function(){closeMenu(true)});
-    document.addEventListener('keydown',function(event){if(event.key==='Escape'&&panel.classList.contains('open')){event.preventDefault();closeMenu(true)}});
-  }
-
-  var exploreToggle=document.getElementById('exploreToggle');
-  var exploreOptions=document.getElementById('exploreOptions');
-  if(exploreToggle&&exploreOptions){
-    exploreToggle.addEventListener('click',function(){
-      var opening=exploreToggle.getAttribute('aria-expanded')!=='true';
-      exploreToggle.setAttribute('aria-expanded',String(opening));
-      exploreOptions.classList.toggle('is-open',opening);
-      exploreOptions.setAttribute('aria-hidden',String(!opening));
-      if(opening)exploreOptions.removeAttribute('inert');
-      else exploreOptions.setAttribute('inert','');
-    });
-  }
-
-  var normalCopy='Either this page disappeared, never existed, or you typed something questionable.';
-  var eggCopy="okay now you're just clicking things.";
-  var errorCode=document.getElementById('errorCode');
-  var supportLine=document.getElementById('supportLine');
-  var codeClicks=0;
-  if(errorCode&&supportLine){
-    errorCode.addEventListener('click',function(){
-      codeClicks+=1;
-      if(codeClicks===4)supportLine.textContent=eggCopy;
-      else if(codeClicks>=5){supportLine.textContent=normalCopy;codeClicks=0}
+    document.addEventListener('keydown',function(event){
+      if(event.key==='Escape'&&panel.classList.contains('open')){
+        event.preventDefault();
+        closeMenu(true);
+      }
     });
   }
 
   var reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
   var finePointer=window.matchMedia('(hover: hover) and (pointer: fine)');
   var errorStage=document.getElementById('errorStage');
-  var parallaxTimer=0;
-  if(errorCode&&errorStage){
+  var errorCode=document.getElementById('errorCode');
+  var zeroDigit=document.getElementById('zeroDigit');
+  var codeFeedback=document.getElementById('codeFeedback');
+  var codeClicks=0;
+  var feedbackTimer=0;
+  var slipTimer=0;
+
+  function showCodeFeedback(text,duration){
+    if(!codeFeedback)return;
+    clearTimeout(feedbackTimer);
+    codeFeedback.textContent=text;
+    codeFeedback.classList.add('show');
+    feedbackTimer=setTimeout(function(){codeFeedback.classList.remove('show')},duration||1350);
+  }
+
+  if(errorCode){
+    errorCode.addEventListener('click',function(){
+      codeClicks+=1;
+      if(codeClicks===3)showCodeFeedback('still 404');
+      if(codeClicks===5)showCodeFeedback('what are you trying to accomplish',1550);
+      if(codeClicks===8){
+        showCodeFeedback('fine',1100);
+        if(zeroDigit&&!reduced.matches){
+          clearTimeout(slipTimer);
+          zeroDigit.classList.remove('is-slipping');
+          void zeroDigit.offsetWidth;
+          zeroDigit.classList.add('is-slipping');
+          slipTimer=setTimeout(function(){zeroDigit.classList.remove('is-slipping')},760);
+        }
+        codeClicks=0;
+      }
+    });
+  }
+
+  if(errorStage&&errorCode){
     errorStage.addEventListener('pointermove',function(event){
       if(reduced.matches||!finePointer.matches)return;
       var rect=errorStage.getBoundingClientRect();
-      var nx=((event.clientX-rect.left)/rect.width-.5)*2;
-      var ny=((event.clientY-rect.top)/rect.height-.5)*2;
-      errorCode.style.setProperty('--code-x',(nx*3.2).toFixed(2)+'px');
-      errorCode.style.setProperty('--code-y',(ny*2.1).toFixed(2)+'px');
-      errorCode.style.setProperty('--code-rx',(-ny*.55).toFixed(2)+'deg');
-      errorCode.style.setProperty('--code-ry',(nx*.7).toFixed(2)+'deg');
-      errorCode.classList.add('is-parallaxing');
-      clearTimeout(parallaxTimer);
-      parallaxTimer=setTimeout(function(){errorCode.classList.remove('is-parallaxing')},140);
+      var nx=Math.max(-1,Math.min(1,((event.clientX-rect.left)/rect.width-.5)*2));
+      var ny=Math.max(-1,Math.min(1,((event.clientY-rect.top)/rect.height-.5)*2));
+      errorCode.style.setProperty('--code-x',(nx*2.4).toFixed(2)+'px');
+      errorCode.style.setProperty('--code-y',(ny*1.7).toFixed(2)+'px');
+      errorCode.style.setProperty('--code-rx',(-ny*.38).toFixed(2)+'deg');
+      errorCode.style.setProperty('--code-ry',(nx*.52).toFixed(2)+'deg');
+      errorCode.style.setProperty('--shine-x',((nx*.16+.5)*100).toFixed(1)+'%');
+      errorCode.style.setProperty('--shine-y',((ny*.12+.42)*100).toFixed(1)+'%');
+      errorCode.style.setProperty('--refract-x',(nx*1.5).toFixed(2)+'px');
+      errorCode.style.setProperty('--refract-y',(ny*1.1).toFixed(2)+'px');
     },{passive:true});
     errorStage.addEventListener('pointerleave',function(){
       errorCode.style.setProperty('--code-x','0px');
       errorCode.style.setProperty('--code-y','0px');
       errorCode.style.setProperty('--code-rx','0deg');
       errorCode.style.setProperty('--code-ry','0deg');
-      errorCode.classList.remove('is-parallaxing');
+      errorCode.style.setProperty('--shine-x','50%');
+      errorCode.style.setProperty('--shine-y','40%');
+      errorCode.style.setProperty('--refract-x','0px');
+      errorCode.style.setProperty('--refract-y','0px');
     });
   }
 
-  var homeButton=document.getElementById('homeButton');
-  function setButtonPointer(event){
-    if(!homeButton)return;
-    var rect=homeButton.getBoundingClientRect();
-    if(!rect.width||!rect.height)return;
-    var x=Math.max(0,Math.min(1,(event.clientX-rect.left)/rect.width));
-    var y=Math.max(0,Math.min(1,(event.clientY-rect.top)/rect.height));
-    homeButton.style.setProperty('--lg-x',(x*100).toFixed(1)+'%');
-    homeButton.style.setProperty('--lg-y',(y*100).toFixed(1)+'%');
-    if(homeButton.classList.contains('is-pressed')){
-      homeButton.style.setProperty('--press-x',((x-.5)*2.2).toFixed(2)+'px');
-      homeButton.style.setProperty('--press-y',((y-.5)*1.25).toFixed(2)+'px');
+  var homeButtons=Array.prototype.slice.call(document.querySelectorAll('.error-home'));
+  homeButtons.forEach(function(button){
+    function updatePointer(event){
+      var rect=button.getBoundingClientRect();
+      if(!rect.width||!rect.height)return;
+      var x=Math.max(0,Math.min(1,(event.clientX-rect.left)/rect.width));
+      var y=Math.max(0,Math.min(1,(event.clientY-rect.top)/rect.height));
+      button.style.setProperty('--button-light-x',(x*100).toFixed(1)+'%');
+      button.style.setProperty('--button-light-y',(y*100).toFixed(1)+'%');
+      if(button.classList.contains('is-pressed')){
+        button.style.setProperty('--press-x',((x-.5)*2.0).toFixed(2)+'px');
+        button.style.setProperty('--press-y',((y-.5)*1.1).toFixed(2)+'px');
+      }
     }
-  }
-  function releaseHomeButton(){
-    if(!homeButton)return;
-    homeButton.classList.remove('is-pressed');
-    homeButton.style.setProperty('--press-x','0px');
-    homeButton.style.setProperty('--press-y','0px');
-  }
-  if(homeButton){
-    homeButton.addEventListener('pointermove',setButtonPointer,{passive:true});
-    homeButton.addEventListener('pointerdown',function(event){
+    function release(){
+      button.classList.remove('is-pressed');
+      button.style.setProperty('--press-x','0px');
+      button.style.setProperty('--press-y','0px');
+    }
+    button.addEventListener('pointermove',updatePointer,{passive:true});
+    button.addEventListener('pointerdown',function(event){
       if(event.button!==0)return;
-      setButtonPointer(event);
-      homeButton.classList.add('is-pressed');
-      try{homeButton.setPointerCapture(event.pointerId)}catch(e){}
+      updatePointer(event);
+      button.classList.add('is-pressed');
+      try{button.setPointerCapture(event.pointerId)}catch(e){}
     });
-    homeButton.addEventListener('pointerup',releaseHomeButton);
-    homeButton.addEventListener('pointercancel',releaseHomeButton);
-    homeButton.addEventListener('lostpointercapture',releaseHomeButton);
-    homeButton.addEventListener('pointerleave',function(){
-      if(!homeButton.classList.contains('is-pressed')){
-        homeButton.style.setProperty('--lg-x','50%');
-        homeButton.style.setProperty('--lg-y','36%');
+    button.addEventListener('pointerup',release);
+    button.addEventListener('pointercancel',release);
+    button.addEventListener('lostpointercapture',release);
+    button.addEventListener('pointerleave',function(){
+      if(!button.classList.contains('is-pressed')){
+        button.style.setProperty('--button-light-x','38%');
+        button.style.setProperty('--button-light-y','22%');
+      }
+    });
+  });
+
+  var wanderToggle=document.getElementById('wanderToggle');
+  var wanderMessage=document.getElementById('wanderMessage');
+  var wanderSection=document.getElementById('wanderSection');
+  var scrollHint=document.getElementById('scrollHint');
+  var wanderCount=0;
+  var wanderMessages=[
+    "there's nothing here.",
+    'i literally just told you.',
+    'bro.',
+    'okay fine'
+  ];
+  if(wanderToggle&&wanderMessage&&wanderSection){
+    wanderToggle.addEventListener('click',function(){
+      if(wanderCount<4)wanderCount+=1;
+      wanderMessage.textContent=wanderMessages[wanderCount-1]||wanderMessages[3];
+      wanderMessage.classList.remove('pulse');
+      void wanderMessage.offsetWidth;
+      wanderMessage.classList.add('pulse');
+      if(wanderCount===4&&!wanderSection.classList.contains('is-revealed')){
+        wanderSection.classList.add('is-revealed');
+        wanderSection.setAttribute('aria-hidden','false');
+        wanderSection.removeAttribute('inert');
+        if(scrollHint){
+          scrollHint.classList.add('show');
+          scrollHint.setAttribute('aria-hidden','false');
+        }
+      }
+    });
+  }
+
+  var backdrop=document.querySelector('.backdrop');
+  var ticking=false;
+  function updateScene(){
+    ticking=false;
+    if(!backdrop||reduced.matches)return;
+    var y=Math.min(window.scrollY||0,3000);
+    document.documentElement.style.setProperty('--scene-y',(y*.012).toFixed(2)+'px');
+    document.documentElement.style.setProperty('--scene-light',(Math.min(y/2600,1)*100).toFixed(1)+'%');
+  }
+  window.addEventListener('scroll',function(){
+    if(reduced.matches||ticking)return;
+    ticking=true;
+    requestAnimationFrame(updateScene);
+  },{passive:true});
+
+  if(reduced.addEventListener){
+    reduced.addEventListener('change',function(){
+      if(reduced.matches){
+        document.documentElement.style.setProperty('--scene-y','0px');
+        document.documentElement.style.setProperty('--scene-light','0%');
+      }else{
+        updateScene();
       }
     });
   }
