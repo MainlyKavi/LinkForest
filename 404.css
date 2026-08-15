@@ -29,7 +29,6 @@
   --bg-day:var(--bg-day-mobile);
   --bg-night:var(--bg-night-mobile);
   --scene-y:0px;
-  --scene-light:0%;
 }
 [data-theme="light"]{
   --text:rgba(255,255,255,.98);
@@ -87,7 +86,7 @@ button,a{-webkit-tap-highlight-color:transparent}
   background-size:cover;
   background-repeat:no-repeat;
   background-position:58% 24%;
-  transform:translate3d(0,calc(var(--scene-y) * -.55),0) scale(1.045);
+  transform:translate3d(0,var(--scene-y),0) scale(1.045);
   transition:opacity 1.05s var(--ease);
 }
 .backdrop-layer.day{background-image:var(--bg-day);opacity:0}
@@ -109,14 +108,14 @@ button,a{-webkit-tap-highlight-color:transparent}
   background:
     radial-gradient(circle at 18% 14%,rgba(185,224,255,.18),transparent 29%),
     radial-gradient(circle at 76% 27%,rgba(255,188,226,.10),transparent 25%);
-  opacity:calc(.28 + var(--scene-light) * .0008);
-  transform:translate3d(0,calc(var(--scene-y) * -.20),0);
+  opacity:.28;
+  transform:translate3d(0,var(--scene-y),0);
   animation:atmosphericDrift 18s ease-in-out infinite alternate;
   mix-blend-mode:screen;
 }
 @keyframes atmosphericDrift{
-  from{transform:translate3d(-5px,calc(var(--scene-y) * -.20),0)}
-  to{transform:translate3d(7px,calc(var(--scene-y) * -.20 - 3px),0)}
+  from{translate:-5px 0}
+  to{translate:7px -3px}
 }
 .grain,.grain-coarse{
   position:absolute;
@@ -174,7 +173,7 @@ button,a{-webkit-tap-highlight-color:transparent}
   right:0;
   z-index:30;
   width:100%;
-  padding:0 max(24px,calc((100vw - 1440px)/2 + 32px));
+  padding:0 clamp(24px,4vw,64px);
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -388,7 +387,7 @@ button.pill-btn{appearance:none;-webkit-appearance:none}
       rgba(255,255,255,.48) 100%);
   -webkit-background-clip:text;
   background-clip:text;
-  transform:translate3d(calc(var(--refract-x) * -.28),calc(var(--refract-y) * -.24),2px);
+  transform:translate3d(var(--refract-x),var(--refract-y),2px);
   opacity:.74;
 }
 .digit-zero{
@@ -646,7 +645,7 @@ button.pill-btn{appearance:none;-webkit-appearance:none}
   :root{--bg-day:var(--bg-day-desktop);--bg-night:var(--bg-night-desktop)}
 }
 @media (min-width:1500px){
-  .backdrop-layer{background-position:60% 46%;transform:translate3d(0,calc(var(--scene-y) * -.55),0) scale(1.025)}
+  .backdrop-layer{background-position:60% 46%;transform:translate3d(0,var(--scene-y),0) scale(1.025)}
   .hero-content{margin-left:clamp(7vw,10vw,13vw)}
 }
 @media (max-width:1180px){
@@ -671,7 +670,7 @@ button.pill-btn{appearance:none;-webkit-appearance:none}
 @media (max-width:700px){
   .backdrop-layer{
     background-position:56% 14%;
-    transform:translate3d(0,calc(var(--scene-y) * -.25),0) scale(1.025);
+    transform:translate3d(0,var(--scene-y),0) scale(1.025);
   }
   .backdrop::after{
     background:
