@@ -1,6 +1,10 @@
 (function(){
   'use strict';
 
+  var faqLabel = 'Frequently Irrelevant Questions';
+  var faqSubtitle = 'everything you didn’t need to know about me.';
+  var faqPath = window.location.pathname === '/faq' || window.location.pathname === '/faq.html';
+
   /* Give every shared site menu an explicit Home destination above the other links. */
   var siteMenu = document.getElementById('menuPanel');
   var socialsLink = siteMenu && siteMenu.querySelector('.menu-link[href="/socials"]');
@@ -15,12 +19,32 @@
     siteMenu.insertBefore(homeLink, socialsLink);
   }
 
+  /* Keep the FAQ label consistent everywhere the shared menu appears. */
+  Array.prototype.forEach.call(document.querySelectorAll('.menu-link[href="/faq"]'), function(link){
+    link.textContent = faqLabel;
+  });
+
+  /* Update the FAQ page copy and page/social metadata. */
+  if (faqPath){
+    var faqTitleNode = document.querySelector('.faq-title');
+    var faqSubtitleNode = document.querySelector('.faq-subtitle');
+    if (faqTitleNode) faqTitleNode.textContent = faqLabel;
+    if (faqSubtitleNode) faqSubtitleNode.textContent = faqSubtitle;
+    document.title = faqLabel + ' | MainlyKavi';
+    Array.prototype.forEach.call(document.querySelectorAll('meta[property="og:title"], meta[name="twitter:title"]'), function(meta){
+      meta.setAttribute('content', faqLabel + ' | MainlyKavi');
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('meta[name="description"], meta[property="og:description"], meta[name="twitter:description"]'), function(meta){
+      meta.setAttribute('content', faqSubtitle);
+    });
+  }
+
   /* Replace the site's old projects navigation action with the FAQ while
      preserving the projects page itself and every unrelated link. */
   Array.prototype.forEach.call(document.querySelectorAll('.menu-link[href="/projects"]'), function(link){
     if (link.textContent.trim() !== 'View all my projects') return;
     link.setAttribute('href', '/faq');
-    link.textContent = 'FAQ nobody asked for';
+    link.textContent = faqLabel;
   });
 
   /* The large projects card only exists on the homepage. Keep its existing
@@ -34,7 +58,7 @@
       if (!title || title.textContent.trim() !== 'View all my projects') return;
 
       link.setAttribute('href', '/faq');
-      title.textContent = 'FAQ nobody asked for';
+      title.textContent = faqLabel;
       var glyph = link.querySelector('.glyph');
       if (glyph){
         glyph.innerHTML =
