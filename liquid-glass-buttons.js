@@ -1,6 +1,38 @@
 (function(){
   'use strict';
 
+  /* Replace the site's old projects navigation action with the FAQ while
+     preserving the projects page itself and every unrelated link. */
+  Array.prototype.forEach.call(document.querySelectorAll('.menu-link[href="/projects"]'), function(link){
+    if (link.textContent.trim() !== 'View all my projects') return;
+    link.setAttribute('href', '/faq');
+    link.textContent = 'FAQ nobody asked for';
+  });
+
+  /* The large projects card only exists on the homepage. Keep its existing
+     Liquid Glass card structure and swap only its destination, label, and glyph. */
+  var homePath = window.location.pathname === '/' ||
+    window.location.pathname === '/index' ||
+    window.location.pathname === '/index.html';
+  if (homePath){
+    Array.prototype.forEach.call(document.querySelectorAll('a.link-card[href="/projects"]'), function(link){
+      var title = link.querySelector('.title');
+      if (!title || title.textContent.trim() !== 'View all my projects') return;
+
+      link.setAttribute('href', '/faq');
+      title.textContent = 'FAQ nobody asked for';
+      var glyph = link.querySelector('.glyph');
+      if (glyph){
+        glyph.innerHTML =
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
+          'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+          '<circle cx="12" cy="12" r="9"></circle>' +
+          '<path d="M9.8 9a2.35 2.35 0 0 1 4.55.8c0 1.8-2.35 2.1-2.35 3.7"></path>' +
+          '<path d="M12 17h.01"></path></svg>';
+      }
+    });
+  }
+
   var selector = '.pill-btn, .theme-toggle, .icon-btn, .link-card, .brand-pill, .social-tile, .project-card';
   var controls = Array.prototype.slice.call(document.querySelectorAll(selector));
   if (!controls.length) return;
