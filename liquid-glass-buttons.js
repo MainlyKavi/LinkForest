@@ -18,7 +18,6 @@
     var navItems = [
       { label:'Home', href:'/', route:'/' },
       { label:'Socials', href:'/socials', route:'/socials' },
-      { label:'Projects', href:'/projects', route:'/projects' },
       { label:'FAQ', href:'/faq', route:'/faq' },
       { label:'Work/Collab', href:'mailto:mainlykavii@gmail.com?subject=Work%20%2F%20Collab', route:null }
     ];
