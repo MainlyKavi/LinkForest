@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>★ you found something</title>
+<meta name="description" content="you found something on MainlyKavi.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#090909">
+<script>
+(function(){
+  try{
+    var saved=window.localStorage&&localStorage.getItem('mainlykavi-theme');
+    document.documentElement.setAttribute('data-theme',(saved==='light'||saved==='dark')?saved:'dark');
+  }catch(e){document.documentElement.setAttribute('data-theme','dark')}
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/star.css">
+<link rel="stylesheet" href="/star-background.css">
+<link rel="stylesheet" href="/liquid-glass-buttons.css">
+<script defer src="/liquid-glass-buttons.js"></script>
+<script defer src="/star.js"></script>
+</head>
+<body>
+<!-- you're really looking everywhere huh -->
+<svg style="position:absolute;width:0;height:0" aria-hidden="true">
+  <filter id="liquidButtonLens" primitiveUnits="objectBoundingBox" x="-0.1" y="-0.1" width="1.2" height="1.2">
+    <feImage result="buttonLensMap" href="/assets/liquid-button-lens.svg" preserveAspectRatio="none" x="0" y="0" width="1" height="1"/>
+    <feDisplacementMap in="SourceGraphic" in2="buttonLensMap" scale="0.045" xChannelSelector="R" yChannelSelector="R"/>
+  </filter>
+  <filter id="grainNoise"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" result="noise"/><feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"/></filter>
+</svg>
+
+<div class="backdrop" aria-hidden="true">
+  <div class="backdrop-layer day"></div>
+  <div class="backdrop-layer night"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="grain"></div>
+</div>
+
+<div class="topbar" id="topbar">
+  <button class="pill-btn glass" id="menuBtn" type="button" aria-label="Open menu" aria-haspopup="true" aria-expanded="false" aria-controls="menuPanel">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/></svg>
+  </button>
+  <div class="topbar-right">
+    <button class="theme-toggle glass" id="themeToggle" type="button" aria-label="Switch to light mode" aria-pressed="false">
+      <span class="knob">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0-15a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1Zm0 18a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0v-2a1 1 0 0 1 1-1Z"/></svg>
+      </span>
+    </button>
+  </div>
+</div>
+
+<div class="menu-scrim" id="menuScrim" hidden></div>
+<nav class="menu-panel" id="menuPanel" aria-label="Site menu" aria-hidden="true">
+  <div class="menu-panel-head">
+    <a class="menu-panel-title" href="/">MainlyKavi</a>
+    <button class="pill-btn glass" id="menuCloseBtn" type="button" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <a class="menu-link" href="/">Home</a>
+  <a class="menu-link" href="/socials">Socials</a>
+  <a class="menu-link" href="/faq">FAQ</a>
+  <a class="menu-link" href="mailto:mainlykavii@gmail.com?subject=Work%20%2F%20Collab">Work/Collab</a>
+</nav>
+
+<main class="secret-page">
+  <section class="secret-intro" aria-labelledby="introLineOne">
+    <button class="secret-star-button intro-beat beat-star" id="secretStar" type="button" aria-label="Star"><span aria-hidden="true">★</span></button>
+
+    <div class="intro-copy">
+      <p class="intro-beat beat-1" id="introLineOne">yo, i genuinely didn't expect anyone to find this.</p>
+      <p class="intro-beat beat-2">you're either extremely observant, extremely bored,<br class="desktop-break"> or you've been clicking random shit on my website.</p>
+      <p class="intro-beat beat-3">whichever one it was, hi.</p>
+      <p class="intro-beat beat-4">you found something.</p>
+      <p class="intro-beat beat-5">scroll a little.</p>
+      <p class="intro-beat beat-6">but before that,</p>
+      <p class="intro-beat beat-7 love-line">i love you, my lady.</p>
+    </div>
+
+    <p class="secret-star-reaction" id="secretStarReaction" aria-live="polite"></p>
+  </section>
+
+  <section class="section discovery-section" id="discoverySection" aria-labelledby="discoveryHeading">
+    <p class="section-kicker">okay so</p>
+    <div class="discovery-composition">
+      <p class="discovery-label" id="discoveryHeading">you were discovery</p>
+      <p class="discovery-number is-loading" id="discoveryNumber" aria-live="polite">#...</p>
+      <p class="discovery-subline" id="discoveryCountLine">checking how many people click random things...</p>
+      <p class="counter-error" id="counterError" role="status"></p>
+      <p class="return-line" id="returnLine" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section class="section poem-section" id="poemSection" aria-labelledby="poemHeading">
+    <div class="poem-heading-wrap">
+      <p class="section-kicker">left on purpose</p>
+      <h1 class="section-title" id="poemHeading">something i left here</h1>
+    </div>
+    <article class="poem-shell glass" id="poemShell">
+      <div class="poem-copy">
+        <p class="poem-placeholder">something's going here. not yet.</p>
+      </div>
+      <div class="poem-signoff">only here. ★</div>
+    </article>
+  </section>
+
+  <section class="section star-marker-section" aria-labelledby="starMarkerHeading">
+    <p class="star-index" id="starMarkerHeading">★ 01</p>
+    <p class="star-found-line">you found this one.</p>
+    <p class="stars-maybe">there might be more.</p>
+    <p class="stars-joke">or i might just be messing with you.</p>
+  </section>
+
+  <section class="section evidence-section" id="evidenceSection" aria-labelledby="shareHeading">
+    <div class="evidence-grid">
+      <div class="evidence-copy">
+        <p class="section-kicker">tiny bit of evidence</p>
+        <h2 class="section-title" id="shareHeading">in case nobody believes you.</h2>
+        <p class="share-copy">make something if you want. just don't tell them where you found it.</p>
+        <div class="story-actions">
+          <button class="story-button glass" id="makeStory" type="button">make something</button>
+        </div>
+        <p class="story-reaction" id="storyReaction" aria-live="polite"></p>
+      </div>
+
+      <div class="story-output" id="storyOutput">
+        <div class="story-preview-wrap glass">
+          <canvas class="story-preview" id="storyCanvas" width="1080" height="1920" aria-label="Generated Instagram Story preview"></canvas>
+        </div>
+        <div class="story-output-actions">
+          <button class="story-button secondary" id="shareStory" type="button" hidden>share image</button>
+          <button class="story-button secondary" id="saveStory" type="button">save image</button>
+          <button class="story-button secondary" id="remakeStory" type="button">another one</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ending">
+    <p class="tiny-final">keep looking.</p>
+    <p class="footer">© <span id="copyrightYear">2026</span> MainlyKavi</p>
+  </div>
+</main>
+</body>
+</html>
