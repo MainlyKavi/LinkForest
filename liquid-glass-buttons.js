@@ -46,6 +46,25 @@
     menuBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"></path></svg>';
   }
 
+  /* FAQ gets a real top-bar home link. The previous visual home control was
+     the footer Back home link pulled into the top-right with position:fixed,
+     which made its hit target fragile in some browsers/extension layouts. */
+  if (faqPath){
+    var faqTopbarRight = document.querySelector('.topbar-right');
+    var legacyFaqHome = document.querySelector('.brand-pill[href="/"]');
+    if (faqTopbarRight){
+      faqTopbarRight.innerHTML =
+        '<a class="pill-btn glass faq-home-control" href="/" aria-label="Back to home">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<path d="M3 10.8 12 3l9 7.8"></path><path d="M5 10v10h14V10"></path><path d="M9 20v-6h6v6"></path></svg></a>';
+    }
+    if (legacyFaqHome){
+      legacyFaqHome.style.display = 'none';
+      legacyFaqHome.setAttribute('aria-hidden', 'true');
+      legacyFaqHome.setAttribute('tabindex', '-1');
+    }
+  }
+
   /* Update the FAQ page copy, metadata, and closing navigation. */
   if (faqPath){
     var faqTitleNode = document.querySelector('.faq-title');
