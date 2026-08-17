@@ -1,3 +1,4 @@
+// Portfolio preview sync marker: HTML + CSS composition revision
 (() => {
   const header = document.querySelector('.site-header');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
