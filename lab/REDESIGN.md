@@ -10,8 +10,9 @@ node lab/serve.mjs . 4173
 ```
 
 Then open http://localhost:4173. The server mimics Vercel `cleanUrls` and the
-custom 404. On localhost, placeholders and the demo brand marquee are visible;
-on any other host they are hidden unless the URL has `?preview`.
+custom 404. Placeholders and the demo brand marquee appear on localhost only;
+every deployed URL (Vercel previews included) shows exactly what production
+will. The demo wordmarks live in `lab/demo-content.js`, which is never deployed.
 
 ## Editing content
 
