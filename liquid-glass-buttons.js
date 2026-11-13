@@ -15,11 +15,13 @@
       link.remove();
     });
 
+    /* The one global nav. FAQ and Projects stay reachable by URL only. */
     var navItems = [
       { label:'Home', href:'/', route:'/' },
       { label:'Socials', href:'/socials', route:'/socials' },
-      { label:'FAQ', href:'/faq', route:'/faq' },
-      { label:'Work/Collab', href:'mailto:mainlykavii@gmail.com?subject=Work%20%2F%20Collab', route:null }
+      { label:'Media kit', href:'/kit', route:'/kit' },
+      { label:'Contact', href:'/contact', route:'/contact' },
+      { label:'Buy me a coffee', href:'https://throne.com/mainlykavi', route:null, external:true }
     ];
 
     navItems.forEach(function(item){
@@ -27,6 +29,16 @@
       link.className = 'menu-link';
       link.href = item.href;
       link.textContent = item.label;
+      if (item.external){
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.setAttribute('aria-label', item.label + ' (opens in a new tab)');
+        var ext = document.createElement('span');
+        ext.className = 'ext';
+        ext.setAttribute('aria-hidden', 'true');
+        ext.textContent = '↗';
+        link.appendChild(ext);
+      }
       if (item.route && currentPath === item.route) link.setAttribute('aria-current', 'page');
       siteMenu.appendChild(link);
     });
@@ -104,31 +116,10 @@
     }
   }
 
-  /* The large projects card only exists on the homepage. Keep its existing
-     Liquid Glass card structure and swap only its destination, label, and glyph. */
-  var homePath = currentPath === '/';
-  if (homePath){
-    Array.prototype.forEach.call(document.querySelectorAll('a.link-card[href="/projects"]'), function(link){
-      var title = link.querySelector('.title');
-      if (!title || title.textContent.trim() !== 'View all my projects') return;
-
-      link.setAttribute('href', '/faq');
-      title.textContent = faqLabel;
-      var glyph = link.querySelector('.glyph');
-      if (glyph){
-        glyph.innerHTML =
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
-          'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-          '<circle cx="12" cy="12" r="9"></circle>' +
-          '<path d="M9.8 9a2.35 2.35 0 0 1 4.55.8c0 1.8-2.35 2.1-2.35 3.7"></path>' +
-          '<path d="M12 17h.01"></path></svg>';
-      }
-    });
-  }
-
-  var selector = '.pill-btn, .theme-toggle, .icon-btn, .link-card, .brand-pill, .social-tile, .project-card';
-  var controls = Array.prototype.slice.call(document.querySelectorAll(selector));
-  if (!controls.length) return;
+  var selector = '.pill-btn, .theme-toggle, .icon-btn, .link-card, .brand-pill, .social-tile, .project-card, .lg';
+  var controls = Array.prototype.slice.call(document.querySelectorAll(selector)).filter(function(control){
+    return !control.matches('.lg-static, .lg-static *');
+  });
 
   var reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
   var finePointerQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
@@ -138,8 +129,12 @@
   var frame = 0;
   var lastFrame = 0;
 
-  controls.forEach(function(control){
-    var profile = control.matches('.social-tile, .pill-btn, .theme-toggle, .icon-btn') ?
+  controls.forEach(ensureState);
+
+  /* Controls rendered after load (from site-config.js) register on first contact. */
+  function ensureState(control){
+    if (states.has(control)) return;
+    var profile = control.matches('.social-tile, .pill-btn, .theme-toggle, .icon-btn, .lg-sm') ?
       { magnet:1.15, hoverScale:1.006, focusScale:1.004, pressScale:.982, wobble:.35 } :
       (control.matches('.project-card') ?
         { magnet:1.8, hoverScale:1.009, focusScale:1.005, pressScale:.978, wobble:.65 } :
@@ -159,12 +154,15 @@
       hovered:false, focused:false, pressed:false,
       lastPointerX:0, lastPointerY:0, lastPointerTime:0
     });
-  });
+  }
 
   function controlFrom(node){
     if (!node || node.nodeType !== 1) return null;
     var control = node.closest(selector);
-    return control && states.has(control) ? control : null;
+    if (!control || control.matches('.lg-static, .lg-static *')) return null;
+    ensureState(control);
+    if (controls.indexOf(control) < 0) controls.push(control);
+    return control;
   }
 
   function spring(state, valueKey, velocityKey, targetKey, stiffness, damping, dt){

@@ -169,15 +169,16 @@
   transform:none !important;
 }
 
-/* Refraction strengthens on hover and flattens with the material on press. */
+/* Refraction strengthens on hover and flattens with the material on press.
+   (Legacy controls only; .lg surfaces carry their own lens, below.) */
 @supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
-  .liquid-glass-control.is-lg-hovered:not(.is-lg-pressed),
-  .liquid-glass-control:focus-visible:not(.is-lg-pressed){
+  .liquid-glass-control:not(.lg).is-lg-hovered:not(.is-lg-pressed),
+  .liquid-glass-control:not(.lg):focus-visible:not(.is-lg-pressed){
     backdrop-filter:blur(12px) saturate(calc(var(--glass-sat) + 12%)) contrast(var(--glass-contrast));
     -webkit-backdrop-filter:blur(12px) saturate(calc(var(--glass-sat) + 12%)) contrast(var(--glass-contrast));
   }
 
-  .liquid-glass-control.is-lg-pressed{
+  .liquid-glass-control:not(.lg).is-lg-pressed{
     backdrop-filter:blur(7px) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
     -webkit-backdrop-filter:blur(7px) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
   }
@@ -185,17 +186,124 @@
 
 @supports ((backdrop-filter:url(#a)) or (-webkit-backdrop-filter:url(#a))){
   @media (min-width:601px){
-    .liquid-glass-control.is-lg-hovered:not(.is-lg-pressed),
-    .liquid-glass-control:focus-visible:not(.is-lg-pressed){
+    .liquid-glass-control:not(.lg).is-lg-hovered:not(.is-lg-pressed),
+    .liquid-glass-control:not(.lg):focus-visible:not(.is-lg-pressed){
       backdrop-filter:url(#liquidButtonLens) blur(12px) saturate(calc(var(--glass-sat) + 12%)) contrast(var(--glass-contrast));
       -webkit-backdrop-filter:url(#liquidButtonLens) blur(12px) saturate(calc(var(--glass-sat) + 12%)) contrast(var(--glass-contrast));
     }
 
-    .liquid-glass-control.is-lg-pressed{
+    .liquid-glass-control:not(.lg).is-lg-pressed{
       backdrop-filter:url(#liquidButtonLens) blur(7px) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
       -webkit-backdrop-filter:url(#liquidButtonLens) blur(7px) saturate(var(--glass-sat)) contrast(var(--glass-contrast));
     }
   }
+}
+
+/* ============================================================
+   .lg — the Liquid Glass material used by the redesigned pages.
+   Layers, back to front:
+     1. backdrop: refracted (Chromium, via liquid-glass-optics.js) or
+        frosted (everywhere else), then saturated so colour survives
+     2. body: a faint tint that thickens toward the bottom edge
+     3. ::before  rim light, a 1.25px edge that brightens toward the light
+     4. ::after   specular bloom that follows the pointer (springs set
+                  --lg-highlight-x/y in liquid-glass-buttons.js)
+   ============================================================ */
+.lg{
+  --lg-radius:999px;
+  --lg-fill-top:rgba(255,255,255,.20);
+  --lg-fill-bottom:rgba(255,255,255,.07);
+  --lg-rim:rgba(255,255,255,.85);
+  --lg-rim-dim:rgba(255,255,255,.14);
+  --lg-spec:rgba(255,255,255,.34);
+  --lg-shadow:0 14px 34px -14px rgba(8,22,48,.55), 0 3px 10px -4px rgba(8,22,48,.30);
+  --lg-frost:3px;          /* frost over the refracted backdrop (lens path) */
+  --lg-frost-flat:16px;    /* frost when there is no lens */
+  --lg-sat:175%;
+  position:relative;
+  isolation:isolate;
+  border-radius:var(--lg-radius);
+  background:linear-gradient(180deg, var(--lg-fill-top), var(--lg-fill-bottom));
+  -webkit-backdrop-filter:blur(var(--lg-frost-flat)) saturate(var(--lg-sat));
+          backdrop-filter:blur(var(--lg-frost-flat)) saturate(var(--lg-sat));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.50),
+    inset 0 -1px 0 rgba(255,255,255,.16),
+    inset 0 -14px 22px -18px rgba(255,255,255,.55),
+    inset 0 10px 18px -16px rgba(255,255,255,.40),
+    var(--lg-shadow);
+  transition:box-shadow .3s var(--ease, ease), background .3s var(--ease, ease);
+  -webkit-tap-highlight-color:transparent;
+}
+.lg-optics .lg.lg-lens-ready{
+  -webkit-backdrop-filter:var(--lg-lens) blur(var(--lg-frost)) saturate(var(--lg-sat)) brightness(1.03);
+          backdrop-filter:var(--lg-lens) blur(var(--lg-frost)) saturate(var(--lg-sat)) brightness(1.03);
+}
+.lg::before{
+  content:"";
+  position:absolute; inset:0;
+  z-index:2;
+  border-radius:inherit;
+  padding:1.25px;
+  background:
+    radial-gradient(120% 140% at var(--lg-highlight-x, 30%) var(--lg-highlight-y, 0%), var(--lg-rim), transparent 55%),
+    radial-gradient(120% 140% at calc(100% - var(--lg-highlight-x, 30%)) calc(100% - var(--lg-highlight-y, 0%)), rgba(255,255,255,.45), transparent 50%),
+    linear-gradient(var(--lg-rim-dim), var(--lg-rim-dim));
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+          mask:linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events:none;
+}
+.lg::after{
+  content:"";
+  position:absolute; inset:0;
+  z-index:1;
+  border-radius:inherit;
+  background:
+    radial-gradient(var(--lg-spec-size, 150px 70px) at var(--lg-highlight-x, 50%) var(--lg-highlight-y, 30%), var(--lg-spec), transparent),
+    radial-gradient(farthest-side at var(--lg-highlight-x, 50%) var(--lg-highlight-y, 30%), rgba(255,255,255,.10), transparent);
+  background-size:100% 100%;
+  opacity:0;
+  transition:opacity .25s var(--ease, ease);
+  pointer-events:none;
+}
+.lg > *{ position:relative; z-index:3; }
+.lg.is-lg-hovered::after,
+.lg.is-lg-pressed::after,
+.lg:focus-visible::after{ opacity:1; }
+.lg.is-lg-hovered{
+  --lg-fill-top:rgba(255,255,255,.27);
+  --lg-fill-bottom:rgba(255,255,255,.10);
+}
+.lg.is-lg-pressed{
+  --lg-fill-top:rgba(255,255,255,.30);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.40),
+    inset 0 -1px 0 rgba(255,255,255,.12),
+    inset 0 -10px 18px -14px rgba(255,255,255,.55),
+    inset 0 6px 14px -10px rgba(255,255,255,.35),
+    0 6px 14px -8px rgba(8,22,48,.45), 0 1px 3px rgba(8,22,48,.30);
+}
+.lg:focus-visible{
+  outline:2px solid rgba(255,255,255,.95);
+  outline-offset:3px;
+}
+/* Glass sitting on glass: no second backdrop pass (it would only see the
+   panel it sits in, and costs a full filter per tile). */
+.lg.lg-inner,
+.lg-optics .lg.lg-inner.lg-lens-ready{
+  -webkit-backdrop-filter:none;
+          backdrop-filter:none;
+  --lg-fill-top:rgba(255,255,255,.16);
+  --lg-fill-bottom:rgba(255,255,255,.05);
+  --lg-shadow:0 8px 18px -12px rgba(8,22,48,.5);
+}
+.lg.lg-inner.is-lg-hovered{ --lg-fill-top:rgba(255,255,255,.24); --lg-fill-bottom:rgba(255,255,255,.09); }
+@media (prefers-reduced-transparency: reduce){
+  .lg{ --lg-fill-top:rgba(30,40,60,.72); --lg-fill-bottom:rgba(30,40,60,.62); }
+}
+@media (prefers-contrast: more){
+  .lg{ --lg-fill-top:rgba(20,28,44,.78); --lg-fill-bottom:rgba(20,28,44,.70); --lg-rim-dim:rgba(255,255,255,.6); }
 }
 
 @media (prefers-reduced-motion:reduce){
