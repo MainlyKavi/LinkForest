@@ -4,9 +4,8 @@
    Rules of thumb
    - `enabled: false` hides an entry everywhere. Leave `url: ''` until
      you have a real, public link; empty URLs are never rendered.
-   - Nothing marked `placeholder: true` is shown on mainlykavi.com.
-     Placeholders only appear on localhost, or when a URL ends in
-     ?preview (handy on Vercel preview deployments).
+   - Nothing marked `placeholder: true` is shown on any deployed URL.
+     Placeholders only appear on a local dev server (localhost).
    - Paths starting with / are files in this repo (e.g. /assets/kit/...).
    ================================================================ */
 window.MK = {
@@ -95,10 +94,9 @@ window.MK = {
       enabled: false,
       items: [
         /* { name: 'Brand name', logo: '/assets/brands/brand.svg', url: 'https://brand.com' } */
-      ],
-      /* Fictional wordmarks used ONLY in local/preview builds to check the
-         marquee's motion. They are never rendered on the live site. */
-      demo: ['Nimbus Soda', 'Pocket Comet', 'Gridlock Gum', 'Hollow Pine', 'Velvet Static', 'Paper Moose', 'Lumen & Lime']
+      ]
+      /* Fictional demo wordmarks for testing the marquee live in
+         lab/demo-content.js, which is never deployed (.vercelignore). */
     }
   }
 };

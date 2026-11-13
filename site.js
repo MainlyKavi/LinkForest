@@ -9,12 +9,10 @@
   var root = doc.documentElement;
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  /* Placeholders and demo content only render locally or on ?preview. */
+  /* Placeholders and demo content render on a local dev server only. There is
+     deliberately no URL switch: every deployed URL (Vercel previews included)
+     shows exactly what mainlykavi.com will show. */
   var preview = /^(localhost|127\.0\.0\.1|\[::1\])$|\.localhost$/.test(location.hostname);
-  try {
-    if (/[?&]preview\b/.test(location.search)) sessionStorage.setItem('mk-preview', '1');
-    if (sessionStorage.getItem('mk-preview') === '1') preview = true;
-  } catch (e) { if (/[?&]preview\b/.test(location.search)) preview = true; }
   root.classList.toggle('is-preview', preview);
 
   function esc(value){

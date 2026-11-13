@@ -79,6 +79,12 @@
         thumb + '<span class="play lg lg-static">' + PLAY + '</span></a>' + cap + '</li>';
     }).join('');
     work.hidden = false;
+    /* On phones the strip scrolls sideways; keep it reachable by keyboard
+       when it holds no links or buttons of its own (placeholder-only). */
+    if (!reels.querySelector('a, button')){
+      reels.tabIndex = 0;
+      reels.setAttribute('aria-label', 'Selected work (scrolls sideways)');
+    }
 
     /* Inline playback starts only on a click, with controls and sound. */
     reels.addEventListener('click', function(e){
@@ -100,15 +106,25 @@
     });
   }
 
-  /* ---------- brands: real & approved only; demo wordmarks in preview ---------- */
+  /* ---------- brands: real & approved only. Demo wordmarks exist only in
+     lab/demo-content.js, which is never deployed, and load only on localhost. ---------- */
   var brands = kit.brands || {};
   var real = (brands.items || []).filter(function(b){ return b && b.name; });
-  var showReal = brands.enabled === true && real.length > 0;
-  var showDemo = !showReal && preview && (brands.demo || []).length > 0;
   var brandsSection = doc.getElementById('brands');
   var marquee = doc.getElementById('marquee');
-  if (brandsSection && marquee && (showReal || showDemo)){
-    var list = showReal ? real : brands.demo.map(function(name){ return { name: name }; });
+  if (brandsSection && marquee){
+    if (brands.enabled === true && real.length) renderBrands(real, false);
+    else if (preview){
+      var demoScript = doc.createElement('script');
+      demoScript.src = '/lab/demo-content.js';
+      demoScript.onload = function(){
+        var names = (window.MK_DEMO && window.MK_DEMO.brands) || [];
+        if (names.length) renderBrands(names.map(function(name){ return { name: name }; }), true);
+      };
+      doc.head.appendChild(demoScript);
+    }
+  }
+  function renderBrands(list, isDemo){
     var item = function(b){
       var inner = b.logo ? '<img src="' + esc(b.logo) + '" alt="' + esc(b.name) + '" loading="lazy">' : '<span class="wm">' + esc(b.name) + '</span>';
       return b.url ? '<a class="marquee-item" href="' + esc(b.url) + '" target="_blank" rel="noopener">' + inner + '</a>' : '<span class="marquee-item">' + inner + '</span>';
@@ -117,7 +133,7 @@
     /* two identical groups; the track slides by exactly one group's width */
     marquee.innerHTML = '<div class="marquee-track"><div class="marquee-group">' + group + '</div><div class="marquee-group" aria-hidden="true">' + group.replace(/<a /g, '<a tabindex="-1" ') + '</div></div>';
     marquee.style.setProperty('--marquee-dur', Math.max(24, list.length * 5.5) + 's');
-    if (showDemo){
+    if (isDemo){
       brandsSection.querySelector('.section-title').textContent = 'Brand marquee (demo)';
       marquee.insertAdjacentHTML('afterend', '<p class="demo-note">' + DEV + ' Fictional wordmarks for testing motion. Never shown on the live site.</p>');
     }
