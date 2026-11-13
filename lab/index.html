@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex">
+<title>Glass comparison lab</title>
+<style>
+  body{margin:0;background:#111;color:#eee;font:14px system-ui;padding:16px}
+  .grid{display:grid;grid-template-columns:repeat(4, 390px);gap:12px}
+  iframe{width:390px;height:720px;border:0;border-radius:14px;background:#000}
+  h1{font-size:16px;margin:0 0 12px}
+</style>
+</head>
+<body>
+<h1>Liquid Glass comparison: cherry blossom backdrop, 390px wide</h1>
+<div class="grid">
+  <iframe src="/lab/existing-home" title="Existing implementation"></iframe>
+  <iframe src="/lab/glisse" title="Glisse"></iframe>
+  <iframe src="/lab/new-glass" title="Upgraded engine, lens"></iframe>
+  <iframe src="/lab/new-glass?glass=fallback" title="Upgraded engine, fallback"></iframe>
+</div>
+</body>
+</html>

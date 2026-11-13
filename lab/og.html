@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex">
+<title>OG image templates</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/liquid-glass-buttons.css">
+<style>
+  html,body{margin:0;width:1200px;height:630px;overflow:hidden}
+  .card{position:relative;width:1200px;height:630px;overflow:hidden;font-family:Geist,sans-serif}
+  /* kit */
+  .kit{background:#f3ede2;color:#1c1714}
+  .kit .k{position:absolute;left:84px;top:78px;font-size:17px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#b03a60;display:flex;align-items:center;gap:14px}
+  .kit .k::before{content:"";width:40px;height:2px;background:currentColor}
+  .kit h1{position:absolute;left:78px;top:126px;margin:0;font:400 196px/.84 "Instrument Serif",serif;letter-spacing:-.025em}
+  .kit h1 span{display:block}
+  .kit h1 em{display:block;padding-left:.42em}
+  .kit p{position:absolute;left:84px;bottom:70px;margin:0;font-size:28px;color:#463c34;letter-spacing:-.01em}
+  .kit p b{color:#1c1714}
+  .kit .stamp{position:absolute;right:86px;top:80px;width:190px;height:190px;border-radius:50%;background:#e07a98;display:grid;place-items:center;font-size:52px;box-shadow:0 20px 40px -18px rgba(120,30,60,.6)}
+  .kit .stamp svg{position:absolute;inset:0}
+  .kit .stamp text{font:600 10.4px Geist;letter-spacing:.2em;fill:#1c1714}
+  .kit .url{position:absolute;right:86px;bottom:74px;font-size:22px;font-weight:600;color:#6e6257}
+  .kit .spr{position:absolute;left:330px;top:116px;width:340px}
+  /* contact */
+  .contact{background:url(/assets/bg-day-desktop.webp) center 40%/cover;color:#fff}
+  .contact::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(16,30,56,.35))}
+  .contact .wrap{position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:0 96px}
+  .contact h1{margin:0;font:400 170px/.9 "Instrument Serif",serif;letter-spacing:-.025em;text-shadow:0 2px 30px rgba(10,30,70,.35)}
+  .contact h1 em{font-style:italic}
+  .contact .pill{margin-top:34px;align-self:flex-start;height:78px;padding:0 34px;display:flex;align-items:center;gap:16px;font-size:32px;font-weight:600;letter-spacing:-.015em;text-shadow:0 1px 3px rgba(0,0,0,.3)}
+  .contact .pill{--lg-frost-flat:14px}
+  .contact .who{margin-top:26px;font-size:24px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;opacity:.9;text-shadow:0 1px 8px rgba(0,0,0,.3)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <radialGradient id="bf" cx="50%" cy="80%" r="85%"><stop offset="0" stop-color="#c94a72"/><stop offset=".5" stop-color="#ee93ae"/><stop offset="1" stop-color="#fde4ec"/></radialGradient>
+    <symbol id="bloom" viewBox="-30 -30 60 60"><g fill="url(#bf)" stroke="#d9748f" stroke-width=".6"><path id="pt" d="M0-3C-8-8-10-19-4-25c2-2 3 1 4 3 1-2 2-5 4-3 6 6 4 17-4 22Z"/><use href="#pt" transform="rotate(72)"/><use href="#pt" transform="rotate(144)"/><use href="#pt" transform="rotate(216)"/><use href="#pt" transform="rotate(288)"/></g><circle r="4.5" fill="#fff3c9"/></symbol>
+    <symbol id="leaf" viewBox="-14 -6 28 12"><path d="M-13 0C-6-7 6-7 13 0 6 7-6 7-13 0Z" fill="#6f7f45"/></symbol>
+  </defs>
+</svg>
+<div class="card kit" id="kit">
+  <div class="k">Media kit &middot; MainlyKavi</div>
+  <h1><span>Kavi</span><em>Goutam</em></h1>
+  <svg class="spr" viewBox="0 0 360 200"><path d="M366 26C300 18 250 40 205 66 160 92 110 98 60 104 40 106 22 112 8 122" fill="none" stroke="#5a4636" stroke-width="4.5" stroke-linecap="round"/><path d="M205 66C214 40 236 24 262 16" fill="none" stroke="#5a4636" stroke-width="2.6" stroke-linecap="round"/><use href="#leaf" x="146" y="74" width="36" height="15"/><use href="#bloom" x="175" y="30" width="60" height="60"/><use href="#bloom" x="240" y="-6" width="44" height="44"/><use href="#bloom" x="34" y="78" width="52" height="52"/></svg>
+  <div class="stamp"><svg viewBox="0 0 120 120"><defs><path id="ring" d="M60 60m-44 0a44 44 0 1 1 88 0 44 44 0 1 1-88 0"/></defs><text><textPath href="#ring">ON CAMERA &#8226; OFF SCRIPT &#8226; ON CAMERA &#8226; OFF SCRIPT &#8226;</textPath></text></svg>&#10047;</div>
+  <p><b>Personality-driven variety creator.</b> Open for collabs.</p>
+  <div class="url">mainlykavi.com/kit</div>
+</div>
+<div class="card contact" id="contact">
+  <div class="wrap">
+    <h1>Hit me <em>up.</em></h1>
+    <div class="pill lg lg-static">collabs@mainlykavi.com</div>
+    <div class="who">MainlyKavi &middot; contact</div>
+  </div>
+</div>
+</body>
+</html>

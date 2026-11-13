@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Glass lab: Glisse</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;height:100%;font-family:Geist,system-ui,sans-serif;color:#fff}
+  .bg{position:fixed;inset:0;background:url(/assets/bg-day.webp) center 18%/cover}
+  .stage{position:relative;min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:40px 20px;box-sizing:border-box}
+  .label{position:fixed;top:12px;left:12px;font:600 12px Geist;background:#0008;padding:6px 10px;border-radius:8px;z-index:9}
+  #err{position:fixed;bottom:10px;left:10px;right:10px;font:12px monospace;background:#900c;padding:8px;border-radius:6px;display:none}
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.3.1",
+    "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime",
+    "react-dom": "https://esm.sh/react-dom@18.3.1",
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+    "glisse": "https://esm.sh/glisse@0.6.0?external=react,react-dom"
+  }
+}
+</script>
+</head>
+<body>
+<div class="label">2 · Glisse 0.6.0 (React, via esm.sh)</div>
+<div class="bg" data-glisse-backdrop></div>
+<div id="root" class="stage"></div>
+<pre id="err"></pre>
+<script type="module">
+  const showErr = (e) => { const n = document.getElementById('err'); n.style.display = 'block'; n.textContent = String(e && e.stack || e); };
+  window.addEventListener('error', (e) => showErr(e.error || e.message));
+  try {
+    const React = await import('react');
+    const { createRoot } = await import('react-dom/client');
+    const G = await import('glisse');
+    window.__glisseExports = Object.keys(G);
+    const h = React.createElement;
+    const big = { width: 'min(340px, 86vw)', height: 58, borderRadius: 29, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, fontSize: 15, color: '#fff', textShadow: '0 1px 3px rgba(0,0,0,.35)' };
+    function App(){
+      return h(React.Fragment, null,
+        h(G.Glass, { style: big }, 'All my socials'),
+        h(G.Glass, { style: big }, 'My media kit'),
+        h(G.Glass, { style: big }, 'Buy me a coffee'),
+        h(G.Button, null, 'Hit me up'),
+        h(G.Button, { variant: 'tinted' }, 'Tinted'),
+        h(G.Switch, { 'aria-label': 'Theme', defaultChecked: true })
+      );
+    }
+    createRoot(document.getElementById('root')).render(h(App));
+  } catch (e) { showErr(e); }
+</script>
+</body>
+</html>
