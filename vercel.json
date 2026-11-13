@@ -7,6 +7,11 @@
       "source": "/index",
       "destination": "/",
       "permanent": true
+    },
+    {
+      "source": "/media-kit",
+      "destination": "/kit",
+      "permanent": true
     }
   ]
 }
