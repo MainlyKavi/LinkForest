@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contact | MainlyKavi</title>
+<meta name="description" content="Get in touch with MainlyKavi (Kavi Goutam) for UGC, sponsorships, creative campaigns and collabs. Email, X or Instagram.">
+<link rel="canonical" href="https://mainlykavi.com/contact">
+<meta name="theme-color" content="#3f7fc6">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MainlyKavi">
+<meta property="og:url" content="https://mainlykavi.com/contact">
+<meta property="og:title" content="Hit me up. | MainlyKavi">
+<meta property="og:description" content="Brand deal, collab idea, or just saying hi. Email, X or Instagram.">
+<meta property="og:image" content="https://mainlykavi.com/assets/og/contact.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Hit me up. Contact MainlyKavi.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@MainlyKavi">
+<meta name="twitter:title" content="Hit me up. | MainlyKavi">
+<meta name="twitter:description" content="Brand deal, collab idea, or just saying hi.">
+<meta name="twitter:image" content="https://mainlykavi.com/assets/og/contact.jpg">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "url": "https://mainlykavi.com/contact",
+  "name": "Contact MainlyKavi",
+  "mainEntity": {
+    "@type": "Person",
+    "name": "Kavi Goutam",
+    "alternateName": "MainlyKavi",
+    "email": "mailto:collabs@mainlykavi.com",
+    "url": "https://mainlykavi.com/"
+  }
+}
+</script>
+
+<script>
+(function(){
+  var t = 'light';
+  try { var s = localStorage.getItem('mainlykavi-theme'); if (s === 'light' || s === 'dark') t = s; } catch (e) {}
+  document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<script defer data-domain="mainlykavi.com" src="https://plausible.io/js/script.js"></script>
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+
+<link rel="stylesheet" href="/liquid-glass-buttons.css">
+<link rel="stylesheet" href="/site.css">
+<style>
+  :root{ --col:500px; --bg-pos:center 22%; }
+  @media (min-width:700px){ :root{ --bg-pos:center 40%; } }
+  .contact{ min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; justify-content:center; }
+
+  .kicker{ margin:0 0 6px; font-size:12.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--text-dim); }
+  .title{
+    margin:0;
+    font-family:var(--font-serif); font-weight:400;
+    font-size:clamp(68px, 21vw, 112px); line-height:.9; letter-spacing:-.025em;
+  }
+  .title em{ font-style:italic; }
+  .lede{ margin:16px 0 28px; max-width:30em; font-size:clamp(16px, 4.4vw, 18px); line-height:1.5; color:var(--text-dim); }
+
+  .cards{ display:grid; gap:12px; margin:0; padding:0; list-style:none; }
+  .card{
+    --lg-radius:26px;
+    display:flex; align-items:center;
+    min-height:82px;
+  }
+  .card-main{
+    flex:1; min-width:0;
+    display:flex; align-items:center; gap:14px;
+    align-self:stretch;
+    padding:12px 12px 12px 14px;
+    border-radius:inherit;
+  }
+  .card-main:focus-visible{ outline-offset:-3px; }
+  .badge{
+    width:54px; height:54px; flex:none; border-radius:17px;
+    display:grid; place-items:center;
+    background:rgba(255,255,255,.18);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.4), inset 0 -8px 14px -10px rgba(255,255,255,.4);
+  }
+  .badge svg{ width:25px; height:25px; filter:drop-shadow(0 1px 2px rgba(0,0,0,.25)); }
+  .card .meta{ min-width:0; display:grid; gap:2px; }
+  .card .label{ font-size:12px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--text-faint); }
+  .card .value{ font-size:clamp(15.5px, 4.3vw, 19px); font-weight:600; letter-spacing:-.015em; line-height:1.2; }
+  .card .hint{ font-size:13px; color:var(--text-faint); }
+  .card .go{ margin-left:auto; width:18px; height:18px; flex:none; opacity:.65; transition:transform .45s var(--spring), opacity .2s; }
+  .card.is-lg-hovered .go{ opacity:1; transform:translateX(3px); }
+  .card.out.is-lg-hovered .go{ transform:translate(2px, -2px); }
+  .copy{
+    width:46px; height:46px; margin-right:14px; flex:none;
+    display:grid; place-items:center; border-radius:50%;
+    background:rgba(255,255,255,.14);
+    transition:background-color .2s var(--ease), transform .4s var(--spring);
+  }
+  .copy:hover{ background:rgba(255,255,255,.26); }
+  .copy:active{ transform:scale(.92); }
+  .copy svg{ width:19px; height:19px; }
+  .copy .i-check, .copy.is-done .i-copy{ display:none; }
+  .copy.is-done .i-check{ display:block; }
+
+  .brief{
+    --lg-radius:24px;
+    --lg-frost-flat:20px;
+    --lg-fill-top:rgba(24,52,104,.24);
+    --lg-fill-bottom:rgba(24,52,104,.32);
+    margin-top:18px; padding:18px 20px;
+    font-size:14.5px; line-height:1.5;
+  }
+  [data-theme="dark"] .brief{ --lg-fill-top:rgba(10,16,38,.40); --lg-fill-bottom:rgba(10,16,38,.52); }
+  .brief h2{ margin:0 0 8px; font-family:var(--font-serif); font-style:italic; font-weight:400; font-size:22px; }
+  .brief ul{ margin:0 0 12px; padding-left:18px; color:var(--text-dim); }
+  .brief li{ margin:3px 0; }
+  .brief p{ margin:0; color:var(--text-dim); }
+  .brief a{ color:var(--text); font-weight:600; text-decoration:underline; text-underline-offset:3px; text-decoration-color:rgba(255,255,255,.45); }
+</style>
+<script defer src="/site-config.js"></script>
+<script defer src="/site.js"></script>
+<script defer src="/liquid-glass-optics.js"></script>
+<script defer src="/liquid-glass-buttons.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to contact options</a>
+
+<div class="backdrop" aria-hidden="true">
+  <div class="backdrop-layer day"></div>
+  <div class="backdrop-layer night"></div>
+  <div class="grain"></div>
+</div>
+<div class="petals" aria-hidden="true"></div>
+
+<header class="topbar">
+  <button class="lg lg-sm icon-control" id="menuBtn" type="button" aria-label="Open menu" aria-haspopup="true" aria-expanded="false" aria-controls="menuPanel" data-lens data-lens-dispersion="0">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/></svg>
+  </button>
+  <button class="lg lg-sm theme-switch" id="themeToggle" type="button" aria-label="Dark mode" aria-pressed="false" data-lens data-lens-dispersion="0">
+    <span class="knob">
+      <svg class="sun" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="4.6"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></g></svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"/></svg>
+    </span>
+  </button>
+</header>
+
+<div class="menu-scrim" id="menuScrim" hidden></div>
+<nav class="menu-panel lg lg-static" id="menuPanel" aria-label="Site menu" aria-hidden="true">
+  <div class="menu-panel-head">
+    <span class="menu-panel-title">MainlyKavi</span>
+    <button class="pill-btn lg lg-sm" id="menuCloseBtn" type="button" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <a class="menu-link" href="/">Home</a>
+  <a class="menu-link" href="/socials">Socials</a>
+  <a class="menu-link" href="/kit">Media kit</a>
+  <a class="menu-link" href="/contact" aria-current="page">Contact</a>
+  <a class="menu-link" href="https://throne.com/mainlykavi" target="_blank" rel="noopener">Buy me a coffee <span class="ext" aria-hidden="true">&#8599;</span></a>
+</nav>
+
+<main class="page contact" id="main">
+  <p class="kicker reveal">Contact</p>
+  <h1 class="title reveal" style="--d:.05s">Hit me <em>up.</em></h1>
+  <p class="lede reveal" style="--d:.1s">Brand deal, collab idea, or you just need to tell me a video was unhinged. I read everything (eventually).</p>
+
+  <ul class="cards reveal-g" style="--d:.15s">
+    <li class="card lg" data-lens>
+      <a class="card-main" data-mailto href="mailto:collabs@mainlykavi.com?subject=Collab%20inquiry%3A%20%5Byour%20brand%5D">
+        <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="m3.5 7 7.4 5.3a1.9 1.9 0 0 0 2.2 0L20.5 7"/></svg></span>
+        <span class="meta">
+          <span class="label">Email</span>
+          <span class="value" data-email>collabs<wbr>@mainlykavi.com</span>
+          <span class="hint">Best for brands &amp; collabs</span>
+        </span>
+      </a>
+      <button class="copy" type="button" data-copy-email aria-label="Copy email address">
+        <svg class="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="8.5" width="12" height="12" rx="2.6"/><path d="M15.5 8.5V6.1a2.6 2.6 0 0 0-2.6-2.6H6.1a2.6 2.6 0 0 0-2.6 2.6v6.8a2.6 2.6 0 0 0 2.6 2.6h2.4"/></svg>
+        <svg class="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.2 4.2L19 7"/></svg>
+      </button>
+    </li>
+    <li class="card lg out" data-lens>
+      <a class="card-main" data-social="x" href="https://x.com/Mainlykavi" target="_blank" rel="noopener" aria-label="X, @MainlyKavi (opens in a new tab)">
+        <span class="badge"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L2.016 2.25h6.937l4.265 5.644 5.026-5.644Zm-1.161 17.52h1.833L7.084 4.126H5.117Z"/></svg></span>
+        <span class="meta">
+          <span class="label">X</span>
+          <span class="value" data-handle>@MainlyKavi</span>
+          <span class="hint">For quick ones</span>
+        </span>
+        <svg class="go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>
+      </a>
+    </li>
+    <li class="card lg out" data-lens>
+      <a class="card-main" data-social="instagram" href="https://www.instagram.com/mainlykavi" target="_blank" rel="noopener" aria-label="Instagram, @mainlykavi (opens in a new tab)">
+        <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5.2"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.3" cy="6.7" r="1.15" fill="currentColor" stroke="none"/></svg></span>
+        <span class="meta">
+          <span class="label">Instagram</span>
+          <span class="value" data-handle>@mainlykavi</span>
+          <span class="hint">Where the reels live</span>
+        </span>
+        <svg class="go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>
+      </a>
+    </li>
+  </ul>
+
+  <aside class="brief lg lg-static reveal-g" style="--d:.22s" aria-labelledby="brief-title">
+    <h2 id="brief-title">Brands, this bit&rsquo;s for you</h2>
+    <ul>
+      <li>Who you are and what you&rsquo;re launching</li>
+      <li>The idea, or just the vibe you&rsquo;re after</li>
+      <li>Platforms, deliverables and timeline</li>
+      <li>A rough budget (saves us both a week)</li>
+    </ul>
+    <p>Want the overview first? <a href="/kit">Here&rsquo;s my media kit</a>.</p>
+  </aside>
+
+  <p class="site-footer">&copy; <span id="year">2026</span> MainlyKavi &middot; <a href="/">home</a></p>
+</main>
+</body>
+</html>
