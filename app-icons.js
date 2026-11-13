@@ -39,7 +39,7 @@ window.MK_ICONS = {
  "chess": {
   "cls": "icon-asset chess-icon",
   "style": "",
-  "html": "<img src=\"/assets/chess-app-icon-transparent.png\" alt=\"\" style=\"width:100%;height:100%;object-fit:cover\">"
+  "html": "<img src=\"/assets/chess-app-icon.webp\" alt=\"\" style=\"width:100%;height:100%;object-fit:cover\">"
  },
  "twitch": {
   "cls": "",

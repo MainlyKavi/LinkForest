@@ -43,6 +43,12 @@
       siteMenu.appendChild(link);
     });
 
+    /* A closed menu is aria-hidden; make it inert too, so its links are not
+       invisible Tab stops on pages whose own menu script only toggles aria-hidden. */
+    var syncInert = function(){ siteMenu.inert = siteMenu.getAttribute('aria-hidden') === 'true'; };
+    syncInert();
+    if ('MutationObserver' in window) new MutationObserver(syncInert).observe(siteMenu, { attributes:true, attributeFilter:['aria-hidden'] });
+
     if (!document.getElementById('global-menu-current-style')){
       var menuStyle = document.createElement('style');
       menuStyle.id = 'global-menu-current-style';

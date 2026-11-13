@@ -41,6 +41,9 @@
 <link href="/liquid-glass-buttons.css" rel="stylesheet"/>
 <link href="/faq.css" rel="stylesheet"/>
 <script defer="" src="/liquid-glass-buttons.js"></script>
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 </head>
 <body>
 <svg aria-hidden="true" style="position:absolute;width:0;height:0">
@@ -50,10 +53,10 @@
 <filter id="grainCoarse"><feturbulence basefrequency=".012 .018" numoctaves="2" result="coarse" stitchtiles="stitch" type="fractalNoise"></feturbulence><fecolormatrix in="coarse" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1.4 -.2"></fecolormatrix></filter>
 </svg>
 <div aria-hidden="true" class="backdrop"><div class="backdrop-layer day"></div><div class="backdrop-layer night"></div><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div><div class="grain-coarse"></div><div class="grain"></div></div>
-<div class="topbar">
+<header class="topbar">
 <button aria-controls="menuPanel" aria-expanded="false" aria-haspopup="true" aria-label="Open menu" class="pill-btn glass" id="menuBtn" type="button"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" viewbox="0 0 24 24"><path d="M12 3v6m0 0 3-3m-3 3-3-3M12 21v-6m0 0-3 3m3-3 3 3M3 12h6m0 0-3-3m3 3-3 3M21 12h-6m0 0 3-3m-3 3 3 3"></path></svg></button>
 <div class="topbar-right"><button aria-label="Switch to dark mode" aria-pressed="true" class="theme-toggle glass" id="themeToggle" type="button"><span class="knob"><svg aria-hidden="true" class="icon-moon" fill="currentColor" viewbox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"></path></svg><svg aria-hidden="true" class="icon-sun" fill="currentColor" viewbox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg></span></button></div>
-</div>
+</header>
 <div class="menu-scrim" hidden="" id="menuScrim"></div>
 <nav aria-hidden="true" aria-label="Site menu" class="menu-panel" id="menuPanel">
 <div class="menu-panel-head"><a class="menu-panel-title" href="/">MainlyKavi</a><button aria-label="Close menu" class="pill-btn glass" id="menuCloseBtn" type="button"><svg fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></div>

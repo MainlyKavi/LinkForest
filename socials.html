@@ -7,7 +7,9 @@
 <meta name="description" content="Every place to find MainlyKavi (Kavi Goutam): YouTube, Instagram, TikTok, X, Snapchat and more, plus UGC profiles and ways to support.">
 <link rel="canonical" href="https://mainlykavi.com/socials">
 <meta name="theme-color" content="#3f7fc6">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="MainlyKavi">
 <meta property="og:url" content="https://mainlykavi.com/socials">
@@ -27,6 +29,7 @@
   var t = 'light';
   try { var s = localStorage.getItem('mainlykavi-theme'); if (s === 'light' || s === 'dark') t = s; } catch (e) {}
   document.documentElement.setAttribute('data-theme', t);
+  document.documentElement.classList.add('js');
 })();
 </script>
 
@@ -133,6 +136,10 @@
   .empty-note{ margin:4px 6px 0; font-size:13px; color:var(--text-faint); }
 
   .cta-row{ display:flex; justify-content:center; margin-top:24px; }
+  .site-footer{ color:var(--text); } /* brightest part of the photo sits behind it */
+  /* Panels are filled from site-config.js; keep them unpainted until then so
+     nothing below them jumps (layout shift), then play their entrance. */
+  .js:not(.socials-ready) .panel, .js:not(.socials-ready) .cta-row, .js:not(.socials-ready) .site-footer{ visibility:hidden; animation:none; }
   .hit{ height:48px; padding:0 22px 0 18px; display:inline-flex; align-items:center; gap:9px; font-size:15px; font-weight:600; }
   .hit svg{ width:19px; height:19px; }
 
@@ -244,25 +251,29 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function(){
+  try { renderSocials(); } finally { document.documentElement.classList.add('socials-ready'); }
+});
+function renderSocials(){
   var MK = window.MK || {}, S = window.MKSite;
   if (!S) return;
   var esc = S.esc;
   var OUT = '<svg class="go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>';
-  var newTab = ' (opens in a new tab)';
+  /* The visible text is the accessible name (voice control users say what they see). */
+  var newTab = '<span class="sr-only"> (opens in a new tab)</span>';
 
   var socials = (MK.socials || []).filter(S.isLive);
   var primary = socials.filter(function(s){ return s.primary; });
   var rest = socials.filter(function(s){ return !s.primary; });
 
   document.getElementById('primary').innerHTML = primary.map(function(s){
-    return '<li><a class="tile lg lg-inner" href="' + esc(s.url) + '" target="_blank" rel="noopener" aria-label="' + esc(s.label + ', ' + s.handle + newTab) + '">' +
-      S.appIcon(s.id, s.label) + '<span class="label">' + esc(s.label) + '</span><span class="handle">' + esc(s.handle) + '</span></a></li>';
+    return '<li><a class="tile lg lg-inner" href="' + esc(s.url) + '" target="_blank" rel="noopener">' +
+      S.appIcon(s.id, s.label) + '<span class="label">' + esc(s.label) + '</span> <span class="handle">' + esc(s.handle) + '</span>' + newTab + '</a></li>';
   }).join('');
 
   function row(item, extra){
-    return '<li><a class="row lg lg-inner lg-sm" href="' + esc(item.url) + '" target="_blank" rel="noopener" aria-label="' + esc(item.label + (item.handle ? ', ' + item.handle : '') + newTab) + '">' +
+    return '<li><a class="row lg lg-inner lg-sm" href="' + esc(item.url) + '" target="_blank" rel="noopener">' +
       S.appIcon(item.id, item.label) +
-      '<span class="meta"><span class="label">' + esc(item.label) + (extra || '') + '</span><span class="handle">' + esc(item.handle || item.note || '') + '</span></span>' + OUT + '</a></li>';
+      '<span class="meta"><span class="label">' + esc(item.label) + (extra || '') + '</span> <span class="handle">' + esc(item.handle || item.note || '') + '</span></span>' + OUT + newTab + '</a></li>';
   }
   function pending(item){
     return '<li><div class="row lg lg-inner is-pending">' + S.appIcon(item.id, item.label) +
@@ -281,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function(){
     if (!html){ document.getElementById(set[1]).hidden = true; return; }
     document.getElementById(set[0]).innerHTML = html;
   });
-});
+}
 </script>
 </body>
 </html>

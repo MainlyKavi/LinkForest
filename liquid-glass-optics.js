@@ -52,7 +52,8 @@
     if (maps.has(key)) return maps.get(key);
     var canvas = document.createElement('canvas');
     canvas.width = w; canvas.height = h;
-    var ctx = canvas.getContext('2d');
+    /* CPU-backed canvas: a GPU canvas makes toDataURL do a slow readback. */
+    var ctx = canvas.getContext('2d', { willReadFrequently: true });
     var img = ctx.createImageData(w, h);
     var data = img.data;
     var hw = w / 2, hh = h / 2;
@@ -203,7 +204,13 @@
   });
 
   window.LiquidGlassOptics = { refresh: init };
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(init);
+  /* The lens is an enhancement on top of frosted glass that is already
+     painted, so build it after load, when the main thread is idle. */
+  function initWhenIdle(){
+    var go = function(){ init(); if (document.fonts && document.fonts.ready) document.fonts.ready.then(init); };
+    if ('requestIdleCallback' in window) requestIdleCallback(go, { timeout: 1200 });
+    else setTimeout(go, 200);
+  }
+  if (document.readyState === 'complete') initWhenIdle();
+  else window.addEventListener('load', initWhenIdle, { once: true });
 })();
