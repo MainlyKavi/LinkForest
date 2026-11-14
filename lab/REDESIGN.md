@@ -20,7 +20,32 @@ Everything recurring lives in `site-config.js`: social URLs, UGC profiles,
 support/shop links, contact email, homepage taglines, the kit portrait, the
 three video slots and the brand marquee. Empty `url: ''` entries never render.
 
-## Liquid Glass: what we use and why
+## Liquid Glass v2 (homepage, `<html data-glass="liquid">`)
+
+The homepage uses a WebGL material in every engine (Chrome, Firefox, Safari):
+
+- `vendor/simple-liquid-glass/next.esm.js`: simple-liquid-glass 6.0.0's low-level
+  renderer, vendored unmodified (MIT). One canvas holds many glass shapes, draws
+  only when something changes, from a worker where the browser allows.
+- `liquid-glass.js`: loads it after `load` + idle, redraws the page photo (and
+  scrim) into a texture, gives each `[data-lens]` control a shape, and runs the
+  material shader: domed edge refraction, a little frost, legibility (bright photo
+  brought down under labels), a hairline rim light. **The feel lives in `VARIANTS`
+  and `FEEL` at the top of the file.**
+- `liquid-glass.css`: the same material in CSS (backdrop blur), shown until WebGL is
+  ready and wherever it is not: no WebGL, `?glass=fallback`, reduced transparency
+  (solid), more contrast. Fixed top-bar glass also hands back to CSS while page
+  content scrolls under it, since the canvas only knows the photo.
+- `liquid-glass-buttons.js`: springs, quieter on `data-glass="liquid"` pages; it
+  hands every frame to the WebGL shape so glass and label move together.
+
+To move another page over: swap `liquid-glass-buttons.css` for `liquid-glass.css`
+(load it before `site.css`), drop `liquid-glass-optics.js`, add
+`<script type="module" src="/liquid-glass.js">` and `data-glass="liquid"` on `<html>`.
+Glass over anything but the photo (panels over text, tiles on panels) should stay
+`.lg-static` or lose `data-lens`: the canvas cannot see page content.
+
+## Liquid Glass v1 (other pages): what we use and why
 
 | | Existing site | Glisse 0.6.0 | Upgraded engine (chosen) |
 |---|---|---|---|

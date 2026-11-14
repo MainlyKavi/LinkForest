@@ -137,10 +137,17 @@
 
   controls.forEach(ensureState);
 
+  /* Pages on the WebGL Liquid Glass material (<html data-glass="liquid">) move more quietly. */
+  var calm = document.documentElement.getAttribute('data-glass') === 'liquid';
+
   /* Controls rendered after load (from site-config.js) register on first contact. */
   function ensureState(control){
     if (states.has(control)) return;
-    var profile = control.matches('.social-tile, .pill-btn, .theme-toggle, .icon-btn, .lg-sm') ?
+    var small = control.matches('.social-tile, .pill-btn, .theme-toggle, .icon-btn, .lg-sm');
+    var profile = calm ?
+      (small ? { magnet:.6, hoverScale:1.02, focusScale:1.01, pressScale:.965, wobble:.2 } :
+        { magnet:.8, hoverScale:1.01, focusScale:1.004, pressScale:.985, wobble:.25 }) :
+      small ?
       { magnet:1.15, hoverScale:1.006, focusScale:1.004, pressScale:.982, wobble:.35 } :
       (control.matches('.project-card') ?
         { magnet:1.8, hoverScale:1.009, focusScale:1.005, pressScale:.978, wobble:.65 } :
@@ -148,9 +155,9 @@
     control.classList.add('liquid-glass-control');
     states.set(control, {
       x:0, y:0, scale:1, highlightX:.5, highlightY:.35,
-      wobbleX:0, wobbleY:0,
+      wobbleX:0, wobbleY:0, glow:0,
       vx:0, vy:0, vScale:0, vHighlightX:0, vHighlightY:0,
-      vWobbleX:0, vWobbleY:0,
+      vWobbleX:0, vWobbleY:0, vGlow:0, targetGlow:0,
       targetX:0, targetY:0, targetScale:1,
       targetHighlightX:.5, targetHighlightY:.35,
       targetWobbleX:0, targetWobbleY:0,
@@ -193,7 +200,33 @@
       Math.abs(state.highlightX - state.targetHighlightX) < .001 && Math.abs(state.vHighlightX) < .004 &&
       Math.abs(state.highlightY - state.targetHighlightY) < .001 && Math.abs(state.vHighlightY) < .004 &&
       Math.abs(state.wobbleX) < .00015 && Math.abs(state.vWobbleX) < .0015 &&
-      Math.abs(state.wobbleY) < .00015 && Math.abs(state.vWobbleY) < .0015;
+      Math.abs(state.wobbleY) < .00015 && Math.abs(state.vWobbleY) < .0015 &&
+      Math.abs(state.glow - state.targetGlow) < .002 && Math.abs(state.vGlow) < .01;
+  }
+
+  /* How lit the material is: a press most, a hover some, keyboard focus a little. */
+  function glowTarget(state){
+    return state.pressed ? 1 : (state.hovered ? .55 : (state.focused ? .3 : 0));
+  }
+
+  /* Hands the control's motion to the WebGL glass drawn under it (liquid-glass.js), if any. */
+  function glass(control, state, scaleX, scaleY){
+    var material = window.LiquidGlassMaterial;
+    if (!material) return;
+    var press = Math.max(0, Math.min(1, (1 - state.scale) / (1 - state.pressScale)));
+    material.paint(control, state.x, state.y, scaleX, scaleY, state.highlightX, state.highlightY, state.glow, press);
+  }
+
+  /* Reduced motion: no springs, so the glass jumps to the new state. */
+  function snapGlass(control){
+    if (!reducedQuery.matches) return;
+    var state = states.get(control);
+    state.glow = glowTarget(state);
+    state.highlightX = state.targetHighlightX;
+    state.highlightY = state.targetHighlightY;
+    var material = window.LiquidGlassMaterial;
+    var on = state.pressed ? 1 : 0;
+    if (material) material.paint(control, 0, 0, 1 - on * .01, 1 - on * .01, state.highlightX, state.highlightY, state.glow, on);
   }
 
   function paint(control, state){
@@ -204,6 +237,7 @@
     control.style.transform = 'none';
     control.style.setProperty('--lg-highlight-x', (state.highlightX * 100).toFixed(2) + '%');
     control.style.setProperty('--lg-highlight-y', (state.highlightY * 100).toFixed(2) + '%');
+    glass(control, state, scaleX, scaleY);
   }
 
   function clearIdleStyles(control){
@@ -213,6 +247,8 @@
     control.style.transform = '';
     control.style.removeProperty('--lg-highlight-x');
     control.style.removeProperty('--lg-highlight-y');
+    var state = states.get(control);
+    if (state) glass(control, { x:0, y:0, scale:1, pressScale:state.pressScale, highlightX:.5, highlightY:.35, glow:0 }, 1, 1);
   }
 
   function tick(now){
@@ -224,7 +260,9 @@
 
     animating.forEach(function(control){
       var state = states.get(control);
+      state.targetGlow = glowTarget(state);
       for (var i = 0; i < steps; i++){
+        spring(state, 'glow', 'vGlow', 'targetGlow', 260, 30, stepDt);
         spring(state, 'x', 'vx', 'targetX', 270, 27, stepDt);
         spring(state, 'y', 'vy', 'targetY', 270, 27, stepDt);
         spring(state, 'scale', 'vScale', 'targetScale', 400, 24, stepDt);
@@ -306,6 +344,7 @@
     if (event) updatePointer(control, event);
     if (pointerId != null) pressedPointers.set(pointerId, control);
     if (!reducedQuery.matches) activate(control);
+    snapGlass(control);
   }
 
   function release(control, pointerId){
@@ -320,6 +359,7 @@
     } else {
       activate(control);
     }
+    snapGlass(control);
   }
 
   document.addEventListener('pointerover', function(event){
@@ -331,6 +371,7 @@
       state.targetScale = state.pressed ? state.pressScale : state.hoverScale;
       control.classList.add('is-lg-hovered');
       updatePointer(control, event);
+      snapGlass(control);
     }
   });
 
@@ -350,6 +391,7 @@
     control.classList.remove('is-lg-hovered');
     setRestTarget(state);
     if (!reducedQuery.matches) activate(control);
+    snapGlass(control);
   });
 
   document.addEventListener('pointerdown', function(event){
@@ -375,6 +417,7 @@
       (reducedQuery.matches ? 1 : state.focusScale);
     control.classList.add('is-lg-focused');
     if (!reducedQuery.matches) activate(control);
+    snapGlass(control);
   });
 
   document.addEventListener('focusout', function(event){
@@ -385,6 +428,7 @@
     control.classList.remove('is-lg-focused');
     setRestTarget(state);
     if (!reducedQuery.matches) activate(control);
+    snapGlass(control);
   });
 
   document.addEventListener('keydown', function(event){

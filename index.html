@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-glass="liquid">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -69,7 +69,7 @@
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>
 
-<link rel="stylesheet" href="/liquid-glass-buttons.css">
+<link rel="stylesheet" href="/liquid-glass.css">
 <link rel="stylesheet" href="/site.css">
 <style>
   .home{
@@ -79,15 +79,17 @@
     text-align:center;
   }
 
-  /* avatar: glass ring around the (very much vintage) profile picture */
+  /* avatar: the (very much vintage) photo is the focus; only a hairline of light and a soft lift */
   .avatar{
     position:relative;
-    width:120px; height:120px;
-    padding:5px;
+    width:110px; height:110px;
     border-radius:50%;
-    margin-bottom:18px;
+    margin-bottom:28px;
   }
-  .avatar img{ width:100%; height:100%; border-radius:50%; object-fit:cover; }
+  .avatar img{
+    width:100%; height:100%; border-radius:50%; object-fit:cover;
+    box-shadow:0 0 0 1px rgba(255,255,255,.22), 0 10px 26px -12px rgba(8,20,44,.5);
+  }
   .avatar .lore{
     position:absolute; left:50%; top:calc(100% + 6px); z-index:5;
     padding:7px 12px; border-radius:999px;
@@ -164,13 +166,13 @@
     .home-btn{ height:58px; font-size:15.5px; grid-template-columns:46px 1fr 46px; }
   }
   @media (min-height:900px) and (min-width:700px){
-    .avatar{ width:132px; height:132px; }
+    .avatar{ width:122px; height:122px; }
   }
 </style>
 <script defer src="/site-config.js"></script>
 <script defer src="/site.js"></script>
-<script defer src="/liquid-glass-optics.js"></script>
 <script defer src="/liquid-glass-buttons.js"></script>
+<script type="module" src="/liquid-glass.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to links</a>
@@ -211,7 +213,7 @@
 
 <main class="page home" id="main">
 
-  <div class="avatar lg lg-static reveal-g" style="--d:.02s">
+  <div class="avatar reveal-g" style="--d:.02s">
     <img src="/assets/avatar.webp" width="120" height="120" alt="" decoding="async" fetchpriority="high">
     <span class="lore lg lg-static" aria-hidden="true">baby me. peak era.</span>
   </div>

@@ -1,0 +1,160 @@
+/* ================================================================
+   Liquid Glass: the material for MainlyKavi's controls.
+
+   One material, two renderings:
+   - WebGL (liquid-glass.js) for [data-lens] controls: the photo is bent
+     at the edges, frosted a little, kept legible under labels and lit
+     along the rim. The element gets .lg-gl and its CSS layers step aside.
+   - CSS, here: what shows until WebGL is ready, and wherever it is
+     unavailable. Backdrop blur and saturation, a hairline edge, a small
+     shadow. Never a white border, never a bright fill.
+
+   Variants (existing classes, no extra markup):
+     .lg          main buttons      regular: more frost, a label on it
+     .lg-sm       small controls    clear: barely frosted
+     .lg-static   panels, tooltips  thicker, not interactive
+
+   Tune the CSS rendering here and the WebGL one in liquid-glass.js.
+   ================================================================ */
+
+.lg{
+  --g-frost:12px;
+  --g-sat:1.2;
+  --g-bright:.93;                      /* a touch darker keeps white labels readable */
+  --g-fill:rgba(255,255,255,.07);
+  --g-edge:rgba(255,255,255,.45);      /* the hairline facing the light */
+  --g-edge-far:rgba(255,255,255,.10);
+  --g-glow:rgba(255,255,255,.16);
+  --g-shadow:0 1px 1.5px rgba(10,24,48,.10), 0 6px 18px -10px rgba(10,24,48,.34);
+  position:relative;
+  isolation:isolate;
+  border-radius:999px;
+  box-shadow:var(--g-shadow);
+  transform-origin:center;
+  -webkit-tap-highlight-color:transparent;
+}
+.lg-sm{
+  --g-frost:6px;
+  --g-bright:.96;
+  --g-fill:rgba(255,255,255,.05);
+}
+[data-theme="dark"] .lg{
+  --g-sat:1.15;
+  --g-bright:1;
+  --g-fill:rgba(255,255,255,.045);
+  --g-edge:rgba(255,255,255,.30);
+  --g-edge-far:rgba(255,255,255,.07);
+  --g-glow:rgba(255,255,255,.10);
+  --g-shadow:0 1px 1.5px rgba(0,0,0,.22), 0 8px 20px -10px rgba(0,0,0,.55);
+}
+
+/* Interactive glass: the material lives in ::before so it can hand over to the canvas. */
+.lg:not(.lg-static)::before{
+  content:"";
+  position:absolute; inset:0; z-index:-1;
+  border-radius:inherit;
+  background:var(--g-fill);
+  -webkit-backdrop-filter:blur(var(--g-frost)) saturate(var(--g-sat)) brightness(var(--g-bright));
+          backdrop-filter:blur(var(--g-frost)) saturate(var(--g-sat)) brightness(var(--g-bright));
+  box-shadow:
+    inset 0 1px 0 -.4px var(--g-edge),
+    inset 0 -1px 0 -.4px var(--g-edge-far),
+    inset 0 0 0 .5px var(--g-edge-far);
+  pointer-events:none;
+  transition:opacity .45s var(--ease, ease), visibility 0s;
+}
+/* Light gathering under the pointer (the canvas draws its own). */
+.lg:not(.lg-static)::after{
+  content:"";
+  position:absolute; inset:0; z-index:-1;
+  border-radius:inherit;
+  background:radial-gradient(circle 70px at var(--lg-highlight-x, 50%) var(--lg-highlight-y, 35%), var(--g-glow), transparent);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s var(--ease, ease);
+}
+.lg.is-lg-hovered::after{ opacity:.7; }
+.lg.is-lg-pressed::after{ opacity:1; }
+.lg > *{ position:relative; z-index:2; }
+
+/* WebGL has the glass: the CSS layers fade, then stop painting. */
+.lg.lg-gl::before,
+.lg.lg-gl::after{
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .45s var(--ease, ease), visibility 0s linear .45s;
+}
+.lg-canvas{
+  position:absolute; z-index:0;
+  pointer-events:none !important;
+  opacity:0;
+  transition:opacity .45s var(--ease, ease);
+}
+.lg-canvas.is-on{ opacity:1; }
+
+/* Panels and tooltips: thicker, and on the element itself because they fade. */
+.lg-static{
+  background:rgba(24,38,64,.20);
+  -webkit-backdrop-filter:blur(24px) saturate(1.3) brightness(.94);
+          backdrop-filter:blur(24px) saturate(1.3) brightness(.94);
+  box-shadow:
+    inset 0 1px 0 -.4px rgba(255,255,255,.40),
+    inset 0 0 0 .5px rgba(255,255,255,.10),
+    0 18px 44px -18px rgba(8,20,44,.45);
+}
+[data-theme="dark"] .lg-static{
+  background:rgba(10,16,32,.42);
+  box-shadow:
+    inset 0 1px 0 -.4px rgba(255,255,255,.22),
+    inset 0 0 0 .5px rgba(255,255,255,.07),
+    0 18px 44px -18px rgba(0,0,0,.6);
+}
+
+.lg:focus-visible{ outline:2px solid #fff; outline-offset:3px; }
+
+/* Springs (liquid-glass-buttons.js) */
+.liquid-glass-control.is-lg-animating{ will-change:translate, scale; }
+
+/* ---------- the theme switch: iOS turns the knob to glass while it is touched ---------- */
+.theme-switch.lg .knob{
+  transition:transform .5s cubic-bezier(.3,1.12,.4,1), scale .35s var(--ease), background-color .3s var(--ease), color .4s var(--ease), box-shadow .3s var(--ease);
+}
+.theme-switch.lg .knob svg{ transition:opacity .25s var(--ease); }
+.theme-switch.is-lg-pressed .knob,
+.theme-switch.is-switching .knob,
+[data-theme="dark"] .theme-switch.is-lg-pressed .knob,
+[data-theme="dark"] .theme-switch.is-switching .knob{
+  scale:1.22 1.1;
+  background-color:rgba(255,255,255,.18);
+  -webkit-backdrop-filter:blur(1.5px) saturate(1.4) brightness(1.08);
+          backdrop-filter:blur(1.5px) saturate(1.4) brightness(1.08);
+  box-shadow:
+    inset 0 1px 0 -.3px rgba(255,255,255,.8),
+    inset 0 0 0 .5px rgba(255,255,255,.35),
+    0 3px 10px rgba(0,0,0,.16);
+}
+.theme-switch.is-lg-pressed .knob svg,
+.theme-switch.is-switching .knob svg{ opacity:.5; }
+
+/* ---------- accessibility ---------- */
+@media (prefers-reduced-transparency: reduce){
+  .lg:not(.lg-static)::before,
+  .lg-static{
+    -webkit-backdrop-filter:none; backdrop-filter:none;
+    background:rgba(24,36,60,.88);
+  }
+  [data-theme="dark"] .lg:not(.lg-static)::before,
+  [data-theme="dark"] .lg-static{ background:rgba(14,20,36,.94); }
+}
+@media (prefers-contrast: more){
+  .lg:not(.lg-static)::before,
+  .lg-static{
+    -webkit-backdrop-filter:none; backdrop-filter:none;
+    background:rgba(14,22,40,.92);
+    box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.85);
+  }
+}
+@media (prefers-reduced-motion: reduce){
+  .liquid-glass-control{ transition:scale .1s ease-out; }
+  .liquid-glass-control.is-lg-pressed{ scale:.99; }
+}
