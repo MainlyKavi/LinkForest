@@ -245,7 +245,7 @@ img,svg{ display:block; }
   margin-top:28px;
   text-align:center;
   font-size:12px; font-weight:500;
-  color:var(--text-dim);
+  color:var(--text); /* small text over a photo: keep it full strength (AA) */
 }
 .site-footer a{ text-decoration:underline; text-decoration-color:rgba(255,255,255,.35); text-underline-offset:3px; }
 
