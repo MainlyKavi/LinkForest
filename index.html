@@ -172,7 +172,10 @@
 <script defer src="/site-config.js"></script>
 <script defer src="/site.js"></script>
 <script defer src="/liquid-glass-buttons.js"></script>
-<script type="module" src="/liquid-glass.js"></script>
+<script>
+/* The WebGL glass is an enhancement over glass already painted: fetch it after the page loads, off the critical path. */
+addEventListener('load', function(){ var s = document.createElement('script'); s.type = 'module'; s.src = '/liquid-glass.js'; document.head.appendChild(s); });
+</script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to links</a>
