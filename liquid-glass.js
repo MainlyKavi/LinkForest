@@ -15,39 +15,45 @@
 
 /* ---------------- the feel ---------------- */
 
-/* Per control, in CSS px: frost (blur radius), rim (width of the curved edge), bend (how far
-   the edge pulls the photo in), and legibility (0..1: how far bright photo is brought down
-   under the label). */
+/* Per control, in CSS px: frost (a light blur: the glass is clear, Apple's clear variant over
+   media), bezel (width of the curved edge the photo refracts through), bend (how far that edge
+   pulls the photo in), and dim (0..1: the dimming Apple puts under labels on clear glass, used
+   in full only when the photo behind is bright). Bigger glass is thicker: more bezel, more bend. */
 const VARIANTS = {
-  button: [6, 15, 7, 0.8],    // the three main buttons: regular glass, a label on it
-  label: [4, 12, 5, 0.8],     // small glass with a label (Hit me up)
-  control: [2.5, 11, 5, 0.4]  // icon-only controls and socials: clear glass
+  button: [1.6, 18, 8, 0.4],    // the three main buttons, a label on each
+  label: [1.2, 14, 6.5, 0.38],  // small glass with a label (Hit me up)
+  control: [0.6, 9, 4.5, 0.24]  // icon-only controls and socials
 };
 
 /* The material. Pairs are [light, dark] and cross-fade with the theme. */
 const FEEL = {
-  sat: [1.1, 1.06],         // colour of the photo seen through the glass (1 = as is)
-  tint: [0.05, 0],          // how far the glass leans to white (its own colour, kept tiny)
-  lift: [0, 0.03],          // flat brightness added (dark mode keeps the glass from going black)
-  ceiling: [0.44, 0.5],     // luma the photo is brought down toward under labels
-  rimLight: [0.42, 0.28],   // the hairline that catches the light
-  sheen: [0.09, 0.05],      // soft light inside the lit bevel
-  depth: [0.07, 0.1],       // soft shade inside the far bevel
-  glowAmt: [0.14, 0.09]     // light that gathers under the pointer / finger
+  sat: [1.24, 1.16],        // vibrancy of the photo seen through the glass (1 = as is)
+  lift: [0, 0.012],         // flat brightness added (keeps dark glass from going dead)
+  rimLight: [0.8, 0.62],    // the crisp line where the surface turns down
+  sheen: [0.26, 0.15],      // light gathered inside the curved edge
+  depth: [0.06, 0.05],      // the bezel's slight shade (thickness)
+  envAmt: [0.24, 0.2],      // nearby colour reflected at the grazing edge
+  glowAmt: [0.34, 0.24]     // light from within on touch, under the finger first
 };
 
 const VENDOR = '/vendor/simple-liquid-glass/next.esm.js';
 const REST_LIGHT = [0, -0.3];
 
-/* Picks the shape a pixel belongs to and keeps its attributes for the shade. */
+/* Picks the shape a pixel belongs to, keeps its attributes for the shade, and gathers the
+   light that pressed glass spreads onto glass nearby. */
 const FIELD = `
-vec4 mkA; vec4 mkB; vec4 mkBox;
+vec4 mkA; vec4 mkB; vec4 mkBox; float mkSpill;
 vec3 slg_field(vec2 p) {
   vec3 best = vec3(0.0, 0.0, 1e5);
+  mkSpill = 0.0;
   for (int i = 0; i < SLG_CAPACITY; i++) {
     if (i >= slg_count) break;
-    vec3 f = slg_roundedBox(p - slg_boxes[i].xy, slg_boxes[i].zw, slg_radii[i]);
-    if (f.z < best.z) { best = f; mkA = slg_attributesA[i]; mkB = slg_attributesB[i]; mkBox = slg_boxes[i]; }
+    vec4 box = slg_boxes[i];
+    vec4 b = slg_attributesB[i];
+    vec3 f = slg_roundedBox(p - box.xy, box.zw, slg_radii[i]);
+    vec2 dv = (p - box.xy - b.xy * box.zw) / 150.0;
+    mkSpill += b.w * exp(-dot(dv, dv));
+    if (f.z < best.z) { best = f; mkA = slg_attributesA[i]; mkB = b; mkBox = box; }
   }
   return best;
 }
@@ -60,61 +66,87 @@ vec3 mkPicture(vec2 screen) {
 }
 vec3 mkFrost(vec2 s, float r) {
   vec3 acc = mkPicture(s);
-  if (r < 0.5) return acc;
-  for (int k = 0; k < 12; k++) {
+  if (r < 0.3) return acc;
+  for (int k = 0; k < 8; k++) {
     float fk = float(k) + 0.5;
     float a = fk * 2.3999632;
-    acc += mkPicture(s + vec2(cos(a), sin(a)) * r * sqrt(fk / 12.0));
+    acc += mkPicture(s + vec2(cos(a), sin(a)) * r * sqrt(fk / 8.0));
   }
-  return acc / 13.0;
+  return acc / 9.0;
+}
+/* How bright the photo is behind the whole shape: decides how much dimming it needs. */
+float mkBehind() {
+  vec2 c = slg_screen(mkBox.xy);
+  vec3 acc = vec3(0.0);
+  for (int k = 0; k < 8; k++) {
+    float fk = float(k) + 0.5;
+    float a = fk * 2.3999632;
+    acc += mkPicture(c + vec2(cos(a), sin(a)) * sqrt(fk / 8.0) * mkBox.zw);
+  }
+  return dot(acc * 0.125, vec3(0.2126, 0.7152, 0.0722));
 }`;
 
 const SHADE = `
 vec4 slg_shade(vec2 p, vec3 field) {
   float d = -field.z;                 // depth inside the outline, CSS px
   vec2 n = field.xy;                  // the outline's outward normal
+  float blur = mkA.x, bezel = max(mkA.y, 1.0), bend = mkA.z, dimMax = mkA.w;
   float glow = mkB.z, press = mkB.w;
-  float rim = max(mkA.y, 1.0);
+  vec2 s = slg_screen(p);
 
-  // A domed edge: the photo is pulled in hardest at the outline, not at all past the rim,
-  // so the middle stays calm.
-  float slope = cos(clamp(d / rim, 0.0, 1.0) * 1.5707963);
-  slope *= slope;
-  float bend = mkA.z * (1.0 + 0.12 * glow - 0.15 * press);
-  vec3 col = mkFrost(slg_screen(p) - n * bend * slope, mkA.x * (1.0 + 0.35 * press));
+  // The edge is a convex squircle bezel; light refracts through it (Snell, glass 1.5), so the
+  // photo is pulled in hard right at the outline, less and less inward, and the centre is clear.
+  float t = clamp(d / bezel, 0.0, 1.0);
+  float u = 1.0 - t;
+  float u4 = u * u * u * u;
+  float rest = max(1.0 - u4, 1e-4);
+  float z = pow(rest, 0.25);                                     // surface height, 0..1
+  float slope = 2.4 * u * u * u / pow(rest, 0.75);
+  float inA = atan(slope);
+  float dev = tan(inA - asin(sin(inA) / 1.5));                  // 0 flat .. 1.1 at the outline
+  float pull = bend * shown * (1.0 + 0.25 * press) * dev * (0.3 + 0.7 * z);
+  vec2 off = -n * pull;
+  vec3 col = mkFrost(s + off, blur + (blur + 1.0) * 1.2 * u * u);  // light scatters more through the thick edge
 
-  // Clear glass: almost no colour of its own, it takes the photo's.
+  // A trace of dispersion where the bend is strong: red bends least, blue most.
+  if (pull > 0.4) {
+    col.r = mix(col.r, mkPicture(s + off * 0.9).r, 0.6);
+    col.b = mix(col.b, mkPicture(s + off * 1.12).b, 0.6);
+  }
+
+  // At the grazing outline the surface also reflects the colour just outside it.
+  float graze = pow(1.0 - z, 2.0);
+  if (graze > 0.01) col = mix(col, mkPicture(s + n * (bezel * 0.5 + 4.0)) * 1.08, graze * mkPair(envAmt) * shown);
+
+  // Clear glass takes the photo's colour, a little more vivid. Over bright photo it dims, as
+  // Apple's dimming layer does under clear glass; over dark photo it stays clear.
   float luma = dot(col, vec3(0.2126, 0.7152, 0.0722));
   col = mix(vec3(luma), col, mkPair(sat));
-  col = mix(col, vec3(1.0), mkPair(tint)) + mkPair(lift);
+  col *= 1.0 - dimMax * smoothstep(0.2, 0.7, mkBehind());
+  col += mkPair(lift);
 
-  // Legibility: bright photo under a label is brought down toward a ceiling, hue kept.
-  luma = dot(col, vec3(0.2126, 0.7152, 0.0722));
-  float cap = mkPair(ceiling);
-  if (luma > cap) col *= mix(1.0, (cap + (luma - cap) * 0.35) / luma, mkA.w);
-
-  // Light from above, a little left; the pointer draws it round.
-  vec2 toLight = normalize(vec2(-0.35, -1.0) + mkB.xy * vec2(0.9, 0.6));
+  // Light from above-left (the pointer draws it round). It catches the bezel on the side facing
+  // it and, through the glass, on the opposite side: the two bright corners of real glass.
+  vec2 toLight = normalize(vec2(-0.68, -0.73) + mkB.xy * vec2(0.8, 0.5));
   float facing = dot(n, toLight);
-  float lit = pow(max(facing, 0.0), 1.6);
-  float far = pow(max(-facing, 0.0), 2.0);
+  float near = pow(max(facing, 0.0), 3.0);
+  float far = pow(max(-facing, 0.0), 3.0);
+  float bev = u * u * u;
+  col *= 1.0 - bev * mkPair(depth);
+  float line = 1.0 - smoothstep(0.0, 0.7 + 1.0 / slg_scale, d);
+  float spec = line * mkPair(rimLight) * (0.12 + 0.88 * near + 0.6 * far) * (1.0 + 0.4 * glow);
+  spec += bev * mkPair(sheen) * (pow(max(facing, 0.0), 1.5) + 0.5 * pow(max(-facing, 0.0), 1.5));
 
-  // The edge: a hairline that catches the light, faint on the far side. Not a border.
-  float line = 1.0 - smoothstep(0.2, 0.8 + 0.5 / slg_scale, d);
-  col += vec3(line * mkPair(rimLight) * (1.0 + 0.3 * glow) * (0.07 + 0.93 * lit + 0.22 * far));
-
-  // Inside the bevel: a soft sheen on the lit side, a soft shade on the far side.
-  float bevel = 1.0 - smoothstep(0.0, rim * 0.85, d);
-  col += vec3(bevel * bevel * lit * mkPair(sheen));
-  col *= 1.0 - bevel * far * mkPair(depth);
-
-  // Touch: light gathers where the pointer is.
+  // Touch: the glass lights from within, under the finger first, then through the element and
+  // onto glass nearby.
   vec2 at = mkBox.xy + mkB.xy * mkBox.zw;
-  float reach = max(min(mkBox.w * 2.2, 90.0), 20.0);
-  vec2 dp = (p - at) / reach;
-  col += vec3(exp(-dot(dp, dp) * 2.0) * (glow * 0.6 + press) * mkPair(glowAmt));
+  float reach = mix(min(mkBox.w, 24.0), max(mkBox.z, mkBox.w) * 1.5, press);
+  vec2 dp = (p - at) / max(reach, 8.0);
+  spec += (exp(-dot(dp, dp) * 1.5) * (glow * 0.4 + press) + min(mkSpill, 1.0) * 0.28) * mkPair(glowAmt);
 
-  return vec4(clamp(col, 0.0, 1.0), 1.0);
+  spec *= shown;
+  col = 1.0 - (1.0 - clamp(col, 0.0, 1.0)) * (1.0 - clamp(spec, 0.0, 1.0));  // light adds, never greys
+  return vec4(col, 1.0);
 }`;
 
 /* ---------------- setup ---------------- */
@@ -179,7 +211,7 @@ function start(lib) {
   theme = themeNow();
   night = theme === 'dark' ? 1 : 0;
   host = lib.createGlassHost();
-  host.defineMaterial({ id: 'mk', field: FIELD, shade: SHADE, uniforms: Object.assign({ night: night, fade: 1 }, FEEL), textures: ['uPrev'] });
+  host.defineMaterial({ id: 'mk', field: FIELD, shade: SHADE, uniforms: Object.assign({ night: night, fade: 1, shown: 1 }, FEEL), textures: ['uPrev'] });
   composePicture(theme).then(() => {
     if (dead) return;
     found.forEach((g) => { groups.push(g); setupGroup(g); });
@@ -218,7 +250,8 @@ function setupGroup(g) {
   g.layer = host.addLayer(canvas, {
     fixed: g.fixed,
     material: 'mk',
-    params: { night: night, fade: 1 },
+    params: { night: night, fade: 1, shown: 0 },
+    scale: Math.min(window.devicePixelRatio || 1, 3), // the rim is a hairline: draw it at the screen's own density
     onStatus: (status) => onStatus(g, status)
   });
   g.items.forEach((it) => {
@@ -242,10 +275,23 @@ function onStatus(g, status) {
 function engage(g) {
   if (!g.drawing || !g.hasPicture || g.covered || dead) return;
   requestAnimationFrame(() => requestAnimationFrame(() => {
-    if (!g.drawing || g.covered || dead) return;
+    if (!g.drawing || g.covered || dead || g.canvas.classList.contains('is-on')) return;
     g.canvas.classList.add('is-on');
     g.items.forEach((it) => it.el.classList.add('lg-gl'));
+    materialize(g);
   }));
+}
+
+/* Liquid Glass doesn't fade in: it materializes, its bending and light growing to full. */
+function materialize(g) {
+  cancelAnimationFrame(g.growing);
+  const t0 = performance.now(), dur = reducedMotion.matches ? 0 : 650;
+  const step = (now) => {
+    const t = dur ? Math.min(1, (now - t0) / dur) : 1;
+    if (g.layer) g.layer.setParams({ shown: ease(t) });
+    g.growing = t < 1 && !dead ? requestAnimationFrame(step) : 0;
+  };
+  g.growing = requestAnimationFrame(step);
 }
 
 function disengage(g) {
@@ -325,7 +371,9 @@ function composePicture(name) {
   img.src = url;
   return img.decode().then(() => {
     const vb = back.getBoundingClientRect(), lb = layer.getBoundingClientRect();
-    const k = Math.min(1, 1280 / Math.max(vb.width, vb.height));
+    /* Up to 2 texels per CSS px (the phone photo has about that much detail); at 1 the glass
+       looked soft on a 3x screen. Capped at 2048 on the long side for memory. */
+    const k = Math.min(window.devicePixelRatio || 1, 2, 2048 / Math.max(vb.width, vb.height));
     const canvas = document.createElement('canvas');
     canvas.width = Math.max(1, Math.round(vb.width * k));
     canvas.height = Math.max(1, Math.round(vb.height * k));

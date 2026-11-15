@@ -29,10 +29,15 @@ The homepage uses a WebGL material in every engine (Chrome, Firefox, Safari):
   only when something changes, from a worker where the browser allows.
 - `liquid-glass.js`: loads it after `load` + idle, redraws the page photo (and
   scrim) into a texture, gives each `[data-lens]` control a shape, and runs the
-  material shader: domed edge refraction, a little frost, legibility (bright photo
-  brought down under labels), a hairline rim light. **The feel lives in `VARIANTS`
-  and `FEEL` at the top of the file.**
-- `liquid-glass.css`: the same material in CSS (backdrop blur), shown until WebGL is
+  material shader, modelled on iOS 26's clear Liquid Glass over media: clear centre,
+  refraction through a squircle bezel (Snell, n 1.5) with a trace of dispersion,
+  dimming only when the photo behind is bright (Apple's dimming layer, not a white
+  fill), a crisp rim lit on the two corners on the light's axis, nearby colour at
+  the grazing edge. Press swells the glass ~9px and lights it from the finger out,
+  onto neighbouring glass too; glass materializes (bend grows in) rather than fading.
+  The photo texture is 2 texels per CSS px and the canvas draws at the screen's
+  density (up to 3x). **The feel lives in `VARIANTS` and `FEEL` at the top of the file.**
+- `liquid-glass.css`: the same clear material in CSS (backdrop blur), shown until WebGL is
   ready and wherever it is not: no WebGL, `?glass=fallback`, reduced transparency
   (solid), more contrast. Fixed top-bar glass also hands back to CSS while page
   content scrolls under it, since the canvas only knows the photo.

@@ -144,9 +144,12 @@
   function ensureState(control){
     if (states.has(control)) return;
     var small = control.matches('.social-tile, .pill-btn, .theme-toggle, .icon-btn, .lg-sm');
+    /* Liquid Glass swells under the finger (pressScale is worked out from its size on press);
+       a switch's track stays put, its knob does the moving. */
     var profile = calm ?
-      (small ? { magnet:.6, hoverScale:1.02, focusScale:1.01, pressScale:.965, wobble:.2 } :
-        { magnet:.8, hoverScale:1.01, focusScale:1.004, pressScale:.985, wobble:.25 }) :
+      (control.matches('.theme-switch') ? { magnet:0, hoverScale:1, focusScale:1, pressScale:1, wobble:0, fixedScale:true } :
+        small ? { magnet:.6, hoverScale:1.035, focusScale:1.015, pressScale:1.1, wobble:.3 } :
+        { magnet:.8, hoverScale:1.01, focusScale:1.005, pressScale:1.03, wobble:.3 }) :
       small ?
       { magnet:1.15, hoverScale:1.006, focusScale:1.004, pressScale:.982, wobble:.35 } :
       (control.matches('.project-card') ?
@@ -155,9 +158,10 @@
     control.classList.add('liquid-glass-control');
     states.set(control, {
       x:0, y:0, scale:1, highlightX:.5, highlightY:.35,
-      wobbleX:0, wobbleY:0, glow:0,
+      wobbleX:0, wobbleY:0, glow:0, press:0,
       vx:0, vy:0, vScale:0, vHighlightX:0, vHighlightY:0,
-      vWobbleX:0, vWobbleY:0, vGlow:0, targetGlow:0,
+      vWobbleX:0, vWobbleY:0, vGlow:0, targetGlow:0, vPress:0, targetPress:0,
+      fixedScale:!!profile.fixedScale, pressedAt:0, releaseTimer:0,
       targetX:0, targetY:0, targetScale:1,
       targetHighlightX:.5, targetHighlightY:.35,
       targetWobbleX:0, targetWobbleY:0,
@@ -201,7 +205,8 @@
       Math.abs(state.highlightY - state.targetHighlightY) < .001 && Math.abs(state.vHighlightY) < .004 &&
       Math.abs(state.wobbleX) < .00015 && Math.abs(state.vWobbleX) < .0015 &&
       Math.abs(state.wobbleY) < .00015 && Math.abs(state.vWobbleY) < .0015 &&
-      Math.abs(state.glow - state.targetGlow) < .002 && Math.abs(state.vGlow) < .01;
+      Math.abs(state.glow - state.targetGlow) < .002 && Math.abs(state.vGlow) < .01 &&
+      Math.abs(state.press - state.targetPress) < .002 && Math.abs(state.vPress) < .01;
   }
 
   /* How lit the material is: a press most, a hover some, keyboard focus a little. */
@@ -213,8 +218,8 @@
   function glass(control, state, scaleX, scaleY){
     var material = window.LiquidGlassMaterial;
     if (!material) return;
-    var press = Math.max(0, Math.min(1, (1 - state.scale) / (1 - state.pressScale)));
-    material.paint(control, state.x, state.y, scaleX, scaleY, state.highlightX, state.highlightY, state.glow, press);
+    var press = Math.max(0, Math.min(1, state.press));
+    material.paint(control, state.x, state.y, scaleX, scaleY, state.highlightX, state.highlightY, Math.max(0, state.glow), press);
   }
 
   /* Reduced motion: no springs, so the glass jumps to the new state. */
@@ -248,7 +253,7 @@
     control.style.removeProperty('--lg-highlight-x');
     control.style.removeProperty('--lg-highlight-y');
     var state = states.get(control);
-    if (state) glass(control, { x:0, y:0, scale:1, pressScale:state.pressScale, highlightX:.5, highlightY:.35, glow:0 }, 1, 1);
+    if (state) glass(control, { x:0, y:0, scale:1, highlightX:.5, highlightY:.35, glow:0, press:0 }, 1, 1);
   }
 
   function tick(now){
@@ -261,8 +266,10 @@
     animating.forEach(function(control){
       var state = states.get(control);
       state.targetGlow = glowTarget(state);
+      state.targetPress = state.pressed ? 1 : 0;
       for (var i = 0; i < steps; i++){
         spring(state, 'glow', 'vGlow', 'targetGlow', 260, 30, stepDt);
+        spring(state, 'press', 'vPress', 'targetPress', 300, 30, stepDt);
         spring(state, 'x', 'vx', 'targetX', 270, 27, stepDt);
         spring(state, 'y', 'vy', 'targetY', 270, 27, stepDt);
         spring(state, 'scale', 'vScale', 'targetScale', 400, 24, stepDt);
@@ -309,7 +316,8 @@
 
     if (reducedQuery.matches) return;
 
-    if (finePointerQuery.matches){
+    /* A finger held on glass drags it a little and stretches it, like a gel. */
+    if (finePointerQuery.matches || (calm && state.pressed)){
       var magneticTravel = state.pressed ? state.magnet * .43 : state.magnet;
       state.targetX = nx * magneticTravel;
       state.targetY = ny * magneticTravel;
@@ -338,6 +346,12 @@
 
   function press(control, pointerId, event){
     var state = states.get(control);
+    clearTimeout(state.releaseTimer);
+    state.pressedAt = performance.now();
+    /* About 9px of swell whatever the size: a lot for an icon, a little for a wide button. */
+    if (calm && !state.fixedScale){
+      state.pressScale = 1 + Math.max(.025, Math.min(.12, 9 / Math.max(control.offsetWidth, control.offsetHeight, 1)));
+    }
     state.pressed = true;
     state.targetScale = reducedQuery.matches ? .99 : state.pressScale;
     control.classList.add('is-lg-pressed');
@@ -350,6 +364,14 @@
   function release(control, pointerId){
     if (!control || !states.has(control)) return;
     var state = states.get(control);
+    /* A quick tap still shows the whole swell before it springs back. */
+    var held = performance.now() - state.pressedAt;
+    if (calm && state.pressed && !reducedQuery.matches && held < 150){
+      if (pointerId != null) pressedPointers.delete(pointerId);
+      clearTimeout(state.releaseTimer);
+      state.releaseTimer = setTimeout(function(){ release(control, null); }, 150 - held);
+      return;
+    }
     state.pressed = false;
     control.classList.remove('is-lg-pressed');
     setRestTarget(state);
