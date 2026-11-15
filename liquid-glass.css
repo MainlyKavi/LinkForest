@@ -22,7 +22,7 @@
 .lg{
   --g-frost:3px;
   --g-sat:1.4;
-  --g-bright:.84;                      /* the dimming that keeps white labels readable */
+  --g-bright:.93;                      /* the dimming that keeps white labels readable */
   --g-fill:rgba(255,255,255,0);
   --g-edge:rgba(255,255,255,.62);      /* the corner facing the light */
   --g-edge-far:rgba(255,255,255,.30);  /* the opposite corner, lit through the glass */
@@ -38,7 +38,7 @@
 }
 .lg-sm{
   --g-frost:1.5px;
-  --g-bright:.9;
+  --g-bright:.95;
 }
 [data-theme="dark"] .lg{
   --g-sat:1.25;

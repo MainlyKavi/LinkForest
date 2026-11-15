@@ -32,7 +32,8 @@ The homepage uses a WebGL material in every engine (Chrome, Firefox, Safari):
   material shader, modelled on iOS 26's clear Liquid Glass over media: clear centre,
   refraction through a squircle bezel (Snell, n 1.5) with a trace of dispersion,
   dimming only when the photo behind is bright (Apple's dimming layer, not a white
-  fill), a crisp rim lit on the two corners on the light's axis, nearby colour at
+  fill; one value per family of siblings, measured in JS, so the three buttons are
+  always the same material), a crisp rim lit on the two corners on the light's axis, nearby colour at
   the grazing edge. Press swells the glass ~9px and lights it from the finger out,
   onto neighbouring glass too; glass materializes (bend grows in) rather than fading.
   The photo texture is 2 texels per CSS px and the canvas draws at the screen's

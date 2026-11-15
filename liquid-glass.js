@@ -18,11 +18,12 @@
 /* Per control, in CSS px: frost (a light blur: the glass is clear, Apple's clear variant over
    media), bezel (width of the curved edge the photo refracts through), bend (how far that edge
    pulls the photo in), and dim (0..1: the dimming Apple puts under labels on clear glass, used
-   in full only when the photo behind is bright). Bigger glass is thicker: more bezel, more bend. */
+   in full only when the photo behind is bright; siblings share one value, see shade()).
+   Bigger glass is thicker: more bezel, more bend. */
 const VARIANTS = {
-  button: [1.6, 18, 8, 0.4],    // the three main buttons, a label on each
-  label: [1.2, 14, 6.5, 0.38],  // small glass with a label (Hit me up)
-  control: [0.6, 9, 4.5, 0.24]  // icon-only controls and socials
+  button: [1.6, 18, 8, 0.28],   // the three main buttons, a label on each
+  label: [1.2, 14, 6.5, 0.27],  // small glass with a label (Hit me up)
+  control: [0.6, 9, 4.5, 0.17]  // icon-only controls and socials
 };
 
 /* The material. Pairs are [light, dark] and cross-fade with the theme. */
@@ -73,24 +74,13 @@ vec3 mkFrost(vec2 s, float r) {
     acc += mkPicture(s + vec2(cos(a), sin(a)) * r * sqrt(fk / 8.0));
   }
   return acc / 9.0;
-}
-/* How bright the photo is behind the whole shape: decides how much dimming it needs. */
-float mkBehind() {
-  vec2 c = slg_screen(mkBox.xy);
-  vec3 acc = vec3(0.0);
-  for (int k = 0; k < 8; k++) {
-    float fk = float(k) + 0.5;
-    float a = fk * 2.3999632;
-    acc += mkPicture(c + vec2(cos(a), sin(a)) * sqrt(fk / 8.0) * mkBox.zw);
-  }
-  return dot(acc * 0.125, vec3(0.2126, 0.7152, 0.0722));
 }`;
 
 const SHADE = `
 vec4 slg_shade(vec2 p, vec3 field) {
   float d = -field.z;                 // depth inside the outline, CSS px
   vec2 n = field.xy;                  // the outline's outward normal
-  float blur = mkA.x, bezel = max(mkA.y, 1.0), bend = mkA.z, dimMax = mkA.w;
+  float blur = mkA.x, bezel = max(mkA.y, 1.0), bend = mkA.z, dim = mkA.w;
   float glow = mkB.z, press = mkB.w;
   vec2 s = slg_screen(p);
 
@@ -119,10 +109,11 @@ vec4 slg_shade(vec2 p, vec3 field) {
   if (graze > 0.01) col = mix(col, mkPicture(s + n * (bezel * 0.5 + 4.0)) * 1.08, graze * mkPair(envAmt) * shown);
 
   // Clear glass takes the photo's colour, a little more vivid. Over bright photo it dims, as
-  // Apple's dimming layer does under clear glass; over dark photo it stays clear.
+  // Apple's dimming layer does under clear glass; over dark photo it stays clear (dim is
+  // worked out in JS, one value per family of siblings).
   float luma = dot(col, vec3(0.2126, 0.7152, 0.0722));
   col = mix(vec3(luma), col, mkPair(sat));
-  col *= 1.0 - dimMax * smoothstep(0.2, 0.7, mkBehind());
+  col *= 1.0 - dim;
   col += mkPair(lift);
 
   // Light from above-left (the pointer draws it round). It catches the bezel on the side facing
@@ -226,9 +217,14 @@ function collect() {
   document.querySelectorAll('.lg[data-lens]').forEach((el) => {
     const fixed = fixedAncestor(el);
     const container = fixed || el.closest('main') || document.body;
-    if (!map.has(container)) map.set(container, { container, fixed: !!fixed, items: [] });
+    if (!map.has(container)) map.set(container, { container, fixed: !!fixed, items: [], families: new Map() });
+    const g = map.get(container);
     const variant = !el.classList.contains('lg-sm') ? 'button' : (el.textContent.trim() ? 'label' : 'control');
-    map.get(container).items.push({ el, variant });
+    /* Siblings (a list of controls, the top bar) are one family: one dimming value for all. */
+    const it = { el, variant, family: el.closest('ul') || el.parentElement, light: [REST_LIGHT[0], REST_LIGHT[1], 0, 0], dim: 0 };
+    g.items.push(it);
+    if (!g.families.has(it.family)) g.families.set(it.family, []);
+    g.families.get(it.family).push(it);
   });
   return [...map.values()];
 }
@@ -262,6 +258,7 @@ function setupGroup(g) {
     if (dead) return bmp.close();
     g.layer.setBackdrop(bmp, { rect: pictures[theme].rect, fixed: true });
     g.hasPicture = true;
+    shade();
     engage(g);
   });
 }
@@ -340,7 +337,9 @@ function shapeBox(it, sx, sy, tx, ty) {
 }
 
 function attributes(it, hx, hy, glow, press) {
-  return VARIANTS[it.variant].concat([hx, hy, glow, press]);
+  const v = VARIANTS[it.variant];
+  it.light = [hx, hy, glow, press];
+  return [v[0], v[1], v[2], it.dim, hx, hy, glow, press];
 }
 
 function relayout() {
@@ -350,6 +349,49 @@ function relayout() {
     measure(g);
     g.layer.resize();
     g.items.forEach((it) => it.shape && it.shape.set(shapeBox(it, 1, 1, 0, 0), { jump: true }));
+  });
+  shade();
+}
+
+/* ---------------- dimming ---------------- */
+
+/* Apple dims clear glass only over bright content, and glass in one container is sampled
+   together, so it reads as one material. Each family of siblings (the three buttons, the rail,
+   the top bar) gets one value from the mean brightness of the photo behind all its members.
+   (Each shape used to guess from 8 texture taps of its own, and neighbours came out different.) */
+let prevTheme = null, fadeAmt = 1;
+
+/* Mean luminance of the photo behind a family's members, at rest, where they are on screen now. */
+function behind(items, at, name) {
+  const pic = pictures[name];
+  if (!pic) return 0;
+  const m = pic.luma, r = pic.rect, kx = m.w / r.width, ky = m.h / r.height;
+  let sum = 0, n = 0;
+  items.forEach(({ base: b }) => {
+    const left = at.left + b.x - b.w / 2 - r.left, top = at.top + b.y - b.h / 2 - r.top;
+    const x0 = Math.max(0, Math.floor(left * kx)), x1 = Math.min(m.w, Math.ceil((left + b.w) * kx));
+    const y0 = Math.max(0, Math.floor(top * ky)), y1 = Math.min(m.h, Math.ceil((top + b.h) * ky));
+    for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) { sum += m.L[y * m.w + x]; n++; }
+  });
+  return n ? sum / n : 0;
+}
+
+function shade() {
+  if (dead) return;
+  groups.forEach((g) => {
+    if (!g.layer || !g.hasPicture) return;
+    const at = g.canvas.getBoundingClientRect();
+    g.families.forEach((items) => {
+      let luma = behind(items, at, theme);
+      if (fadeAmt < 1 && prevTheme) { const was = behind(items, at, prevTheme); luma = was + (luma - was) * fadeAmt; }
+      const t = Math.min(1, Math.max(0, (luma - 0.2) / 0.5)), k = t * t * (3 - 2 * t); // smoothstep(0.2, 0.7)
+      items.forEach((it) => {
+        const dim = VARIANTS[it.variant][3] * k;
+        if (!it.shape || Math.abs(dim - it.dim) < 0.002) return;
+        it.dim = dim;
+        it.shape.setAttributes(attributes(it, ...it.light), { jump: true });
+      });
+    });
   });
 }
 
@@ -371,34 +413,66 @@ function composePicture(name) {
   img.src = url;
   return img.decode().then(() => {
     const vb = back.getBoundingClientRect(), lb = layer.getBoundingClientRect();
-    /* Up to 2 texels per CSS px (the phone photo has about that much detail); at 1 the glass
-       looked soft on a 3x screen. Capped at 2048 on the long side for memory. */
-    const k = Math.min(window.devicePixelRatio || 1, 2, 2048 / Math.max(vb.width, vb.height));
-    const canvas = document.createElement('canvas');
-    canvas.width = Math.max(1, Math.round(vb.width * k));
-    canvas.height = Math.max(1, Math.round(vb.height * k));
-    const ctx = canvas.getContext('2d');
     const s = Math.max(lb.width / img.naturalWidth, lb.height / img.naturalHeight);
     const dw = img.naturalWidth * s, dh = img.naturalHeight * s;
     const pos = cs.backgroundPosition.split(' ');
     const ox = lb.left + place(pos[0], lb.width - dw);
     const oy = lb.top + place(pos[1] || '50%', lb.height - dh);
     const blur = parseFloat((cs.filter.match(/blur\(([\d.]+)px\)/) || [])[1]) || 0;
-    if (blur && 'filter' in ctx) ctx.filter = 'blur(' + (blur * k).toFixed(2) + 'px)';
-    ctx.drawImage(img, (ox - vb.left) * k, (oy - vb.top) * k, dw * k, dh * k);
-    if ('filter' in ctx) ctx.filter = 'none';
     const rootStyle = getComputedStyle(root);
     const top = rootStyle.getPropertyValue('--scrim-top').trim(), bottom = rootStyle.getPropertyValue('--scrim-bottom').trim();
-    if (top && bottom) {
-      const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      grad.addColorStop(0, top); grad.addColorStop(0.7, bottom); grad.addColorStop(1, bottom);
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
+    /* Photo and scrim at k canvas px per CSS px. */
+    const paint = (k, opts) => {
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(vb.width * k));
+      canvas.height = Math.max(1, Math.round(vb.height * k));
+      const ctx = canvas.getContext('2d', opts);
+      if (blur && 'filter' in ctx) ctx.filter = 'blur(' + (blur * k).toFixed(2) + 'px)';
+      ctx.drawImage(img, (ox - vb.left) * k, (oy - vb.top) * k, dw * k, dh * k);
+      if ('filter' in ctx) ctx.filter = 'none';
+      if (top && bottom) {
+        /* CSS blends gradient stops premultiplied, canvas doesn't: between the day scrim's white
+           and navy stops that left the picture up to 8% brighter than the page. So: darken by the
+           alpha ramp, then add the premultiplied colour ramp (one colour or one alpha each, so
+           canvas blends them as CSS does). */
+        const c0 = rgba(ctx, top), c1 = rgba(ctx, bottom);
+        const ramp = (a, b) => {
+          const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          grad.addColorStop(0, a); grad.addColorStop(0.7, b); grad.addColorStop(1, b);
+          return grad;
+        };
+        const pm = (c) => 'rgb(' + c[0] * c[3] + ',' + c[1] * c[3] + ',' + c[2] * c[3] + ')';
+        ctx.fillStyle = ramp('rgba(0,0,0,' + c0[3] + ')', 'rgba(0,0,0,' + c1[3] + ')');
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.fillStyle = ramp(pm(c0), pm(c1));
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.globalCompositeOperation = 'source-over';
+      }
+      return canvas;
+    };
+    /* Up to 2 texels per CSS px (the phone photo has about that much detail); at 1 the glass
+       looked soft on a 3x screen. Capped at 2048 on the long side for memory. */
+    const canvas = paint(Math.min(window.devicePixelRatio || 1, 2, 2048 / Math.max(vb.width, vb.height)));
     canvas.rect = { left: vb.left, top: vb.top, width: vb.width, height: vb.height };
+    /* Its luminance on a coarse grid (one cell per 8 CSS px) for the dimming, painted on the CPU:
+       reading the GPU picture back stalls behind the glass shader compiling. */
+    const small = paint(1 / 8, { willReadFrequently: true });
+    const d = small.getContext('2d').getImageData(0, 0, small.width, small.height).data;
+    const L = new Float32Array(small.width * small.height);
+    for (let i = 0; i < L.length; i++) L[i] = (0.2126 * d[4 * i] + 0.7152 * d[4 * i + 1] + 0.0722 * d[4 * i + 2]) / 255;
+    canvas.luma = { L, w: small.width, h: small.height };
     pictures[name] = canvas;
     return canvas;
   });
+}
+
+/* Any CSS colour as [r, g, b, a]: canvas hands fillStyle back as #rrggbb or rgba(...). */
+function rgba(ctx, css) {
+  ctx.fillStyle = css;
+  const s = ctx.fillStyle;
+  if (s[0] === '#') return [1, 3, 5].map((i) => parseInt(s.slice(i, i + 2), 16)).concat(1);
+  return s.match(/[\d.]+/g).map(Number);
 }
 
 function place(v, free) {
@@ -444,6 +518,10 @@ function watch() {
     check();
   }
 
+  /* Scrolled glass has different photo behind it. */
+  let shading = 0;
+  addEventListener('scroll', () => { if (!shading) shading = requestAnimationFrame(() => { shading = 0; shade(); }); }, { passive: true });
+
   let frame = 0, timer = 0, vw = innerWidth, vh = innerHeight;
   const soon = () => { cancelAnimationFrame(frame); frame = requestAnimationFrame(relayout); };
   addEventListener('resize', () => {
@@ -456,6 +534,7 @@ function watch() {
       composePicture(theme).then(() => groups.forEach((g) => bitmapOf(theme).then((bmp) => {
         if (dead || !g.layer) return bmp.close();
         g.layer.setBackdrop(bmp, { rect: pictures[theme].rect, fixed: true });
+        shade();
       })));
     }, 220);
   });
@@ -476,6 +555,8 @@ function onTheme() {
   if (next === theme || dead) return;
   const prev = theme;
   theme = next;
+  prevTheme = prev;
+  fadeAmt = 0; // the dimming follows the photo's crossfade, which starts once the new one is ready
   composePicture(next).then(() => Promise.all(groups.map((g) => Promise.all([bitmapOf(prev), bitmapOf(next)]).then(([old, now]) => {
     if (dead || !g.layer) { old.close(); now.close(); return; }
     /* In this order every frame in between still shows the old photo. */
@@ -494,7 +575,9 @@ function crossfade(from, to) {
     const t = dur ? Math.min(1, (now - t0) / dur) : 1;
     const e = ease(t);
     night = from + (to - from) * e;
+    fadeAmt = e;
     groups.forEach((g) => g.layer && g.layer.setParams({ fade: e, night: night }));
+    shade();
     fading = t < 1 ? requestAnimationFrame(step) : 0;
   };
   fading = requestAnimationFrame(step);

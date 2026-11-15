@@ -22,7 +22,7 @@ window.MK = {
   /* Homepage line under the name. The first one shows on load; tapping it
      cycles through the rest. */
   taglines: [
-    'if I got any cooler I’d freeze to death',
+    'the internet revolves around me',
     'hottest planet in the solar system',
     'unnecessarily hot',
     'professionally unserious',
