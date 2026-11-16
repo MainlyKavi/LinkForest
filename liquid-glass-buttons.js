@@ -416,17 +416,51 @@
     snapGlass(control);
   });
 
+  /* A finger may be starting a scroll, so (like iOS scroll views) glass waits before it lights
+     under one; if the page scrolls first (pointercancel) it never lights, and a quick tap lights
+     on release. Pressing at once made every scroll that began on glass flash it. */
+  var TOUCH_DELAY = 150;
+  var pendingTouches = new Map();
+
   document.addEventListener('pointerdown', function(event){
     var control = controlFrom(event.target);
     if (!control || event.button !== 0) return;
+    if (event.pointerType === 'touch'){
+      var id = event.pointerId, at = { clientX:event.clientX, clientY:event.clientY };
+      pendingTouches.set(id, { control:control, timer:setTimeout(function(){
+        pendingTouches.delete(id);
+        press(control, id, at);
+      }, TOUCH_DELAY) });
+      return;
+    }
     press(control, event.pointerId, event);
   });
 
+  /* Returns the touch still waiting to press, if any, and stops it waiting. */
+  function takePending(pointerId){
+    var pending = pendingTouches.get(pointerId);
+    if (!pending) return null;
+    clearTimeout(pending.timer);
+    pendingTouches.delete(pointerId);
+    return pending;
+  }
+
   document.addEventListener('pointerup', function(event){
+    var pending = takePending(event.pointerId);
+    if (pending){
+      /* A tap that ended before the delay still shows its press, briefly, on every page. */
+      var control = pending.control;
+      press(control, null, event);
+      var state = states.get(control);
+      clearTimeout(state.releaseTimer);
+      state.releaseTimer = setTimeout(function(){ release(control, null); }, TOUCH_DELAY);
+      return;
+    }
     release(pressedPointers.get(event.pointerId), event.pointerId);
   });
 
   document.addEventListener('pointercancel', function(event){
+    if (takePending(event.pointerId)) return;
     release(pressedPointers.get(event.pointerId), event.pointerId);
   });
 

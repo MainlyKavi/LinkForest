@@ -502,12 +502,18 @@ function watch() {
   const main = document.querySelector('main');
   if (fixedGroups.length && main) {
     let queued = false;
+    /* What paints in the page (glass, images, icons, text), not the boxes that hold it: the name
+       row spans the column but its text sits between the controls. Testing the canvas box
+       against the first row handed over 26px into the scroll, with nothing behind the glass. */
+    const inks = [...main.querySelectorAll('*')].filter((el) => el.matches('.lg, img, svg:not(svg *)') || [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()));
     const check = () => {
       queued = false;
-      const first = [...main.children].find((c) => !c.classList.contains('lg-canvas'));
-      const top = first ? first.getBoundingClientRect().top : Infinity;
+      const boxes = inks.map((el) => el.getBoundingClientRect());
       fixedGroups.forEach((g) => {
-        const covered = top < g.canvas.getBoundingClientRect().bottom;
+        const covered = g.items.some(({ el }) => {
+          const c = el.getBoundingClientRect(), m = 6; // the glass grows a little on hover and press
+          return boxes.some((b) => b.width && b.bottom > c.top - m && b.top < c.bottom + m && b.right > c.left - m && b.left < c.right + m);
+        });
         if (covered === !!g.covered) return;
         g.covered = covered;
         if (covered) disengage(g); else engage(g);
@@ -522,14 +528,16 @@ function watch() {
   let shading = 0;
   addEventListener('scroll', () => { if (!shading) shading = requestAnimationFrame(() => { shading = 0; shade(); }); }, { passive: true });
 
-  let frame = 0, timer = 0, vw = innerWidth, vh = innerHeight;
+  /* The picture depends only on the backdrop's size; the toolbar changing innerHeight is not a reason to rebuild it. */
+  const backdropSize = () => { const r = document.querySelector('.backdrop').getBoundingClientRect(); return r.width + 'x' + r.height; };
+  let frame = 0, timer = 0, size = backdropSize();
   const soon = () => { cancelAnimationFrame(frame); frame = requestAnimationFrame(relayout); };
   addEventListener('resize', () => {
     soon();
     clearTimeout(timer);
     timer = setTimeout(() => {
-      if (innerWidth === vw && innerHeight === vh) return;
-      vw = innerWidth; vh = innerHeight;
+      if (backdropSize() === size) return;
+      size = backdropSize();
       for (const k in pictures) delete pictures[k];
       composePicture(theme).then(() => groups.forEach((g) => bitmapOf(theme).then((bmp) => {
         if (dead || !g.layer) return bmp.close();

@@ -41,9 +41,20 @@ The homepage uses a WebGL material in every engine (Chrome, Firefox, Safari):
 - `liquid-glass.css`: the same clear material in CSS (backdrop blur), shown until WebGL is
   ready and wherever it is not: no WebGL, `?glass=fallback`, reduced transparency
   (solid), more contrast. Fixed top-bar glass also hands back to CSS while page
-  content scrolls under it, since the canvas only knows the photo.
+  content (text, images, glass) is actually behind one of its controls, since the
+  canvas only knows the photo.
 - `liquid-glass-buttons.js`: springs, quieter on `data-glass="liquid"` pages; it
-  hands every frame to the WebGL shape so glass and label move together.
+  hands every frame to the WebGL shape so glass and label move together. Under a
+  finger, glass waits 150 ms before lighting (as iOS scroll views do), so a scroll
+  that starts on a button never flashes it; a quick tap lights it on release.
+- Mobile Safari: the backdrop is sized by the large viewport (`100lvh`), so the
+  toolbar hiding no longer zooms the photo or rebuilds the glass texture (it is
+  rebuilt only when the backdrop really changes size, e.g. rotation). The glass
+  still draws in a worker: on the page thread the vendor renderer redraws only
+  every other frame during spring animations (measured), so it was not moved.
+- `lab/mobile-glass.mjs`: iPhone-sized touch checks (top-bar handover, touch press
+  vs scroll, toolbar). `PLAYWRIGHT=<playwright-core path> node lab/mobile-glass.mjs chromium|webkit`
+  with `node lab/serve.mjs . 4175` running.
 
 To move another page over: swap `liquid-glass-buttons.css` for `liquid-glass.css`
 (load it before `site.css`), drop `liquid-glass-optics.js`, add

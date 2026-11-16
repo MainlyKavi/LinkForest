@@ -87,7 +87,8 @@ img,svg{ display:block; }
 .skip-link:focus{ transform:translate(-50%, 0); }
 
 /* ---------------- backdrop: photo, day/night crossfade ---------------- */
-.backdrop{ position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+/* Sized by the large viewport: Safari's toolbar hiding resized it, zooming the photo ~7% mid-scroll. */
+.backdrop{ position:fixed; inset:0; height:max(100%, 100lvh); z-index:0; overflow:hidden; pointer-events:none; }
 .backdrop-layer{
   position:absolute; inset:-2%;
   background:var(--bg-day) var(--bg-pos)/cover no-repeat;
