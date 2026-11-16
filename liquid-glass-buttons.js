@@ -366,13 +366,15 @@
     var state = states.get(control);
     /* A quick tap still shows the whole swell before it springs back. */
     var held = performance.now() - state.pressedAt;
-    if (calm && state.pressed && !reducedQuery.matches && held < 150){
+    /* Touch presses start late (TOUCH_DELAY), so they get the minimum on every page too. */
+    if ((calm || state.touchPress) && state.pressed && !reducedQuery.matches && held < 150){
       if (pointerId != null) pressedPointers.delete(pointerId);
       clearTimeout(state.releaseTimer);
       state.releaseTimer = setTimeout(function(){ release(control, null); }, 150 - held);
       return;
     }
     state.pressed = false;
+    state.touchPress = false;
     control.classList.remove('is-lg-pressed');
     setRestTarget(state);
     if (pointerId != null) pressedPointers.delete(pointerId);
@@ -429,6 +431,7 @@
       var id = event.pointerId, at = { clientX:event.clientX, clientY:event.clientY };
       pendingTouches.set(id, { control:control, timer:setTimeout(function(){
         pendingTouches.delete(id);
+        states.get(control).touchPress = true;
         press(control, id, at);
       }, TOUCH_DELAY) });
       return;
@@ -448,12 +451,10 @@
   document.addEventListener('pointerup', function(event){
     var pending = takePending(event.pointerId);
     if (pending){
-      /* A tap that ended before the delay still shows its press, briefly, on every page. */
-      var control = pending.control;
-      press(control, null, event);
-      var state = states.get(control);
-      clearTimeout(state.releaseTimer);
-      state.releaseTimer = setTimeout(function(){ release(control, null); }, TOUCH_DELAY);
+      /* A tap that ended before the delay still shows its press (release keeps it up 150ms). */
+      states.get(pending.control).touchPress = true;
+      press(pending.control, null, event);
+      release(pending.control, null);
       return;
     }
     release(pressedPointers.get(event.pointerId), event.pointerId);

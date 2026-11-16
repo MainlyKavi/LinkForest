@@ -1,11 +1,12 @@
 // Mobile interaction checks for the homepage Liquid Glass (iPhone-sized, touch, DPR 3).
 //   node lab/serve.mjs . 4175
-//   PLAYWRIGHT=<path to playwright-core> node lab/mobile-glass.mjs chromium|webkit [port]
+//   PLAYWRIGHT=<path to playwright-core> node lab/mobile-glass.mjs chromium|webkit [port | preview URL]
 // Touch drags need Chromium's CDP; WebKit runs the rest. Real iOS Safari still needs a device:
 // emulation has no UI-process scrolling and no collapsing toolbar (modelled below where noted).
 const { chromium, webkit } = await import(process.env.PLAYWRIGHT || 'playwright-core');
 const engine = process.argv[2] || 'chromium';
-const BASE = 'http://localhost:' + (process.argv[3] || 4175) + '/';
+const where = process.argv[3] || '4175'; // a port, or a deployed URL (a Vercel preview)
+const BASE = /^https?:/.test(where) ? where.replace(/\/?$/, '/') : 'http://localhost:' + where + '/';
 const browser = await (engine === 'webkit' ? webkit : chromium).launch(engine === 'chromium' ? { channel: 'chrome' } : {});
 let failures = 0;
 const ok = (name, cond, detail = '') => { console.log((cond ? 'PASS ' : 'FAIL ') + name + (detail ? '  [' + detail + ']' : '')); if (!cond) failures++; };
@@ -101,15 +102,19 @@ if (engine === 'chromium') {
     });
     const el = q.locator('main .liquid-glass-control').first(); await el.scrollIntoViewIfNeeded();
     const bb = await el.boundingBox(), cx = bb.x + bb.width / 2, cy = bb.y + bb.height / 2, qc = await ctx.newCDPSession(q);
-    await qc.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: cx, y: cy }] }); await q.waitForTimeout(60);
-    await qc.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await q.waitForTimeout(700);
-    const tap = await q.evaluate(() => ({ presses: window.__w.n, visibleMs: Math.round(window.__w.ms) }));
+    const taps = [];
+    for (const hold of [60, 200]) { // lifted before the touch delay, and just after it
+      await q.evaluate(() => { window.__w.n = 0; window.__w.ms = 0; });
+      await qc.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: cx, y: cy }] }); await q.waitForTimeout(hold);
+      await qc.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await q.waitForTimeout(700);
+      taps.push(await q.evaluate(() => ({ presses: window.__w.n, visibleMs: Math.round(window.__w.ms) })));
+    }
     await q.evaluate(() => { window.__w.n = 0; });
     await qc.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: cx, y: cy }] });
     for (let i = 1; i <= 14; i++) { await qc.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: cx, y: cy - i * 14 }] }); await q.waitForTimeout(16); }
     await qc.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await q.waitForTimeout(700);
     const scrolled = await q.evaluate(() => window.__w.n);
-    ok(`touch ${path}: a tap shows its press (>=100ms), a scroll from a control does not`, tap.presses === 1 && tap.visibleMs >= 100 && scrolled === 0, JSON.stringify({ ...tap, pressesWhileScrolling: scrolled }));
+    ok(`touch ${path}: short and longer taps show their press (>=100ms), a scroll from a control does not`, taps.every((t) => t.presses === 1 && t.visibleMs >= 100) && scrolled === 0, JSON.stringify({ taps, pressesWhileScrolling: scrolled }));
     await ctx.close();
   }
 }
