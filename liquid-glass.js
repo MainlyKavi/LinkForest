@@ -21,8 +21,8 @@
    in full only when the photo behind is bright; siblings share one value, see shade()).
    Bigger glass is thicker: more bezel, more bend. */
 const VARIANTS = {
-  button: [1.6, 18, 8, 0.28],   // the three main buttons, a label on each
-  label: [1.2, 14, 6.5, 0.27],  // small glass with a label (Hit me up)
+  button: [1.6, 18, 9.5, 0.28], // the three main buttons, a label on each
+  label: [1.2, 14, 7.5, 0.27],  // small glass with a label (Hit me up)
   control: [0.6, 9, 4.5, 0.17]  // icon-only controls and socials
 };
 
@@ -82,6 +82,7 @@ vec4 slg_shade(vec2 p, vec3 field) {
   vec2 n = field.xy;                  // the outline's outward normal
   float blur = mkA.x, bezel = max(mkA.y, 1.0), bend = mkA.z, dim = mkA.w;
   float glow = mkB.z, press = mkB.w;
+  float thick = smoothstep(9.0, 14.0, bezel);  // 0 for icon controls (unchanged), 1 for labelled glass
   vec2 s = slg_screen(p);
 
   // The edge is a convex squircle bezel; light refracts through it (Snell, glass 1.5), so the
@@ -113,7 +114,8 @@ vec4 slg_shade(vec2 p, vec3 field) {
   // worked out in JS, one value per family of siblings).
   float luma = dot(col, vec3(0.2126, 0.7152, 0.0722));
   col = mix(vec3(luma), col, mkPair(sat));
-  col *= 1.0 - dim;
+  // Thick glass keeps the dimming under its label; its curved edge gathers light and stays bright.
+  col *= 1.0 - dim * (1.0 - 0.5 * thick * u * u);
   col += mkPair(lift);
 
   // Light from above-left (the pointer draws it round). It catches the bezel on the side facing
@@ -125,8 +127,9 @@ vec4 slg_shade(vec2 p, vec3 field) {
   float bev = u * u * u;
   col *= 1.0 - bev * mkPair(depth);
   float line = 1.0 - smoothstep(0.0, 0.7 + 1.0 / slg_scale, d);
-  float spec = line * mkPair(rimLight) * (0.12 + 0.88 * near + 0.6 * far) * (1.0 + 0.4 * glow);
-  spec += bev * mkPair(sheen) * (pow(max(facing, 0.0), 1.5) + 0.5 * pow(max(-facing, 0.0), 1.5));
+  float spec = line * mkPair(rimLight) * (0.12 + 0.1 * thick + 0.88 * near + 0.6 * far) * (1.0 + 0.4 * glow);
+  // On thick glass the inner light spreads wider and softer, and a little reaches every side.
+  spec += mix(bev, u * u, 0.4 * thick) * mkPair(sheen) * (1.0 + 0.3 * thick) * (pow(max(facing, 0.0), 1.5) + 0.5 * pow(max(-facing, 0.0), 1.5) + 0.15 * thick);
 
   // Touch: the glass lights from within, under the finger first, then through the element and
   // onto glass nearby.
