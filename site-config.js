@@ -6,6 +6,8 @@
      you have a real, public link; empty URLs are never rendered.
    - Nothing marked `placeholder: true` is shown on any deployed URL.
      Placeholders only appear on a local dev server (localhost).
+     One exception: the kit's placeholder brand names (kit.brands) also
+     show on Vercel preview URLs, labelled; never on mainlykavi.com.
    - Paths starting with / are files in this repo (e.g. /assets/kit/...).
    ================================================================ */
 window.MK = {
@@ -74,29 +76,35 @@ window.MK = {
   coffeeUrl: 'https://throne.com/mainlykavi',
 
   kit: {
-    /* Hero portrait, 4:5, at least 1200px wide (webp or jpg). */
-    portrait: { src: '', alt: 'Kavi Goutam', placeholder: true },
+    /* The hero portrait is in kit.html (/assets/kit/kavi-portrait.webp). */
 
-    /* Exactly three vertical (9:16) samples. For each one use EITHER
-       `video` (a file in /assets/kit/, mp4/H.264 with sound off by default)
-       OR `url` (YouTube Shorts / Instagram / TikTok link), plus a
-       `thumbnail` (9:16 image). Keep `placeholder: true` until it's real. */
+    /* Three vertical (9:16) samples; they loop in the "Selected work"
+       strip. For each one use EITHER `video` (a file in /assets/kit/,
+       mp4/H.264; it plays in a pop-up player) OR `url` (YouTube Shorts /
+       Instagram / TikTok link; opens there), plus a `thumbnail` (9:16
+       image, ~540x960 webp). Keep `placeholder: true` until it's real. */
     videos: [
       { title: 'Sample 01', caption: 'UGC ad slot: product demo, hook in the first second', thumbnail: '', video: '', url: '', placeholder: true },
       { title: 'Sample 02', caption: 'UGC ad slot: talking-head review, real reactions',     thumbnail: '', video: '', url: '', placeholder: true },
       { title: 'Sample 03', caption: 'Brand integration slot: a bit, then the product',      thumbnail: '', video: '', url: '', placeholder: true }
     ],
 
-    /* Brand marquee. Stays hidden until `enabled: true` AND at least one
-       real, approved brand is listed. Logos: SVG or transparent PNG in
-       /assets/brands/. Only list brands you have actually worked with. */
+    /* Brand rail beside the hero (a horizontal strip on phones).
+       While `placeholder: true` it shows on dev previews only, titled
+       "Brand slots" with a note that the names are placeholders; on
+       mainlykavi.com it stays hidden. When you have real partners: replace the
+       items (logo and url optional; SVG or transparent PNG in
+       /assets/brands/) and set `placeholder: false`; the title becomes
+       "Brands I've worked with". Only list brands you have actually
+       worked with. `enabled: false` hides the rail. */
     brands: {
-      enabled: false,
+      enabled: true,
+      placeholder: true,
       items: [
+        { name: 'NOVA' }, { name: 'AETHER' }, { name: 'LUMEN' }, { name: 'ORBIT' }, { name: 'VANTA' },
+        { name: 'ATLAS' }, { name: 'PULSE' }, { name: 'SOLACE' }, { name: 'KITE' }, { name: 'MONO' }
         /* { name: 'Brand name', logo: '/assets/brands/brand.svg', url: 'https://brand.com' } */
       ]
-      /* Fictional demo wordmarks for testing the marquee live in
-         lab/demo-content.js, which is never deployed (.vercelignore). */
     }
   }
 };

@@ -6,8 +6,14 @@
   var S = window.MKSite;
   var kit = MK.kit || {};
   var doc = document;
+  var root = doc.documentElement;
+  var each = function(sel, fn){ Array.prototype.forEach.call(doc.querySelectorAll(sel), fn); };
   var esc = S.esc;
   var preview = S.preview;
+  /* Placeholder brand names also show on Vercel preview URLs, never on mainlykavi.com.
+     shortcut: production's own *.vercel.app aliases count as previews too; nothing links
+     there (the canonical is mainlykavi.com). Match the preview URL pattern if that changes. */
+  var devPreview = preview || /\.vercel\.app$/.test(location.hostname);
   var CANONICAL = (MK.site || 'https://mainlykavi.com') + '/kit';
   var DEV = '<span class="dev-tag">Dev placeholder</span>';
 
@@ -26,127 +32,110 @@
     }
   }
 
-  /* ---------- portrait ---------- */
-  var portrait = doc.getElementById('portrait');
-  var heroPhoto = doc.getElementById('heroPhoto');
-  var p = kit.portrait || {};
-  if (portrait){
-    if (p.src && !p.placeholder){
-      portrait.innerHTML = '<img src="' + esc(p.src) + '" alt="' + esc(p.alt || MK.realName || '') + '" width="1200" height="1500" fetchpriority="high" decoding="async">';
-    } else if (preview){
-      portrait.innerHTML =
-        '<div class="portrait-placeholder" role="img" aria-label="Portrait placeholder">' +
-          '<span class="mono" aria-hidden="true">K</span>' + DEV +
-          '<p>Your hero portrait goes here: 4:5, at least 1200px wide. Set <code>kit.portrait</code> in site-config.js.</p>' +
-        '</div>';
-    } else {
-      /* No real portrait yet: let the (real, existing) polaroid carry the hero. */
-      portrait.remove();
-      heroPhoto.classList.add('no-portrait');
-    }
+  /* ---------- seamless loops (brand rail + work strip) ----------
+     The first group holds the real items (focusable, announced) plus silent
+     copies until it is long enough to overflow its window; an identical
+     silent group follows. The track slides by exactly one group (-50%), so
+     the seam never shows. */
+  function fillLoop(track, itemsHtml, count, minItems, secondsPerItem){
+    var silent = itemsHtml.replace(/<li\b/g, '<li aria-hidden="true"').replace(/<(a|button)\b/g, '<$1 tabindex="-1"');
+    var reps = Math.max(1, Math.ceil(minItems / count));
+    track.innerHTML =
+      '<ul class="loop-group">' + itemsHtml + new Array(reps).join(silent) + '</ul>' +
+      '<ul class="loop-group" aria-hidden="true">' + new Array(reps + 1).join(silent) + '</ul>';
+    track.style.setProperty('--loop-dur', (reps * count * secondsPerItem) + 's');
   }
 
-  /* ---------- selected work: three 9:16 slots ---------- */
-  var PLACEHOLDER_TINTS = [
-    'linear-gradient(160deg, #f7c6d4 0%, #f3ede2 55%, #dfe6c9 100%)',
-    'linear-gradient(200deg, #cfe0f2 0%, #f3ede2 55%, #f7c6d4 100%)',
-    'linear-gradient(160deg, #dfe6c9 0%, #f3ede2 50%, #f3d7a8 100%)'
-  ];
+  /* ---------- brand rail ---------- */
+  var brands = kit.brands || {};
+  var brandList = (brands.items || []).filter(function(b){ return b && b.name; });
+  var rail = doc.getElementById('brands');
+  if (rail && brands.enabled !== false && brandList.length && (devPreview || !brands.placeholder)){
+    fillLoop(doc.getElementById('brandTrack'), brandList.map(function(b){
+      var inner = b.logo ? '<img src="' + esc(b.logo) + '" alt="' + esc(b.name) + '" loading="lazy">' : '<span class="wm">' + esc(b.name) + '</span>';
+      return '<li class="brand">' + (b.url ? '<a href="' + esc(b.url) + '" target="_blank" rel="noopener">' + inner + '</a>' : inner) + '</li>';
+    }).join(''), brandList.length, 14, 2.4);
+    rail.querySelector('.rail-label').textContent = brands.placeholder ? 'Brand slots' : 'Brands I’ve worked with';
+    doc.getElementById('brandsNote').hidden = !brands.placeholder;
+    rail.hidden = false;
+  }
+
+  /* ---------- selected work: three 9:16 clips on an endless strip ---------- */
   var PLAY = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.8v14.4a1 1 0 0 0 1.5.86l12-7.2a1 1 0 0 0 0-1.72l-12-7.2A1 1 0 0 0 7 4.8Z"/></svg>';
   var videos = (kit.videos || []).slice(0, 3).filter(function(v){
     return v.placeholder ? preview : (v.video || v.url);
   });
+  function clip(v, i){
+    var cap = '<span class="clip-cap"><strong>' + esc(v.title) + '</strong><span>' + esc(v.caption) + '</span></span>';
+    var thumb = v.thumbnail ? '<img src="' + esc(v.thumbnail) + '" alt="" width="540" height="960" loading="lazy" decoding="async">' : '';
+    var play = '<span class="clip-play" aria-hidden="true">' + PLAY + '</span>';
+    if (v.placeholder){
+      return '<li class="clip is-placeholder" style="--ph:var(--ph-' + (i % 3) + ')"><div class="clip-frame" role="img" aria-label="' + esc(v.title) + ': placeholder for a future video">' +
+        DEV + '<span class="clip-num" aria-hidden="true">0' + (i + 1) + '</span>' + cap + '</div></li>';
+    }
+    if (v.video){
+      return '<li class="clip"><button class="clip-frame" type="button" data-video="' + esc(v.video) + '" data-poster="' + esc(v.thumbnail || '') + '" data-title="' + esc(v.title) + '" aria-label="Play ' + esc(v.title) + '">' +
+        thumb + play + cap + '</button></li>';
+    }
+    var host = '';
+    try { host = new URL(v.url).hostname.replace(/^www\./, ''); } catch (e) {}
+    return '<li class="clip"><a class="clip-frame" href="' + esc(v.url) + '" target="_blank" rel="noopener" aria-label="Watch ' + esc(v.title) + ' on ' + esc(host) + ' (opens in a new tab)">' +
+      thumb + play + cap + '</a></li>';
+  }
   var work = doc.getElementById('work');
-  var reels = doc.getElementById('reels');
-  if (work && reels && videos.length){
-    reels.innerHTML = videos.map(function(v, i){
-      var cap = '<div class="reel-cap"><strong>' + esc(v.title) + '</strong><span>' + esc(v.caption) + '</span></div>';
-      var thumb = v.thumbnail ? '<img src="' + esc(v.thumbnail) + '" alt="" loading="lazy" decoding="async">' : '';
-      if (v.placeholder){
-        return '<li class="reel is-placeholder" style="--ph:' + PLACEHOLDER_TINTS[i % 3] + '">' +
-          '<div class="reel-frame" role="img" aria-label="' + esc(v.title) + ': placeholder for a future video">' +
-            '<div class="reel-ph"><span class="badge">' + DEV + '</span><span class="num">0' + (i + 1) + '</span>' +
-            '<span class="lines" aria-hidden="true"><i></i><i></i><i></i></span></div>' +
-          '</div>' + cap + '</li>';
-      }
-      if (v.video){
-        return '<li class="reel"><button class="reel-frame" type="button" data-video="' + esc(v.video) + '" data-poster="' + esc(v.thumbnail || '') + '" aria-label="Play ' + esc(v.title) + '">' +
-          thumb + '<span class="play lg lg-static">' + PLAY + '</span></button>' + cap + '</li>';
-      }
-      var host = '';
-      try { host = new URL(v.url).hostname.replace(/^www\./, ''); } catch (e) {}
-      return '<li class="reel"><a class="reel-frame" href="' + esc(v.url) + '" target="_blank" rel="noopener" aria-label="Watch ' + esc(v.title) + ' on ' + esc(host) + ' (opens in a new tab)">' +
-        thumb + '<span class="play lg lg-static">' + PLAY + '</span></a>' + cap + '</li>';
-    }).join('');
+  var stripTrack = doc.getElementById('stripTrack');
+  var player = doc.getElementById('player');
+  if (work && stripTrack && videos.length){
+    fillLoop(stripTrack, videos.map(clip).join(''), videos.length, 9, 5);
     work.hidden = false;
-    /* On phones the strip scrolls sideways; keep it reachable by keyboard
-       when it holds no links or buttons of its own (placeholder-only). */
-    if (!reels.querySelector('a, button')){
-      reels.tabIndex = 0;
-      reels.setAttribute('aria-label', 'Selected work (scrolls sideways)');
+    /* reduced motion turns the strip into a swipeable row: reachable by keyboard too */
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      var strip = stripTrack.parentNode;
+      strip.tabIndex = 0;
+      strip.setAttribute('role', 'region');
+      strip.setAttribute('aria-label', 'Selected work (scrolls sideways)');
     }
-
-    /* Inline playback starts only on a click, with controls and sound. */
-    reels.addEventListener('click', function(e){
+    stripTrack.addEventListener('click', function(e){
       var btn = e.target.closest('button[data-video]');
-      if (!btn) return;
-      var video = doc.createElement('video');
+      if (!btn || !player || !player.showModal) return;
+      var video = player.querySelector('video');
       video.src = btn.getAttribute('data-video');
-      if (btn.getAttribute('data-poster')) video.poster = btn.getAttribute('data-poster');
-      video.controls = true;
-      video.playsInline = true;
-      video.preload = 'metadata';
-      video.setAttribute('aria-label', btn.getAttribute('aria-label').replace(/^Play /, ''));
-      var frame = doc.createElement('div');
-      frame.className = 'reel-frame';
-      frame.appendChild(video);
-      btn.replaceWith(frame);
+      video.poster = btn.getAttribute('data-poster') || '';
+      video.setAttribute('aria-label', btn.getAttribute('data-title'));
+      player.showModal();
       video.play().catch(function(){});
-      video.focus();
+    });
+  } else {
+    /* Nothing real to show yet: the hero link would point at nothing. */
+    each('[data-work-link]', function(a){ a.remove(); });
+  }
+  if (player){
+    player.addEventListener('click', function(e){
+      if (e.target === player || e.target.closest('[data-close-player]')) player.close();
+    });
+    player.addEventListener('close', function(){
+      var video = player.querySelector('video');
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
     });
   }
 
-  /* ---------- brands: real & approved only. Demo wordmarks exist only in
-     lab/demo-content.js, which is never deployed, and load only on localhost. ---------- */
-  var brands = kit.brands || {};
-  var real = (brands.items || []).filter(function(b){ return b && b.name; });
-  var brandsSection = doc.getElementById('brands');
-  var marquee = doc.getElementById('marquee');
-  if (brandsSection && marquee){
-    if (brands.enabled === true && real.length) renderBrands(real, false);
-    else if (preview){
-      var demoScript = doc.createElement('script');
-      demoScript.src = '/lab/demo-content.js';
-      demoScript.onload = function(){
-        var names = (window.MK_DEMO && window.MK_DEMO.brands) || [];
-        if (names.length) renderBrands(names.map(function(name){ return { name: name }; }), true);
-      };
-      doc.head.appendChild(demoScript);
-    }
-  }
-  function renderBrands(list, isDemo){
-    var item = function(b){
-      var inner = b.logo ? '<img src="' + esc(b.logo) + '" alt="' + esc(b.name) + '" loading="lazy">' : '<span class="wm">' + esc(b.name) + '</span>';
-      return b.url ? '<a class="marquee-item" href="' + esc(b.url) + '" target="_blank" rel="noopener">' + inner + '</a>' : '<span class="marquee-item">' + inner + '</span>';
-    };
-    var group = list.map(item).join('');
-    /* two identical groups; the track slides by exactly one group's width */
-    marquee.innerHTML = '<div class="marquee-track"><div class="marquee-group">' + group + '</div><div class="marquee-group" aria-hidden="true">' + group.replace(/<a /g, '<a tabindex="-1" ') + '</div></div>';
-    marquee.style.setProperty('--marquee-dur', Math.max(24, list.length * 5.5) + 's');
-    if (isDemo){
-      brandsSection.querySelector('.section-title').textContent = 'Brand marquee (demo)';
-      marquee.insertAdjacentHTML('afterend', '<p class="demo-note">' + DEV + ' Fictional wordmarks for testing motion. Never shown on the live site.</p>');
-    }
-    brandsSection.hidden = false;
-    var toggle = doc.getElementById('marqueeToggle');
-    toggle.addEventListener('click', function(){
-      var paused = marquee.classList.toggle('paused');
-      toggle.setAttribute('aria-pressed', String(paused));
-      toggle.textContent = paused ? 'Play' : 'Pause';
+  /* ---------- motion: one toggle for every loop; loops rest off screen ---------- */
+  each('[data-motion-toggle]', function(btn){
+    btn.addEventListener('click', function(){
+      var paused = root.classList.toggle('motion-paused');
+      each('[data-motion-toggle] span', function(label){ label.textContent = paused ? 'Play motion' : 'Pause motion'; });
     });
+  });
+  if ('IntersectionObserver' in window){
+    var loopIO = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){ entry.target.classList.toggle('is-offscreen', !entry.isIntersecting); });
+    });
+    each('.loop', function(n){ loopIO.observe(n); });
   }
 
-  /* ---------- share ---------- */
+  /* ---------- share + copy link ---------- */
   var fallback = doc.getElementById('shareFallback');
   function share(){
     var data = { title: 'Kavi Goutam: media kit', text: 'MainlyKavi, personality-driven variety creator.', url: CANONICAL };
@@ -158,9 +147,19 @@
     }
     copy();
   }
-  function copy(){
+  function copy(btn){
     S.copyText(CANONICAL).then(function(ok){
-      if (ok){ S.toast('Link copied: mainlykavi.com/kit'); return; }
+      if (ok){
+        S.toast('Link copied: mainlykavi.com/kit');
+        var label = btn && btn.querySelector('span');
+        if (label){
+          label.textContent = 'Copied';
+          setTimeout(function(){ label.textContent = 'Copy link'; }, 1800);
+        }
+        return;
+      }
+      /* from the hero: don't jump the page to the fallback field at the bottom */
+      if (btn){ S.toast('Couldn’t copy. The link is mainlykavi.com/kit'); return; }
       fallback.hidden = false;
       var input = fallback.querySelector('input');
       input.focus();
@@ -168,7 +167,8 @@
       S.toast('Press Ctrl/⌘ + C to copy the link');
     });
   }
-  Array.prototype.forEach.call(doc.querySelectorAll('#shareBtn, [data-share]'), function(btn){ btn.addEventListener('click', share); });
+  each('#shareBtn, [data-share]', function(btn){ btn.addEventListener('click', share); });
+  each('[data-copy-link]', function(btn){ btn.addEventListener('click', function(){ copy(btn); }); });
 
   /* ---------- floating dock: after the hero, gone again at the share block ---------- */
   var dock = doc.getElementById('dock');
@@ -198,10 +198,11 @@
     }
   }
 
-  /* ---------- gentle scroll-in for sections ---------- */
+  /* ---------- gentle scroll-in. Only text or a glass element itself fades:
+     glass inside a fading parent loses its backdrop. ---------- */
   if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-    doc.documentElement.classList.add('in-view-ready');
-    var targets = doc.querySelectorAll('.make-list, .pillars li, .reel, .collab-inner > *, .share > *');
+    root.classList.add('in-view-ready');
+    var targets = doc.querySelectorAll('.section-title, .section-note, .offer, .pillars li, .collab-inner > *, .share > *');
     Array.prototype.forEach.call(targets, function(n, i){ n.classList.add('fade-up'); n.style.transitionDelay = (i % 3) * 70 + 'ms'; });
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(entry){

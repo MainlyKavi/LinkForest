@@ -10,15 +10,25 @@ node lab/serve.mjs . 4173
 ```
 
 Then open http://localhost:4173. The server mimics Vercel `cleanUrls` and the
-custom 404. Placeholders and the demo brand marquee appear on localhost only;
-every deployed URL (Vercel previews included) shows exactly what production
-will. The demo wordmarks live in `lab/demo-content.js`, which is never deployed.
+custom 404. Placeholders appear on localhost only; every deployed URL shows
+what production will, with one exception: the kit's placeholder brand names
+also show on Vercel preview URLs (`*.vercel.app`). mainlykavi.com never shows
+any placeholder.
+
+## Checks
+
+`lab/site-check.mjs` (every page) and `lab/kit-check.mjs` (the media kit) run
+against `node lab/serve.mjs . <port>`; `lab/mobile-glass.mjs` covers homepage
+touch. They need `playwright-core` (and `axe-core` for the kit): set
+`PLAYWRIGHT` to the playwright-core folder and `AXE` to `axe-core/axe.min.js`.
+Production and Vercel-preview hostnames are simulated locally, so the
+placeholder rules are checked without deploying.
 
 ## Editing content
 
 Everything recurring lives in `site-config.js`: social URLs, UGC profiles,
-support/shop links, contact email, homepage taglines, the kit portrait, the
-three video slots and the brand marquee. Empty `url: ''` entries never render.
+support/shop links, contact email, homepage taglines, the kit
+three video slots and the brand rail. Empty `url: ''` entries never render.
 
 ## Liquid Glass v2 (homepage, `<html data-glass="liquid">`)
 
